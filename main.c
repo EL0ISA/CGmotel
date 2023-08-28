@@ -1,9 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define true 1
+#define false 0
+
 void inicio(void);
 void sobre(void);
-void menu_principal(void);
+char menu_principal(void);
 
 void menu_clientes(void);
 void cad_cli(void);
@@ -20,17 +23,24 @@ void del_func(void);
 int main(void) {
     inicio();
     sobre();
-    menu_principal();
-    menu_clientes();
-    cad_cli();
-    pesq_cli();
-    edit_cli();
-    del_cli();
-    menu_funcionarios();
-    cad_func();
-    pesq_func();
-    edit_func();
-    del_func();
+    char op;
+    do
+    {
+        system("clear||cls");
+        op=menu_principal();
+        switch (op)
+        {
+        case '1':
+            menu_clientes();
+            break;
+        
+        case '2':
+            menu_funcionarios();
+            break;
+        }
+    } while ((op)!='0');
+    
+    printf("%c",op);
     return 0;
 }
 
@@ -57,11 +67,10 @@ void sobre(void){
     printf("\t\t>>> Tecle <ENTER> para continuar...\n");
     getchar();
 }
-void menu_principal(void){
+char menu_principal(void){
     char opc;
-    system("clear||cls");
     printf("*-------------------------------------------------------------------------------*\n");
-    printf("|                               Gestão do Motel                                 |\n");
+    printf("|                               Gestão do Motel                                |\n");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("|                               1. Clientes                                     |\n");
     printf("|                               2. Funcionarios                                 |\n");
@@ -71,24 +80,47 @@ void menu_principal(void){
     printf("*-------------------------------------------------------------------------------*\n");
     printf("-- Sua opc: ");
     scanf("%c",&opc);
-    getchar();
+    return opc;
 }
 
 void menu_clientes(void){
     char opc;
-    system("clear||cls");
-    printf("*-------------------------------------------------------------------------------*\n");
-    printf("*                               Menu Clientes                                   *\n");
-    printf("*-------------------------------------------------------------------------------*\n");
-    printf("|                             1. Cadastrar novo                                 |\n");
-    printf("|                             2. Pesquisar dados                                |\n");
-    printf("|                             3. Atualizar dados                                |\n");
-    printf("|                             4. Deletar cliente                                |\n");
-    printf("|                             0. Voltar                                         |\n");
-    printf("*-------------------------------------------------------------------------------*\n");
-    printf("-- Sua opc: ");
-    scanf("%c",&opc);
-    getchar();
+    char menu=true;
+    while (menu)
+    {
+        system("clear||cls");
+        printf("\n*-------------------------------------------------------------------------------*\n");
+        printf("*                               Menu Clientes                                   *\n");
+        printf("*-------------------------------------------------------------------------------*\n");
+        printf("|                             1. Cadastrar novo                                 |\n");
+        printf("|                             2. Pesquisar dados                                |\n");
+        printf("|                             3. Atualizar dados                                |\n");
+        printf("|                             4. Deletar cliente                                |\n");
+        printf("|                             0. Voltar                                         |\n");
+        printf("*-------------------------------------------------------------------------------*\n");
+        printf("-- Sua opc: ");
+        scanf("%c",&opc);
+        switch (opc)
+        {
+        case '0':
+            menu=false;
+            break;
+        case '1':
+            cad_cli();
+            break;
+        
+        case '2':
+            pesq_cli();
+            break;
+        case '3':
+            edit_cli();
+            break;
+        case '4':
+            del_cli();
+            break;
+        }
+    }
+    
 }
 void cad_cli(void){
     system("clear||cls");
@@ -100,8 +132,8 @@ void cad_cli(void){
     printf("|            - E-mail:                                                          |\n");
     printf("|            - Data de Nascimento (dd/mm/aaaa):                                 |\n");
     printf("*-------------------------------------------------------------------------------*\n");
-    printf("\t\t>>> Tecle <ENTER> para continuar...\n");
-    getchar();
+    printf("\t>>");
+    system("PAUSE");
 }
 void pesq_cli(void){
     system("clear||cls");
@@ -110,8 +142,8 @@ void pesq_cli(void){
     printf("*-------------------------------------------------------------------------------*\n");
     printf("|            - Informe o CPF (apenas números):                                  |\n");
     printf("*-------------------------------------------------------------------------------*\n");
-    printf("\t\t>>> Tecle <ENTER> para continuar...\n");
-    getchar();
+    printf("\t>>");
+    system("PAUSE");
 }
 void edit_cli(void){
     system("clear||cls");
@@ -120,8 +152,8 @@ void edit_cli(void){
     printf("*-------------------------------------------------------------------------------*\n");
     printf("|            - Informe o CPF (apenas números):                                  |\n");
     printf("*-------------------------------------------------------------------------------*\n");
-    printf("\t\t>>> Tecle <ENTER> para continuar...\n");
-    getchar();
+    printf("\t>>");
+    system("PAUSE");
 }
 void del_cli(void){
     system("clear||cls");
@@ -130,25 +162,47 @@ void del_cli(void){
     printf("*-------------------------------------------------------------------------------*\n");
     printf("|            - Informe o CPF (apenas números):                                  |\n");
     printf("*-------------------------------------------------------------------------------*\n");
-    printf("\t\t>>> Tecle <ENTER> para continuar...\n");
-    getchar();
+    printf("\t>>");
+    system("PAUSE");
 }
 
 void menu_funcionarios(void){
     char opc;
-    system("clear||cls");
-    printf("*-------------------------------------------------------------------------------*\n");
-    printf("*                               Menu Funcionarios                               *\n");
-    printf("*-------------------------------------------------------------------------------*\n");
-    printf("|                             1. Cadastrar novo                                 |\n");
-    printf("|                             2. Pesquisar dados                                |\n");
-    printf("|                             3. Atualizar dados                                |\n");
-    printf("|                             4. Deletar funcionario                            |\n");
-    printf("|                             0. Voltar                                         |\n");
-    printf("*-------------------------------------------------------------------------------*\n");
-    printf("-- Sua opc: ");
-    scanf("%c",&opc);
-    getchar();
+    char menu=true;
+    while (menu)
+    {
+        system("clear||cls");
+        printf("*-------------------------------------------------------------------------------*\n");
+        printf("*                               Menu Funcionarios                               *\n");
+        printf("*-------------------------------------------------------------------------------*\n");
+        printf("|                             1. Cadastrar novo                                 |\n");
+        printf("|                             2. Pesquisar dados                                |\n");
+        printf("|                             3. Atualizar dados                                |\n");
+        printf("|                             4. Deletar funcionario                            |\n");
+        printf("|                             0. Voltar                                         |\n");
+        printf("*-------------------------------------------------------------------------------*\n");
+        printf("-- Sua opc: ");
+        scanf("%c",&opc);
+        switch (opc)
+            {
+            case '0':
+                menu=false;
+                break;
+            case '1':
+                cad_func();
+                break;
+            
+            case '2':
+                pesq_func();
+                break;
+            case '3':
+                edit_func();
+                break;
+            case '4':
+                del_func();
+                break;
+            }
+    }
 }
 void cad_func(void){
     system("clear||cls");
@@ -161,8 +215,8 @@ void cad_func(void){
     printf("|            - Data de Nascimento (dd/mm/aaaa):                                 |\n");
     printf("|            - Função:                                                          |\n");
     printf("*-------------------------------------------------------------------------------*\n");
-    printf("\t\t>>> Tecle <ENTER> para continuar...\n");
-    getchar();
+    printf("\t>>");
+    system("PAUSE");
 }
 void pesq_func(void){
     system("clear||cls");
@@ -171,8 +225,8 @@ void pesq_func(void){
     printf("*-------------------------------------------------------------------------------*\n");
     printf("|            - Informe o CPF (apenas números):                                  |\n");
     printf("*-------------------------------------------------------------------------------*\n");
-    printf("\t\t>>> Tecle <ENTER> para continuar...\n");
-    getchar();
+    printf("\t>>");
+    system("PAUSE");
 }
 void edit_func(void){
     system("clear||cls");
@@ -181,8 +235,8 @@ void edit_func(void){
     printf("*-------------------------------------------------------------------------------*\n");
     printf("|            - Informe o CPF (apenas números):                                  |\n");
     printf("*-------------------------------------------------------------------------------*\n");
-    printf("\t\t>>> Tecle <ENTER> para continuar...\n");
-    getchar();
+    printf("\t>>");
+    system("PAUSE");
 }
 void del_func(void){
     system("clear||cls");
@@ -191,7 +245,7 @@ void del_func(void){
     printf("*-------------------------------------------------------------------------------*\n");
     printf("|            - Informe o CPF (apenas números):                                  |\n");
     printf("*-------------------------------------------------------------------------------*\n");
-    printf("\t\t>>> Tecle <ENTER> para continuar...\n");
-    getchar();
+    printf("\t>>");
+    system("PAUSE");
 }
 
