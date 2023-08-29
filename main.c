@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <locale.h>
 
 #define true 1
 #define false 0
@@ -20,8 +21,14 @@ void pesq_func(void);
 void edit_func(void);
 void del_func(void);
 
+void menu_quartos(void);
+void cad_quart(void);
+void pesq_quart(void);
+void edit_quart(void);
+void del_quart(void);
+
 int main(void) {
-    inicio();
+    setlocale(LC_ALL,"Portuguese_Brazil");
     sobre();
     char op;
     do
@@ -37,6 +44,12 @@ int main(void) {
         case '2':
             menu_funcionarios();
             break;
+        case '3':
+            menu_quartos();
+            break;
+        case '5':
+            sobre();
+            break;
         }
     } while ((op)!='0');
     
@@ -47,35 +60,37 @@ int main(void) {
 void inicio(void){
     printf("*-------------------------------------------------------------------------------*\n");
     printf("|                 Universidade Federal do Rio Grande do Norte                   |\n");
-    printf("|                     Centro de Ensino Superior do SeridÃ³                       |\n");
-    printf("|                   Departamento de ComputaÃ§Ã£o e Tecnologia                     |\n");
-    printf("|                      Disciplina DCT1106 -- ProgramaÃ§Ã£o                        |\n");
-    printf("|                     Projeto Sistema de GestÃ£o de Motel                        |\n");
-    printf("|               Desenvolvido por MÂª Eloisa da Silva Santos (@EL0ISA)            |\n");
+    printf("|                     Centro de Ensino Superior do Seridó                       |\n");
+    printf("|                   Departamento de Computaç?o e Tecnologia                     |\n");
+    printf("|                      Disciplina DCT1106 -- Programaç?o                        |\n");
+    printf("|                     Projeto Sistema de Gest?o de Motel                        |\n");
+    printf("|               Desenvolvido por M? Eloisa da Silva Santos (@EL0ISA)            |\n");
     printf("*-------------------------------------------------------------------------------*\n");
 }
 void sobre(void){
+    inicio();
     printf("*-------------------------------------------------------------------------------*\n");
     printf("|                               Sobre o projeto                                 |\n");
     printf("*-------------------------------------------------------------------------------*\n");
-    printf("| O CGmotel Ã© um projeto desenvolvido para a disciplina de programaÃ§Ã£o com fins |\n");
-    printf("| de aprendizagem. O mesmo consiste em um sistema de gestÃ£o para um motel, dessa|\n");
+    printf("| O CGmotel é um projeto desenvolvido para a disciplina de programaç?o com fins |\n");
+    printf("| de aprendizagem. O mesmo consiste em um sistema de gest?o para um motel, dessa|\n");
     printf("| forma contando com os modulos de clientes, quartos, reservas e funcionarios.  |\n");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("|                           Desenvolvido por Eloisa                             |\n");
     printf("*-------------------------------------------------------------------------------*\n");
-    printf("\t\t>>> Tecle <ENTER> para continuar...\n");
+    printf("\t>>");
     getchar();
 }
 char menu_principal(void){
     char opc;
     printf("*-------------------------------------------------------------------------------*\n");
-    printf("|                               GestÃ£o do Motel                                |\n");
+    printf("|                               Gest?o do Motel                                 |\n");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("|                               1. Clientes                                     |\n");
     printf("|                               2. Funcionarios                                 |\n");
     printf("|                               3. Quartos                                      |\n");
     printf("|                               4. Reservas                                     |\n");
+    printf("|                               5. Sobre o projeto                              |\n");
     printf("|                               0. Sair                                         |\n");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("-- Sua opc: ");
@@ -127,7 +142,7 @@ void cad_cli(void){
     printf("*-------------------------------------------------------------------------------*\n");
     printf("                 .......   Cadastrando novo cliente   .......                    \n");
     printf("*-------------------------------------------------------------------------------*\n");
-    printf("|            - CPF (apenas nÃºmeros):                                            |\n");
+    printf("|            - CPF (apenas números):                                            |\n");
     printf("|            - Nome completo:                                                   |\n");
     printf("|            - E-mail:                                                          |\n");
     printf("|            - Data de Nascimento (dd/mm/aaaa):                                 |\n");
@@ -140,7 +155,7 @@ void pesq_cli(void){
     printf("*-------------------------------------------------------------------------------*\n");
     printf("                 .......   Pesquisando dados de cliente   .......                \n");
     printf("*-------------------------------------------------------------------------------*\n");
-    printf("|            - Informe o CPF (apenas nÃºmeros):                                  |\n");
+    printf("|            - Informe o CPF (apenas números):                                  |\n");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>>");
     system("PAUSE");
@@ -150,7 +165,7 @@ void edit_cli(void){
     printf("*-------------------------------------------------------------------------------*\n");
     printf("                 .......   Atualizando dados de cliente   .......                \n");
     printf("*-------------------------------------------------------------------------------*\n");
-    printf("|            - Informe o CPF (apenas nÃºmeros):                                  |\n");
+    printf("|            - Informe o CPF (apenas números):                                  |\n");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>>");
     system("PAUSE");
@@ -160,7 +175,7 @@ void del_cli(void){
     printf("*-------------------------------------------------------------------------------*\n");
     printf("                 .......   Deletando cliente   .......                           \n");
     printf("*-------------------------------------------------------------------------------*\n");
-    printf("|            - Informe o CPF (apenas nÃºmeros):                                  |\n");
+    printf("|            - Informe o CPF (apenas números):                                  |\n");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>>");
     system("PAUSE");
@@ -209,11 +224,11 @@ void cad_func(void){
     printf("*-------------------------------------------------------------------------------*\n");
     printf("                 .......   Cadastrando novo funcionario   .......                \n");
     printf("*-------------------------------------------------------------------------------*\n");
-    printf("|            - CPF (apenas nÃºmeros):                                            |\n");
+    printf("|            - CPF (apenas números):                                            |\n");
     printf("|            - Nome completo:                                                   |\n");
     printf("|            - E-mail:                                                          |\n");
     printf("|            - Data de Nascimento (dd/mm/aaaa):                                 |\n");
-    printf("|            - FunÃ§Ã£o:                                                          |\n");
+    printf("|            - Funç?o:                                                          |\n");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>>");
     system("PAUSE");
@@ -223,7 +238,7 @@ void pesq_func(void){
     printf("*-------------------------------------------------------------------------------*\n");
     printf("                 .......   Pesquisando dados de funcionario   .......            \n");
     printf("*-------------------------------------------------------------------------------*\n");
-    printf("|            - Informe o CPF (apenas nÃºmeros):                                  |\n");
+    printf("|            - Informe o CPF (apenas números):                                  |\n");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>>");
     system("PAUSE");
@@ -233,7 +248,7 @@ void edit_func(void){
     printf("*-------------------------------------------------------------------------------*\n");
     printf("                 .......   Atualizando dados de funcionario   .......            \n");
     printf("*-------------------------------------------------------------------------------*\n");
-    printf("|            - Informe o CPF (apenas nÃºmeros):                                  |\n");
+    printf("|            - Informe o CPF (apenas números):                                  |\n");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>>");
     system("PAUSE");
@@ -243,9 +258,90 @@ void del_func(void){
     printf("*-------------------------------------------------------------------------------*\n");
     printf("                 .......   Deletando funcionario   .......                       \n");
     printf("*-------------------------------------------------------------------------------*\n");
-    printf("|            - Informe o CPF (apenas nÃºmeros):                                  |\n");
+    printf("|            - Informe o CPF (apenas números):                                  |\n");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>>");
     system("PAUSE");
 }
 
+void menu_quartos(void){
+    char opc;
+    char menu=true;
+    while (menu)
+    {
+        system("clear||cls");
+        printf("\n*-------------------------------------------------------------------------------*\n");
+        printf("*                               Menu Quartos                                    *\n");
+        printf("*-------------------------------------------------------------------------------*\n");
+        printf("|                             1. Cadastrar novo                                 |\n");
+        printf("|                             2. Pesquisar dados                                |\n");
+        printf("|                             3. Atualizar dados                                |\n");
+        printf("|                             4. Deletar quarto                                 |\n");
+        printf("|                             0. Voltar                                         |\n");
+        printf("*-------------------------------------------------------------------------------*\n");
+        printf("-- Sua opc: ");
+        scanf("%c",&opc);
+        switch (opc)
+        {
+        case '0':
+            menu=false;
+            break;
+        case '1':
+            cad_quart();
+            break;
+        case '2':
+            pesq_cli();
+            break;
+        case '3':
+            edit_quart();
+            break;
+        case '4':
+            del_quart();
+            break;
+        }
+    }
+    
+}
+void cad_quart(void){
+    system("clear||cls");
+    printf("*-------------------------------------------------------------------------------*\n");
+    printf("                 .......   Cadastrando novo quarto   .......                     \n");
+    printf("*-------------------------------------------------------------------------------*\n");
+    printf("|            - Identificaç?o:                                                   |\n");
+    printf("|            - Descriç?o:                                                       |\n");
+    printf("|            - Preço por hora:                                                  |\n");
+    printf("|            - Status:                                                          |\n");
+    printf("*-------------------------------------------------------------------------------*\n");
+    printf("\t>>");
+    system("PAUSE");
+}
+void pesq_quart(void){
+    system("clear||cls");
+    printf("*-------------------------------------------------------------------------------*\n");
+    printf("                 .......   Pesquisando dados de quarto   .......                 \n");
+    printf("*-------------------------------------------------------------------------------*\n");
+    printf("|            - Informe a identificaç?o do quarto:                               |\n");
+    printf("*-------------------------------------------------------------------------------*\n");
+    printf("\t>>");
+    system("PAUSE");
+}
+void edit_quart(void){
+    system("clear||cls");
+    printf("*-------------------------------------------------------------------------------*\n");
+    printf("                 .......   Atualizando dados de quarto   .......                 \n");
+    printf("*-------------------------------------------------------------------------------*\n");
+    printf("|            - Informe a identificaç?o do quarto:                               |\n");
+    printf("*-------------------------------------------------------------------------------*\n");
+    printf("\t>>");
+    system("PAUSE");
+}
+void del_quart(void){
+    system("clear||cls");
+    printf("*-------------------------------------------------------------------------------*\n");
+    printf("                 .......   Deletando dados de quarto   .......                   \n");
+    printf("*-------------------------------------------------------------------------------*\n");
+    printf("|            - Informe a identificaç?o do quarto:                               |\n");
+    printf("*-------------------------------------------------------------------------------*\n");
+    printf("\t>>");
+    system("PAUSE");
+}
