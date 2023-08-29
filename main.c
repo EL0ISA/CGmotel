@@ -79,7 +79,7 @@ void sobre(void){
     printf("|                           Desenvolvido por Eloisa                             |\n");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>>");
-    getchar();
+    getchar();getchar();
 }
 char menu_principal(void){
     char opc;
@@ -94,7 +94,7 @@ char menu_principal(void){
     printf("|                               0. Sair                                         |\n");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("-- Sua opc: ");
-    scanf("%c",&opc);
+    scanf(" %c",&opc);
     return opc;
 }
 
@@ -148,7 +148,7 @@ void cad_cli(void){
     printf("|            - Data de Nascimento (dd/mm/aaaa):                                 |\n");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>>");
-    system("PAUSE");
+    getchar();getchar();
 }
 void pesq_cli(void){
     system("clear||cls");
@@ -158,7 +158,7 @@ void pesq_cli(void){
     printf("|            - Informe o CPF (apenas números):                                  |\n");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>>");
-    system("PAUSE");
+    getchar();getchar();
 }
 void edit_cli(void){
     system("clear||cls");
@@ -168,7 +168,7 @@ void edit_cli(void){
     printf("|            - Informe o CPF (apenas números):                                  |\n");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>>");
-    system("PAUSE");
+    getchar();getchar();
 }
 void del_cli(void){
     system("clear||cls");
@@ -178,7 +178,7 @@ void del_cli(void){
     printf("|            - Informe o CPF (apenas números):                                  |\n");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>>");
-    system("PAUSE");
+    getchar();getchar();
 }
 
 void menu_funcionarios(void){
@@ -231,7 +231,7 @@ void cad_func(void){
     printf("|            - Funç?o:                                                          |\n");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>>");
-    system("PAUSE");
+    getchar();getchar();
 }
 void pesq_func(void){
     system("clear||cls");
@@ -241,7 +241,7 @@ void pesq_func(void){
     printf("|            - Informe o CPF (apenas números):                                  |\n");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>>");
-    system("PAUSE");
+    getchar();getchar();
 }
 void edit_func(void){
     system("clear||cls");
@@ -251,7 +251,7 @@ void edit_func(void){
     printf("|            - Informe o CPF (apenas números):                                  |\n");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>>");
-    system("PAUSE");
+    getchar();getchar();
 }
 void del_func(void){
     system("clear||cls");
@@ -261,7 +261,7 @@ void del_func(void){
     printf("|            - Informe o CPF (apenas números):                                  |\n");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>>");
-    system("PAUSE");
+    getchar();getchar();
 }
 
 void menu_quartos(void){
@@ -313,7 +313,7 @@ void cad_quart(void){
     printf("|            - Status:                                                          |\n");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>>");
-    system("PAUSE");
+    getchar();getchar();
 }
 void pesq_quart(void){
     system("clear||cls");
@@ -323,7 +323,7 @@ void pesq_quart(void){
     printf("|            - Informe a identificaç?o do quarto:                               |\n");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>>");
-    system("PAUSE");
+    getchar();getchar();
 }
 void edit_quart(void){
     system("clear||cls");
@@ -333,7 +333,7 @@ void edit_quart(void){
     printf("|            - Informe a identificaç?o do quarto:                               |\n");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>>");
-    system("PAUSE");
+    getchar();getchar();
 }
 void del_quart(void){
     system("clear||cls");
@@ -343,5 +343,5 @@ void del_quart(void){
     printf("|            - Informe a identificaç?o do quarto:                               |\n");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>>");
-    system("PAUSE");
+    getchar();getchar();
 }
