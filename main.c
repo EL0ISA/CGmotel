@@ -95,6 +95,7 @@ void cabecalho(void){
     printf("*-------------------------------------------------------------------------------*\n");
 }
 void sobre(void){
+    system("clear||cls");
     cabecalho();
     printf("*-------------------------------------------------------------------------------*\n");
     printf("|                               Sobre o projeto                                 |\n");
@@ -106,7 +107,7 @@ void sobre(void){
     printf("|                           Desenvolvido por Eloisa                             |\n");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>> Digite ENTER para prosseguir...");
-    getchar();
+    getchar();getchar();
 }
 char menu_principal(void){
     char opc;
