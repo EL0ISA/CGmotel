@@ -127,9 +127,8 @@ char menu_principal(void){
 }
 
 void menu_clientes(void){
-    char opc='1';
-    char menu=true;
-    while (menu)
+    char opc;
+    do
     {
         system("clear||cls");
         printf("\n*-------------------------------------------------------------------------------*\n");
@@ -146,9 +145,6 @@ void menu_clientes(void){
         while (getchar() != '\n');
         switch (opc)
         {
-        case '0':
-            menu=false;
-            break;
         case '1':
             cad_cli();
             break;
@@ -163,8 +159,7 @@ void menu_clientes(void){
             del_cli();
             break;
         }
-    }
-    
+    } while (opc!='0');
 }
 void cad_cli(void){
     system("clear||cls");
@@ -221,8 +216,7 @@ void del_cli(void){
 
 void menu_funcionarios(void){
     char opc;
-    char menu=true;
-    while (menu)
+    do
     {
         system("clear||cls");
         printf("*-------------------------------------------------------------------------------*\n");
@@ -239,9 +233,6 @@ void menu_funcionarios(void){
         while (getchar() != '\n');
         switch (opc)
             {
-            case '0':
-                menu=false;
-                break;
             case '1':
                 cad_func();
                 break;
@@ -256,7 +247,7 @@ void menu_funcionarios(void){
                 del_func();
                 break;
             }
-    }
+    } while (opc!='0');
 }
 void cad_func(void){
     system("clear||cls");
@@ -304,9 +295,8 @@ void del_func(void){
 }
 
 void menu_quartos(void){
-    char menu=true;
     char opc;
-    while (menu)
+    do
     {
         system("clear||cls");
         printf("\n*-------------------------------------------------------------------------------*\n");
@@ -324,9 +314,6 @@ void menu_quartos(void){
         while (getchar() != '\n');
         switch (opc)
         {
-        case '0':
-            menu=false;
-            break;
         case '1':
             cad_quart();
             break;
@@ -343,7 +330,7 @@ void menu_quartos(void){
             monitoramento();
             break;
         }
-    }
+    } while (opc!='0');
     
 }
 void cad_quart(void){
@@ -390,9 +377,9 @@ void del_quart(void){
     getchar();
 }
 void monitoramento(void){
-    char menu=true;
     char opc;
-    while(menu){
+    do
+    {
         system("clear||cls");
         printf("\n*-------------------------------------------------------------------------------*\n");
         printf("*                               Monitoramento                                   *\n");
@@ -407,9 +394,6 @@ void monitoramento(void){
         while (getchar() != '\n');
         switch (opc)
             {
-            case '0':
-                menu=false;
-                break;
             case '1':
                 system("clear||cls");
                 printf("*-------------------------------------------------------------------------------*\n");
@@ -447,13 +431,13 @@ void monitoramento(void){
                 getchar();
                 break;
             }
-    }
+    } while (opc!='0');
+    
 }
 
 void menu_reservas(void){
-    char menu=true;
     char opc;
-    while (menu)
+    do
     {
         system("clear||cls");
         printf("\n*-------------------------------------------------------------------------------*\n");
@@ -470,9 +454,6 @@ void menu_reservas(void){
         while (getchar() != '\n');
         switch (opc)
             {
-            case '0':
-                menu=false;
-                break;
             case '1':
                 cad_reser();
                 break;
@@ -486,7 +467,8 @@ void menu_reservas(void){
                 del_reser();
                 break;
             }
-    }
+    } while (opc!='0');
+    
 }
 void cad_reser(void){
     system("clear||cls");
