@@ -10,9 +10,9 @@ void menu_reservas(void){
         printf("\n*-------------------------------------------------------------------------------*\n");
         printf("*                               Menu Reservas                                   *\n");
         printf("*-------------------------------------------------------------------------------*\n");
-        printf("|                             1. Cadastrar nova                                 |\n");
+        printf("|                             1. Check-in                                       |\n");
         printf("|                             2. Pesquisar                                      |\n");
-        printf("|                             3. Atualizar                                      |\n");
+        printf("|                             3. Check-out                                      |\n");
         printf("|                             4. Deletar reserva                                |\n");
         printf("|                             0. Voltar                                         |\n");
         printf("*-------------------------------------------------------------------------------*\n");
@@ -22,13 +22,13 @@ void menu_reservas(void){
         switch (opc)
             {
             case '1':
-                cad_reser();
+                checkin();
                 break;
             case '2':
                 pesq_reser();
                 break;
             case '3':
-                edit_reser();
+                checkout();
                 break;
             case '4':
                 del_reser();
@@ -36,20 +36,6 @@ void menu_reservas(void){
             }
     } while (opc!='0');
     
-}
-void cad_reser(void){
-    system("clear||cls");
-    printf("*-------------------------------------------------------------------------------*\n");
-    printf("                 .......   Cadastrando nova reserva   .......                    \n");
-    printf("*-------------------------------------------------------------------------------*\n");
-    printf("|            - CPF do cliente:                                                  |\n");
-    printf("|            - Identificacao do quarto:                                         |\n");
-    printf("|            - Horas de reserva:                                                |\n");
-    printf("|            - Observacoes:                                                     |\n");
-    printf("|            - Custos adicionais:                                               |\n");
-    printf("*-------------------------------------------------------------------------------*\n");
-    printf("\t>> Digite ENTER para prosseguir!");
-    getchar();
 }
 void pesq_reser(void){
     system("clear||cls");
@@ -61,35 +47,16 @@ void pesq_reser(void){
     printf("\t>> Digite ENTER para prosseguir!");
     getchar();
 }
-void edit_reser(void){
-    char opc;
-    system("clear||cls");
-    printf("*-------------------------------------------------------------------------------*\n");
-    printf("                 .......   Atualizando dados de reserva   .......                \n");
-    printf("*-------------------------------------------------------------------------------*\n");
-    printf("|            - Informe o ID da reserva:                                         |\n");
-    printf("*-------------------------------------------------------------------------------*\n");
-    printf("                 .......   Operacao que deseja realizar   .......                \n");
-    printf("*-------------------------------------------------------------------------------*\n");
-    printf("|                             1. Check-in                                       |\n");
-    printf("|                             2. Check-out                                      |\n");
-    printf("*-------------------------------------------------------------------------------*\n");
-    printf("-- Sua opc: ");
-    scanf("%c",&opc);
-    while (getchar() != '\n');
-    switch (opc)
-    {
-    case '1':
-        checkin();
-        break;
-    
-    case '2':
-        checkout();
-        break;
-    }
-}
 void checkin(void){
     system("clear||cls");
+    printf("*-------------------------------------------------------------------------------*\n");
+    printf("                 .......   Cadastrando nova reserva   .......                    \n");
+    printf("*-------------------------------------------------------------------------------*\n");
+    printf("|            - CPF do cliente:                                                  |\n");
+    printf("|            - Identificacao do quarto:                                         |\n");
+    printf("|            - Horas de reserva:                                                |\n");
+    printf("|            - Observacoes:                                                     |\n");
+    printf("|            - Custos adicionais:                                               |\n");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("                 .......   Realizando Check-in   .......                         \n");
     printf("*-------------------------------------------------------------------------------*\n");
@@ -103,6 +70,8 @@ void checkout(void){
     system("clear||cls");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("                 .......   Realizando Check-out   .......                        \n");
+    printf("*-------------------------------------------------------------------------------*\n");
+    printf("|            - Informe o ID da reserva:                                         |\n");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("|            - CPF do Funcionario:                                              |\n");
     printf("|            - Horario:                                                         |\n");
