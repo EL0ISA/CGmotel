@@ -18,6 +18,20 @@ double* w_preco(double*preco){
     *preco=vfloat;
     return preco;
 }
+double* w_padd(double*padd){
+    int valido;
+    char cpreco[20];
+    do
+    {
+        printf("|            - Custos adicionais:");
+        scanf("%[^\n]",cpreco);
+        fflush(stdin);
+        valido=verif_preco(cpreco);
+    } while (valido!=1);
+    double vfloat=atof(cpreco);
+    *padd=vfloat;
+    return padd;
+}
 int verif_preco(char* cpreco){
     int tam=strlen(cpreco);
     int contPonto=0,ponto=0, p_ponto=0;
@@ -377,6 +391,88 @@ int verif_status(char* cstatus){
     }
     int n=atoi(cstatus);
     if(0>n || n>3){
+        return 0;
+    }
+    return 1;
+}
+
+char* w_cliente(char* cliente){
+    int valido;
+    do
+    {
+        printf("|            - CPF do cliente:");
+        scanf("%[^\n]",cliente);
+        fflush(stdin);
+        valido=verif_cpf(cliente);
+    } while (valido!=1);
+    return cliente;
+}
+char* w_funcionario(char* funcionario){
+    int valido;
+    do
+    {
+        printf("|            - CPF do funcionario:");
+        scanf("%[^\n]",funcionario);
+        fflush(stdin);
+        valido=verif_cpf(funcionario);
+    } while (valido!=1);
+    return funcionario;
+}
+char* w_quarto(char* quarto){
+    int valido;
+    do
+    {
+        printf("|            - Identificacao do quarto:");
+        scanf("%[^\n]",quarto);
+        fflush(stdin);
+        valido=verif_identificacao(quarto);
+    } while (valido!=1);
+    return quarto;
+}
+int* w_horas(int* horas){
+    int valido;
+    char choras[2];
+    do
+    {
+        printf("|            - Horas de reserva:");
+        scanf("%[^\n]",choras);
+        fflush(stdin);
+        valido=verif_funcao(choras);
+    } while (valido!=1);
+    *horas=atoi(choras);
+    return horas;
+}
+int verif_horas(char* choras){
+    int tam=strlen(choras);
+    if(tam>2){
+        return 0;
+    }
+    for (int i = 0; i < tam; i++)
+    {
+        if(!isdigit(choras[i])){
+            return 0;
+        }
+    }
+    
+    int n=atoi(choras);
+    if(0>n || n>12){
+        return 0;
+    }
+    return 1;
+}
+char* w_obs(char* obs){
+    int valido;
+    do
+    {
+        printf("|            - Observacoes:");
+        scanf("%[^\n]",obs);
+        fflush(stdin);
+        valido=verif_obs(obs);
+    } while (valido!=1);
+    return obs;
+}
+int verif_obs(char* obs){
+    if(strlen(obs)>100){
         return 0;
     }
     return 1;

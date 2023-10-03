@@ -21,3 +21,12 @@ char* w_identificacao(char* identificacao);
 int verif_identificacao(char* identificacao);
 char* w_descricao(char* descricao);
 int verif_descricao(char* descricao);
+
+char* w_cliente(char* cliente);
+char* w_funcionario(char* funcionario);
+char* w_quarto(char* quarto);
+int* w_horas(int* horas);
+int verif_horas(char* choras);
+double* w_padd(double*padd);
+char* w_obs(char* obs);
+int verif_obs(char* obs);

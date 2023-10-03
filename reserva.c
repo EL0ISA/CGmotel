@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "reserva.h"
+#include "uteis.h"
 
 void menu_reservas(void){
     char opc;
@@ -49,19 +50,22 @@ void pesq_reser(void){
 }
 void checkin(void){
     system("clear||cls");
+    char cliente[11],quarto[10],funcionario[11],obs[100];
+    int horas=0;
+    double padd;
     printf("*-------------------------------------------------------------------------------*\n");
     printf("                 .......   Cadastrando nova reserva   .......                    \n");
     printf("*-------------------------------------------------------------------------------*\n");
-    printf("|            - CPF do cliente:                                                  |\n");
-    printf("|            - Identificacao do quarto:                                         |\n");
-    printf("|            - Horas de reserva:                                                |\n");
-    printf("|            - Observacoes:                                                     |\n");
-    printf("|            - Custos adicionais:                                               |\n");
+    w_cliente(cliente);
+    w_quarto(quarto);
+    w_horas(&horas);
+    w_obs(obs);
+    w_padd(&padd);
     printf("*-------------------------------------------------------------------------------*\n");
     printf("                 .......   Realizando Check-in   .......                         \n");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("|            - CPF do Funcionario:                                              |\n");
-    printf("|            - Horario:                                                         |\n");
+    w_funcionario(funcionario);
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>> Digite ENTER para prosseguir!");
     getchar();
@@ -74,7 +78,6 @@ void checkout(void){
     printf("|            - Informe o ID da reserva:                                         |\n");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("|            - CPF do Funcionario:                                              |\n");
-    printf("|            - Horario:                                                         |\n");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>> Digite ENTER para prosseguir!");
     getchar();
