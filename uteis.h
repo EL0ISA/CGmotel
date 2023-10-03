@@ -1,3 +1,6 @@
+double* w_preco(double* preco);
+int verif_preco(char* cpreco);
+
 char* w_nome(char* nome);
 int verif_nome(char* nome);
 char* w_cpf(char* cpf);
@@ -12,9 +15,9 @@ int bissexto(int a);
 int* w_funcao(int* funcao);
 int verif_funcao(char* cfuncao);
 
+int* w_status(int* status);
+int verif_status(char* cstatus);
 char* w_identificacao(char* identificacao);
 int verif_identificacao(char* identificacao);
 char* w_descricao(char* descricao);
 int verif_descricao(char* descricao);
-double* w_preco(double* preco);
-int verif_preco(char* cpreco);

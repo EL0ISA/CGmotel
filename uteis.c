@@ -3,6 +3,50 @@
 #include <ctype.h>
 #include <string.h>
 #include "uteis.h"
+
+double* w_preco(double*preco){
+    int valido;
+    char cpreco[20];
+    do
+    {
+        printf("|            - Preco por hora:");
+        scanf("%[^\n]",cpreco);
+        fflush(stdin);
+        valido=verif_preco(cpreco);
+    } while (valido!=1);
+    double vfloat=atof(cpreco);
+    *preco=vfloat;
+    return preco;
+}
+int verif_preco(char* cpreco){
+    int tam=strlen(cpreco);
+    int contPonto=0,ponto=0, p_ponto=0;
+    if(tam>20){
+        return 0;
+    }
+    for (int i = 0; i < tam; i++)
+    {
+        if(!isdigit(cpreco[i]) && cpreco[i]!='.'){
+            return 0;
+        }
+        if(ispunct(cpreco[i])){
+            contPonto++;
+        }
+    }
+    if(contPonto>1){
+        return 0;
+    }
+    for (int i = 0; cpreco[i]!='.'; i++){
+        ponto++;
+    }
+    for (int i = (ponto); i<tam; i++){
+        p_ponto++;
+    }
+    if((p_ponto-1)>2){
+        return 0;
+    }
+   return 1; 
+}
 char* w_nome(char* nome){
     int valido;
     do
@@ -185,19 +229,19 @@ int verif_nasc(char* nasc){
         concatenar(dia,nasc[i]);
         p_barra++;
     }
-    int d=atof(dia);
+    int d=atoi(dia);
     for (int i = (p_barra+1); nasc[i]!='/'; i++){
         concatenar(mes,nasc[i]);
         s_barra++;
     }
-    int m=atof(mes);
+    int m=atoi(mes);
     for (int i = ((p_barra+1)+(s_barra+1)); i<tam; i++){
         concatenar(ano,nasc[i]);
     }
     if(strlen(ano)>4){
         return 0;
     }
-    int a=atof(ano);
+    int a=atoi(ano);
     /*validação data*/
     if(1>m && m>12){
         return 0;
@@ -310,46 +354,30 @@ int verif_descricao(char* descricao){
     }
     return 1;
 }
-double* w_preco(double*preco){
+int* w_status(int* status){
     int valido;
-    char cpreco[20];
+    char cstatus[1];
     do
     {
-        printf("|            - Preco por hora:");
-        scanf("%[^\n]",cpreco);
+        printf("|            - Opcao:");
+        scanf("%[^\n]",cstatus);
         fflush(stdin);
-        valido=verif_preco(cpreco);
+        valido=verif_funcao(cstatus);
     } while (valido!=1);
-    *preco=atof(cpreco);
-    return preco;
+    *status=atoi(cstatus);
+    return status;
 }
-int verif_preco(char* cpreco){
-    int tam=strlen(cpreco);
-    int contPonto=0,ponto=0, p_ponto=0;
-    if(tam>20){
+int verif_status(char* cstatus){
+    int tam=strlen(cstatus);
+    if(tam>1){
         return 0;
     }
-    for (int i = 0; i < tam; i++)
-    {
-        printf("%c\n",cpreco[i]);
-        if(!isdigit(cpreco[i]) && cpreco[i]!='.' && cpreco[i]!=','){
-            return 0;
-        }
-        if(ispunct(cpreco[i])){
-            contPonto++;
-        }
-    }
-    if(contPonto>1){
+    if(!isdigit(cstatus[0])){
         return 0;
     }
-    for (int i = 0; cpreco[i]!='.'; i++){
-        ponto++;
-    }
-    for (int i = (ponto); i<tam; i++){
-        p_ponto++;
-    }
-    if((p_ponto-1)>2){
+    int n=atoi(cstatus);
+    if(0>n || n>3){
         return 0;
     }
-   return 1; 
+    return 1;
 }
