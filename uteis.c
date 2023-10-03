@@ -240,6 +240,34 @@ int bissexto(int a){
     }
 }
 
+int* w_funcao(int* funcao){
+    int valido;
+    char cfuncao[1];
+    do
+    {
+        printf("|            - Opcao:");
+        scanf("%[^\n]",cfuncao);
+        fflush(stdin);
+        valido=verif_funcao(cfuncao);
+    } while (valido!=1);
+    *funcao=atoi(cfuncao);
+    return funcao;
+}
+int verif_funcao(char* cfuncao){
+    int tam=strlen(cfuncao);
+    if(tam>1){
+        return 0;
+    }
+    if(!isdigit(cfuncao[0])){
+        return 0;
+    }
+    int n=atoi(cfuncao);
+    if(0>n || n>3){
+        return 0;
+    }
+    return 1;
+}
+
 char* w_identificacao(char* identificacao){
     int valido;
     do

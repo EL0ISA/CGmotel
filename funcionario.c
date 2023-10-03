@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "funcionario.h"
+#include "uteis.h"
 
 void menu_funcionarios(void){
     char opc;
@@ -39,14 +40,20 @@ void menu_funcionarios(void){
 }
 void cad_func(void){
     system("clear||cls");
+    char cpf[11],nome[50],email[255],nasc[10];
+    int funcao=0;
     printf("*-------------------------------------------------------------------------------*\n");
     printf("                 .......   Cadastrando novo funcionario   .......                \n");
     printf("*-------------------------------------------------------------------------------*\n");
-    printf("|            - CPF (apenas numeros):                                            |\n");
-    printf("|            - Nome completo:                                                   |\n");
-    printf("|            - E-mail:                                                          |\n");
-    printf("|            - Data de Nascimento (dd/mm/aaaa):                                 |\n");
-    printf("|            - Funcao:                                                          |\n");
+    w_cpf(cpf);
+    w_email(email);
+    w_nome(nome);
+    w_nasc(nasc);
+    printf("                 .......   Funcao do funcionario   .......            \n");
+    printf("|                             1. Gerente                                        |\n");
+    printf("|                             2. Recepcao                                       |\n");
+    printf("|                             3. Faxineiro(a)                                   |\n");
+    w_funcao(&funcao);
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>>");
     getchar();

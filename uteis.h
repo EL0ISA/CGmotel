@@ -9,6 +9,9 @@ int verif_nasc(char* nasc);
 void concatenar(char text[], char caracter);
 int bissexto(int a);
 
+int* w_funcao(int* funcao);
+int verif_funcao(char* cfuncao);
+
 char* w_identificacao(char* identificacao);
 int verif_identificacao(char* identificacao);
 char* w_descricao(char* descricao);
