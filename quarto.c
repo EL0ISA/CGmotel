@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
+#include <string.h>
 #include "quarto.h"
+#include "uteis.h"
 
 void menu_quartos(void){
     char opc;
@@ -42,13 +45,19 @@ void menu_quartos(void){
     
 }
 void cad_quart(void){
+    char identificacao[10];
+    char descricao[100];
+    double preco;
     system("clear||cls");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("                 .......   Cadastrando novo quarto   .......                     \n");
     printf("*-------------------------------------------------------------------------------*\n");
-    printf("|            - Identificacao:                                                   |\n");
-    printf("|            - Descricao:                                                       |\n");
-    printf("|            - Preco por hora:                                                  |\n");
+    w_identificacao(identificacao);
+    printf("identificacao:%s",identificacao);
+    w_descricao(descricao);
+    printf("descricao:%s",descricao);
+    w_preco(&preco);
+    printf("descricao:%2.f",preco);
     printf("|            - Status:                                                          |\n");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>> Digite ENTER para prosseguir!");

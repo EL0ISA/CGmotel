@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "cliente.h"
+#include "uteis.h"
 
 void menu_clientes(void){
     char opc;
@@ -39,22 +40,14 @@ void menu_clientes(void){
 }
 void cad_cli(void){
     system("clear||cls");
-    char cpf[11],nome[50],email[100],nasc[20];
+    char cpf[11],nome[50],email[255],nasc[10];
     printf("*-------------------------------------------------------------------------------*\n");
     printf("                 .......   Cadastrando novo cliente   .......                    \n");
     printf("*-------------------------------------------------------------------------------*\n");
-    printf("|            - CPF (apenas numeros):");
-    scanf("%s",cpf);
-    while (getchar() != '\n'); /*limpando buffer by chatGPT*/ 
-    printf("|            - Nome completo: ");
-    scanf("%s",nome);
-    while (getchar() != '\n');
-    printf("|            - E-mail: ");
-    scanf("%s",email);
-    while (getchar() != '\n');
-    printf("|            - Data de Nascimento (dd/mm/aaaa): ");
-    scanf("%s",nasc);
-    while (getchar() != '\n');
+    w_cpf(cpf);
+    w_email(email);
+    w_nome(nome);
+    w_nasc(nasc);
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>> Digite ENTER para prosseguir!");
     getchar();
