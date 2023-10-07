@@ -437,7 +437,7 @@ int* w_horas(int* horas){
         printf("|            - Horas de reserva:");
         scanf("%[^\n]",choras);
         fflush(stdin);
-        valido=verif_funcao(choras);
+        valido=verif_horas(choras);
     } while (valido!=1);
     *horas=atoi(choras);
     return horas;
@@ -455,7 +455,8 @@ int verif_horas(char* choras){
     }
     
     int n=atoi(choras);
-    if(0<n || n>12){
+    printf("%d",n);
+    if(1>n || n>12){
         return 0;
     }
     return 1;
