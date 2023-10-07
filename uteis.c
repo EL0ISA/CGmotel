@@ -455,7 +455,7 @@ int verif_horas(char* choras){
     }
     
     int n=atoi(choras);
-    if(0>n || n>12){
+    if(0<n || n>12){
         return 0;
     }
     return 1;

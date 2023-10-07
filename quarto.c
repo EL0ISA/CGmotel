@@ -55,7 +55,7 @@ void cad_quart(void){
     printf("*-------------------------------------------------------------------------------*\n");
     w_identificacao(identificacao);
     w_descricao(descricao);
-    w_preco(&preco);
+    printf("%.2f",preco);
     printf("                    .......   Status do quarto   .......            \n");
     printf("|                             1. Disponivel                                     |\n");
     printf("|                             2. Manutencao                                     |\n");

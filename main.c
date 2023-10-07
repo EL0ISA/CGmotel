@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <locale.h>
 #include "cliente.h"
 #include "funcionario.h"
 #include "quarto.h"
@@ -15,7 +14,6 @@ void sobre(void);
 char menu_principal(void);
 
 int main(void) {
-    setlocale(LC_ALL,"Portuguese_Brazil");
     inicio();
     char op;
     do
@@ -46,7 +44,7 @@ int main(void) {
     printf("%c",op);
     return 0;
 }
-void inicio(void){    
+void inicio(void){
     printf("        d8?__d8b_d8b__`8b                                    d8?__d8b_d8b__`8b \n");
     printf("       d8?_____d8b_____`8b          Bem vindo(s)            d8?_____d8b_____`8b\n");
     printf("       8b_______________d8                                  8b_______________d8\n");
