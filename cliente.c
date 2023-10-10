@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "cliente.h"
-#include "uteis.h"
+#include "auxiliares.h"
 
 void menu_clientes(void){
-    char opc;
+    int opc;
     do
     {
         system("clear||cls");
@@ -18,25 +18,25 @@ void menu_clientes(void){
         printf("|                             0. Voltar                                         |\n");
         printf("*-------------------------------------------------------------------------------*\n");
         printf("-- Sua opc: ");
-        scanf("%c",&opc);
-        while (getchar() != '\n');
+        scanf("%d",&opc);
+        fflush(stdin);
         switch (opc)
         {
-        case '1':
+        case 1:
             cad_cli();
             break;
         
-        case '2':
+        case 2:
             pesq_cli();
             break;
-        case '3':
+        case 3:
             edit_cli();
             break;
-        case '4':
+        case 4:
             del_cli();
             break;
         }
-    } while (opc!='0');
+    } while (opc!=0);
 }
 void cad_cli(void){
     system("clear||cls");

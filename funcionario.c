@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "funcionario.h"
-#include "uteis.h"
+#include "auxiliares.h"
 
 void menu_funcionarios(void){
-    char opc;
+    int opc;
     do
     {
         system("clear||cls");
@@ -18,25 +18,25 @@ void menu_funcionarios(void){
         printf("|                             0. Voltar                                         |\n");
         printf("*-------------------------------------------------------------------------------*\n");
         printf("-- Sua opc: ");
-        scanf("%c",&opc);
-        while (getchar() != '\n');
+        scanf("%d",&opc);
+        fflush(stdin);
         switch (opc)
             {
-            case '1':
+            case 1:
                 cad_func();
                 break;
             
-            case '2':
+            case 2:
                 pesq_func();
                 break;
-            case '3':
+            case 3:
                 edit_func();
                 break;
-            case '4':
+            case 4:
                 del_func();
                 break;
             }
-    } while (opc!='0');
+    } while (opc!=0);
 }
 void cad_func(void){
     system("clear||cls");

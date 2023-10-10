@@ -1,0 +1,15 @@
+double* w_preco(double* preco);
+char* w_nome(char* nome);
+char* w_cpf(char* cpf);
+char* w_email(char* email);
+char* w_nasc(char* nasc);
+int* w_funcao(int* funcao);
+int* w_status(int* status);
+char* w_identificacao(char* identificacao);
+char* w_descricao(char* descricao);
+char* w_cliente(char* cliente);
+char* w_funcionario(char* funcionario);
+char* w_quarto(char* quarto);
+int* w_horas(int* horas);
+double* w_padd(double*padd);
+char* w_obs(char* obs);
