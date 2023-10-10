@@ -3,10 +3,10 @@
 #include <ctype.h>
 #include <string.h>
 #include "quarto.h"
-#include "uteis.h"
+#include "auxiliares.h"
 
 void menu_quartos(void){
-    char opc;
+    int opc;
     do
     {
         system("clear||cls");
@@ -21,27 +21,27 @@ void menu_quartos(void){
         printf("|                             0. Voltar                                         |\n");
         printf("*-------------------------------------------------------------------------------*\n");
         printf("-- Sua opc: ");
-        scanf("%c",&opc);
-        while (getchar() != '\n');
+        scanf("%d",&opc);
+        fflush(stdin);
         switch (opc)
         {
-        case '1':
+        case 1:
             cad_quart();
             break;
-        case '2':
+        case 2:
             pesq_quart();
             break;
-        case '3':
+        case 3:
             edit_quart();
             break;
-        case '4':
+        case 4:
             del_quart();
             break;
-        case '5':
+        case 5:
             monitoramento();
             break;
         }
-    } while (opc!='0');
+    } while (opc!=0);
     
 }
 void cad_quart(void){
@@ -96,7 +96,7 @@ void del_quart(void){
     getchar();
 }
 void monitoramento(void){
-    char opc;
+    int opc;
     do
     {
         system("clear||cls");
@@ -109,11 +109,11 @@ void monitoramento(void){
         printf("|                             0. Voltar                                         |\n");
         printf("*-------------------------------------------------------------------------------*\n");
         printf("-- Sua opc: ");
-        scanf("%c",&opc);
-        while (getchar() != '\n');
+        scanf("%d",&opc);
+        fflush(stdin);
         switch (opc)
             {
-            case '1':
+            case 1:
                 system("clear||cls");
                 printf("*-------------------------------------------------------------------------------*\n");
                 printf("                 .......   Listando quartos os disponiveis   .......                \n");
@@ -125,7 +125,7 @@ void monitoramento(void){
                 printf("\t>> Digite ENTER para prosseguir!");
                 getchar();
                 break;
-            case '2':
+            case 2:
                 system("clear||cls");
                 printf("*-------------------------------------------------------------------------------*\n");
                 printf("                 .......   Listando quartos em manutencao   .......              \n");
@@ -137,7 +137,7 @@ void monitoramento(void){
                 printf("\t>> Digite ENTER para prosseguir!");
                 getchar();
                 break;
-            case '3':
+            case 3:
                 system("clear||cls");
                 printf("*-------------------------------------------------------------------------------*\n");
                 printf("                 .......   Listando quartos para limpeza   .......              \n");
@@ -150,6 +150,6 @@ void monitoramento(void){
                 getchar();
                 break;
             }
-    } while (opc!='0');
+    } while (opc!=0);
     
 }

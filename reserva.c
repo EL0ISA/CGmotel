@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "reserva.h"
-#include "uteis.h"
+#include "auxiliares.h"
 
 void menu_reservas(void){
-    char opc;
+    int opc;
     do
     {
         system("clear||cls");
@@ -18,24 +18,24 @@ void menu_reservas(void){
         printf("|                             0. Voltar                                         |\n");
         printf("*-------------------------------------------------------------------------------*\n");
         printf("-- Sua opc: ");
-        scanf("%c",&opc);
-        while (getchar() != '\n');
+        scanf("%d",&opc);
+        fflush(stdin);
         switch (opc)
             {
-            case '1':
+            case 1:
                 checkin();
                 break;
-            case '2':
+            case 2:
                 pesq_reser();
                 break;
-            case '3':
+            case 3:
                 checkout();
                 break;
-            case '4':
+            case 4:
                 del_reser();
                 break;
             }
-    } while (opc!='0');
+    } while (opc!=0);
     
 }
 void pesq_reser(void){
@@ -64,7 +64,6 @@ void checkin(void){
     printf("*-------------------------------------------------------------------------------*\n");
     printf("                 .......   Realizando Check-in   .......                         \n");
     printf("*-------------------------------------------------------------------------------*\n");
-    printf("|            - CPF do Funcionario:                                              |\n");
     w_funcionario(funcionario);
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>> Digite ENTER para prosseguir!");

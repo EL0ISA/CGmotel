@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <locale.h>
 #include "cliente.h"
 #include "funcionario.h"
 #include "quarto.h"
@@ -12,41 +11,40 @@
 void inicio(void);
 void cabecalho(void);
 void sobre(void);
-char menu_principal(void);
+int menu_principal(void);
 
 int main(void) {
-    setlocale(LC_ALL,"Portuguese_Brazil");
     inicio();
-    char op;
+    int op;
     do
     {
         system("clear||cls");
         op=menu_principal();
         switch (op)
         {
-        case '1':
+        case 1:
             menu_clientes();
             break;
         
-        case '2':
+        case 2:
             menu_funcionarios();
             break;
-        case '3':
+        case 3:
             menu_quartos();
             break;
-        case '4':
+        case 4:
             menu_reservas();
             break;
-        case '5':
+        case 5:
             sobre();
             break;
         }
-    } while ((op)!='0');
+    } while ((op)!=0);
     
     printf("%c",op);
     return 0;
 }
-void inicio(void){    
+void inicio(void){
     printf("        d8?__d8b_d8b__`8b                                    d8?__d8b_d8b__`8b \n");
     printf("       d8?_____d8b_____`8b          Bem vindo(s)            d8?_____d8b_____`8b\n");
     printf("       8b_______________d8                                  8b_______________d8\n");
@@ -86,8 +84,8 @@ void sobre(void){
     printf("\t>> Digite ENTER para prosseguir...");
     getchar();getchar();
 }
-char menu_principal(void){
-    char opc;
+int menu_principal(void){
+    int opc;
     printf("*-------------------------------------------------------------------------------*\n");
     printf("|                               Gestao do Motel                                 |\n");
     printf("*-------------------------------------------------------------------------------*\n");
@@ -99,6 +97,6 @@ char menu_principal(void){
     printf("|                               0. Sair                                         |\n");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("-- Sua opc: ");
-    scanf(" %c",&opc);
+    scanf(" %d",&opc);
     return opc;
 }
