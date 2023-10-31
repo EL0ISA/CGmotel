@@ -51,6 +51,7 @@ char* w_cpf(char* cpf){
     {
         printf("|            - CPF (apenas numeros):");
         scanf("%[^\n]",cpf);
+        printf("%s",cpf);
         fflush(stdin);
         valido=verif_cpf(cpf);
     } while (valido!=1);

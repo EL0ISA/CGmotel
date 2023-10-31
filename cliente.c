@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "cliente.h"
 #include "auxiliares.h"
 
@@ -15,6 +16,7 @@ void menu_clientes(void){
         printf("|                             2. Pesquisar dados                                |\n");
         printf("|                             3. Atualizar dados                                |\n");
         printf("|                             4. Deletar cliente                                |\n");
+        printf("|                             5. Listar todos                                   |\n");
         printf("|                             0. Voltar                                         |\n");
         printf("*-------------------------------------------------------------------------------*\n");
         printf("-- Sua opc: ");
@@ -35,21 +37,62 @@ void menu_clientes(void){
         case 4:
             del_cli();
             break;
+        case 5:
+            list_cli();
+            break;
         }
     } while (opc!=0);
 }
+
 void cad_cli(void){
     system("clear||cls");
-    char cpf[11],nome[50],email[255],nasc[10];
+    char cpf[12];
+    Cliente* cli;
+    cli = (Cliente*) malloc(sizeof(Cliente));
     printf("*-------------------------------------------------------------------------------*\n");
     printf("                 .......   Cadastrando novo cliente   .......                    \n");
     printf("*-------------------------------------------------------------------------------*\n");
     w_cpf(cpf);
-    w_email(email);
-    w_nome(nome);
-    w_nasc(nasc);
+    strcpy(cli->cpf,cpf);
+    w_email(cli->email);
+    w_nome(cli->nome);
+    w_nasc(cli->nasc);
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>> Digite ENTER para prosseguir!");
+    getchar();
+    grava_cli(cli);
+    free(cli);
+}
+void grava_cli(Cliente* cli){
+    FILE* fp;
+    fp = fopen("clientes.dat","ab");
+    if (fp == NULL) {
+        printf("Erro na abertura do arquivo\n");
+        exit(1);
+    }
+    fwrite(cli, sizeof(Cliente), 1, fp);
+    fclose(fp);
+}
+void list_cli(void){
+    FILE* fp;
+    Cliente* cli;
+    cli = (Cliente*) malloc(sizeof(Cliente));
+    fp = fopen("clientes.dat", "rb");
+    if (fp == NULL) {
+        printf("Não foi possivel abrir o arquivo!");
+        exit(1);
+    }
+    while(fread(cli,sizeof(Cliente), 1, fp)){
+        most_cli(cli);
+    }
+    free(cli);
+    fclose(fp);
+}
+void most_cli(Cliente* cli){
+    printf("CPF: %s\n", cli->cpf);
+    printf("Email: %s\n", cli->email);
+    printf("Nome: %s\n", cli->nome);
+    printf("Data de Nascimento: %s\n", cli->nasc);
     getchar();
 }
 void pesq_cli(void){
