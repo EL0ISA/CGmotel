@@ -5,6 +5,7 @@ struct cliente {
     char nome[50];
     char email[255];
     char nasc[10];
+    char status;
 };
 
 void menu_clientes(void);
@@ -13,5 +14,6 @@ void grava_cli(Cliente*);
 void most_cli(Cliente*);
 void list_cli(void);
 void pesq_cli(void);
+void encont_cli(char cpf[]);
 void edit_cli(void);
-void del_cli(void);
+void del_cli(char cpf[]);

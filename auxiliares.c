@@ -12,6 +12,7 @@ double* w_preco(double*preco){
     {
         printf("|            - Preco por hora:");
         scanf("%[^\n]",cpreco);
+        getchar();
         fflush(stdin);
         valido=verif_preco(cpreco);
     } while (valido!=1);
@@ -26,6 +27,7 @@ double* w_padd(double*padd){
     {
         printf("|            - Custos adicionais:");
         scanf("%[^\n]",cpreco);
+        getchar();
         fflush(stdin);
         valido=verif_preco(cpreco);
     } while (valido!=1);
@@ -40,6 +42,7 @@ char* w_nome(char* nome){
     {
         printf("|            - Nome completo: ");
         scanf("%[^\n]",nome);
+        getchar();
         fflush(stdin);
         valido=verif_nome(nome);
     } while (valido!=1);
@@ -51,7 +54,7 @@ char* w_cpf(char* cpf){
     {
         printf("|            - CPF (apenas numeros):");
         scanf("%[^\n]",cpf);
-        printf("%s",cpf);
+        getchar();
         fflush(stdin);
         valido=verif_cpf(cpf);
     } while (valido!=1);
@@ -63,6 +66,7 @@ char* w_email(char* email){
     {
         printf("|            - E-mail: ");
         scanf("%[^\n]",email);
+        getchar();
         fflush(stdin);
         valido=verif_email(email);
     } while (valido!=1);
@@ -74,6 +78,7 @@ char* w_nasc(char* nasc){
     {
         printf("|            - Data de Nascimento (dd/mm/aaaa): ");
         scanf("%[^\n]",nasc);
+        getchar();
         fflush(stdin);
         valido=verif_nasc(nasc);
     } while (valido!=1);
@@ -86,6 +91,7 @@ int* w_funcao(int* funcao){
     {
         printf("|            - Opcao:");
         scanf("%[^\n]",cfuncao);
+        getchar();
         fflush(stdin);
         valido=verif_funcao(cfuncao);
     } while (valido!=1);
@@ -98,6 +104,7 @@ char* w_identificacao(char* identificacao){
     {
         printf("|            - Identificacao:");
         scanf("%[^\n]",identificacao);
+        getchar();
         fflush(stdin);
         valido=verif_identificacao(identificacao);
     } while (valido!=1);
@@ -109,6 +116,7 @@ char* w_descricao(char* descricao){
     {
         printf("|            - Descricao:");
         scanf("%[^\n]",descricao);
+        getchar();
         fflush(stdin);
         valido=verif_descricao(descricao);
     } while (valido!=1);
@@ -121,6 +129,7 @@ int* w_status(int* status){
     {
         printf("|            - Opcao:");
         scanf("%[^\n]",cstatus);
+        getchar();
         fflush(stdin);
         valido=verif_funcao(cstatus);
     } while (valido!=1);
@@ -133,6 +142,7 @@ char* w_cliente(char* cliente){
     {
         printf("|            - CPF do cliente:");
         scanf("%[^\n]",cliente);
+        getchar();
         fflush(stdin);
         valido=verif_cpf(cliente);
     } while (valido!=1);
@@ -144,6 +154,7 @@ char* w_funcionario(char* funcionario){
     {
         printf("|            - CPF do funcionario:");
         scanf("%[^\n]",funcionario);
+        getchar();
         fflush(stdin);
         valido=verif_cpf(funcionario);
     } while (valido!=1);
@@ -155,6 +166,7 @@ char* w_quarto(char* quarto){
     {
         printf("|            - Identificacao do quarto:");
         scanf("%[^\n]",quarto);
+        getchar();
         fflush(stdin);
         valido=verif_identificacao(quarto);
     } while (valido!=1);
@@ -167,6 +179,7 @@ int* w_horas(int* horas){
     {
         printf("|            - Horas de reserva:");
         scanf("%[^\n]",choras);
+        getchar();
         fflush(stdin);
         valido=verif_horas(choras);
     } while (valido!=1);
@@ -179,6 +192,7 @@ char* w_obs(char* obs){
     {
         printf("|            - Observacoes:");
         scanf("%[^\n]",obs);
+        getchar();
         fflush(stdin);
         valido=verif_obs(obs);
     } while (valido!=1);

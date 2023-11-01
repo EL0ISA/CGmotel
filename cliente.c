@@ -6,6 +6,7 @@
 
 void menu_clientes(void){
     int opc;
+    char cpf[12];
     do
     {
         system("clear||cls");
@@ -35,7 +36,11 @@ void menu_clientes(void){
             edit_cli();
             break;
         case 4:
-            del_cli();
+            printf("*-------------------------------------------------------------------------------*\n");
+            printf("                 .......   Deletando cliente   .......                           \n");
+            printf("*-------------------------------------------------------------------------------*\n");
+            w_cpf(cpf);
+            del_cli(cpf);
             break;
         case 5:
             list_cli();
@@ -57,6 +62,7 @@ void cad_cli(void){
     w_email(cli->email);
     w_nome(cli->nome);
     w_nasc(cli->nasc);
+    cli->status = 'A';
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>> Digite ENTER para prosseguir!");
     getchar();
@@ -83,7 +89,9 @@ void list_cli(void){
         exit(1);
     }
     while(fread(cli,sizeof(Cliente), 1, fp)){
-        most_cli(cli);
+        if(cli->status!='I'){
+            most_cli(cli);
+        }
     }
     free(cli);
     fclose(fp);
@@ -93,35 +101,109 @@ void most_cli(Cliente* cli){
     printf("Email: %s\n", cli->email);
     printf("Nome: %s\n", cli->nome);
     printf("Data de Nascimento: %s\n", cli->nasc);
+    printf("Status: %c\n", cli->status);
     getchar();
 }
 void pesq_cli(void){
     system("clear||cls");
+    char cpf[12];
     printf("*-------------------------------------------------------------------------------*\n");
     printf("                 .......   Pesquisando dados de cliente   .......                \n");
     printf("*-------------------------------------------------------------------------------*\n");
-    printf("|            - Informe o CPF (apenas numeros):                                  |\n");
+    w_cpf(cpf);
+    printf("*-------------------------------------------------------------------------------*\n");
+    printf("                 .......   Resultados Encontrados   .......                      \n");
+    encont_cli(cpf);
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>> Digite ENTER para prosseguir!");
     getchar();
 }
+void encont_cli(char cpf[]){
+    FILE* fp;
+    Cliente* cli;
+    cli = (Cliente*) malloc(sizeof(Cliente));
+    fp = fopen("clientes.dat", "rb");
+    if (fp == NULL) {
+        printf("Não foi possivel abrir o arquivo!");
+        exit(1);
+    }
+    while(fread(cli,sizeof(Cliente), 1, fp)){
+        if (strcmp(cli->cpf, cpf)==0 && cli->status=='A') {
+            most_cli(cli);
+        }
+    }
+    free(cli);
+    fclose(fp);
+}
 void edit_cli(void){
+    char cpf[12];
+    int opc;
+    FILE* fp;
+    Cliente* cli;
+    cli = (Cliente*) malloc(sizeof(Cliente));
+    fp = fopen("clientes.dat", "r+b");
     system("clear||cls");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("                 .......   Atualizando dados de cliente   .......                \n");
     printf("*-------------------------------------------------------------------------------*\n");
-    printf("|            - Informe o CPF (apenas numeros):                                  |\n");
+    w_cpf(cpf);
+    if (fp == NULL) {
+        printf("Não foi possivel abrir o arquivo!");
+        exit(1);
+    }
+    while(fread(cli,sizeof(Cliente), 1, fp)){
+        if (strcmp(cli->cpf, cpf)==0 && cli->status=='A') {
+            printf("1 - Email: %s\n", cli->email);
+            printf("2 - Nome: %s\n", cli->nome);
+            printf("3 - Data de Nascimento: %s\n", cli->nasc);
+            printf("0 - Finalizar alteracoes.");
+            printf("\n -Campo que deseja editar:");
+            scanf("%d",&opc);
+            fflush(stdin);
+            getchar();
+            switch (opc)
+            {
+            case 1:
+                w_email(cli->email);
+                break;
+            case 2:
+                w_nome(cli->nome);
+                break;
+            case 3:
+                w_nasc(cli->nasc);
+                break;
+            }
+            fseek(fp, -1*(sizeof(Cliente)), SEEK_CUR);
+            fwrite(cli, sizeof(Cliente), 1, fp);
+        }
+    }
+    free(cli);
+    fclose(fp);
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>> Digite ENTER para prosseguir!");
     getchar();
 }
-void del_cli(void){
+void del_cli(char cpf[]){
     system("clear||cls");
-    printf("*-------------------------------------------------------------------------------*\n");
-    printf("                 .......   Deletando cliente   .......                           \n");
-    printf("*-------------------------------------------------------------------------------*\n");
-    printf("|            - Informe o CPF (apenas numeros):                                  |\n");
-    printf("*-------------------------------------------------------------------------------*\n");
-    printf("\t>> Digite ENTER para prosseguir!");
-    getchar();
+    FILE* fp;
+    Cliente* cli;
+    cli = (Cliente*) malloc(sizeof(Cliente));
+    fp = fopen("clientes.dat", "r+b");
+    if (fp == NULL) {
+        printf("Não foi possivel abrir o arquivo!");
+        exit(1);
+    }
+    while(fread(cli,sizeof(Cliente), 1, fp)){
+        if (strcmp(cli->cpf, cpf)==0) {
+            cli->status = 'I';
+            fseek(fp, -1*(sizeof(Cliente)), SEEK_CUR);
+            fwrite(cli, sizeof(Cliente), 1, fp);
+            printf("salvou essa merda");
+        }
+    }
+    fclose(fp);
+    free(cli);
+    // printf("*-------------------------------------------------------------------------------*\n");
+    // printf("\t>> Digite ENTER para prosseguir!");
+    // getchar();
 }
