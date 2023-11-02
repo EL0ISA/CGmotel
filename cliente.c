@@ -152,7 +152,9 @@ void edit_cli(void){
         exit(1);
     }
     while(fread(cli,sizeof(Cliente), 1, fp)){
-        if (strcmp(cli->cpf, cpf)==0 && cli->status=='A') {
+        do
+        {
+            if (strcmp(cli->cpf, cpf)==0 && cli->status=='A') {
             printf("1 - Email: %s\n", cli->email);
             printf("2 - Nome: %s\n", cli->nome);
             printf("3 - Data de Nascimento: %s\n", cli->nasc);
@@ -160,7 +162,6 @@ void edit_cli(void){
             printf("\n -Campo que deseja editar:");
             scanf("%d",&opc);
             fflush(stdin);
-            getchar();
             switch (opc)
             {
             case 1:
@@ -176,6 +177,7 @@ void edit_cli(void){
             fseek(fp, -1*(sizeof(Cliente)), SEEK_CUR);
             fwrite(cli, sizeof(Cliente), 1, fp);
         }
+        } while (opc!=0);
     }
     free(cli);
     fclose(fp);
@@ -198,12 +200,11 @@ void del_cli(char cpf[]){
             cli->status = 'I';
             fseek(fp, -1*(sizeof(Cliente)), SEEK_CUR);
             fwrite(cli, sizeof(Cliente), 1, fp);
-            printf("salvou essa merda");
         }
     }
     fclose(fp);
     free(cli);
-    // printf("*-------------------------------------------------------------------------------*\n");
-    // printf("\t>> Digite ENTER para prosseguir!");
-    // getchar();
+    printf("*-------------------------------------------------------------------------------*\n");
+    printf("\t>> Digite ENTER para prosseguir!");
+    getchar();
 }
