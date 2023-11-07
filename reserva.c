@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "reserva.h"
 #include "auxiliares.h"
 
@@ -34,60 +35,183 @@ void menu_reservas(void){
             case 4:
                 del_reser();
                 break;
+            case 5:
+                list_reser();
+                break;
             }
     } while (opc!=0);
     
 }
 void pesq_reser(void){
     system("clear||cls");
+    char cliente[12];
     printf("*-------------------------------------------------------------------------------*\n");
     printf("                 .......   Pesquisando dados de reserva   .......                \n");
     printf("*-------------------------------------------------------------------------------*\n");
-    printf("|            - Informe o CPF do cliente:                                        |\n");
+    w_cliente(cliente);
     printf("*-------------------------------------------------------------------------------*\n");
+    printf("                 .......   Resultados Encontrados   .......                      \n");
+    encont_reser(cliente);
     printf("\t>> Digite ENTER para prosseguir!");
     getchar();
+}
+void encont_reser(char cliente[]){
+    FILE* fp;
+    Reserva* reser;
+    reser= (Reserva*) malloc(sizeof(Reserva));
+    fp = fopen("reservas.dat", "rb");
+    if (fp == NULL) {
+        printf("Não foi possivel abrir o arquivo!");
+        exit(1);
+    }
+    while(fread(reser,sizeof(Reserva), 1, fp)){
+        if (strcmp(reser->cliente, cliente)==0 && reser->status=='A') {
+            most_reser(reser);
+        }
+    }
+    free(reser);
+    fclose(fp);
 }
 void checkin(void){
     system("clear||cls");
-    char cliente[11],quarto[10],funcionario[11],obs[100];
-    int horas=0;
-    double padd;
+    Reserva* reser;
+    reser = (Reserva*) malloc(sizeof(Reserva));
     printf("*-------------------------------------------------------------------------------*\n");
     printf("                 .......   Cadastrando nova reserva   .......                    \n");
     printf("*-------------------------------------------------------------------------------*\n");
-    w_cliente(cliente);
-    w_quarto(quarto);
-    w_horas(&horas);
-    w_obs(obs);
-    w_padd(&padd);
+    w_cliente(reser->cliente);
+    w_quarto(reser->quarto);
+    w_horas(&(reser->horas));
+    w_obs(reser->obs);
+    w_padd(&(reser->padd));
     printf("*-------------------------------------------------------------------------------*\n");
     printf("                 .......   Realizando Check-in   .......                         \n");
     printf("*-------------------------------------------------------------------------------*\n");
-    w_funcionario(funcionario);
+    w_funcionario(reser->func_in);
+    reser->status='A';
+    reser->id=criar_id();
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>> Digite ENTER para prosseguir!");
+    grava_reser(reser);
+    free(reser);
+    getchar();
+}
+void grava_reser(Reserva* reser){
+    FILE* fp;
+    fp = fopen("reservas.dat","ab");
+    if (fp == NULL) {
+        printf("Erro na abertura do arquivo\n");
+        exit(1);
+    }
+    fwrite(reser, sizeof(Reserva), 1, fp);
+    fclose(fp);
+}
+void list_reser(void){
+    FILE* fp;
+    Reserva* reser;
+    reser = (Reserva*) malloc(sizeof(Reserva));
+    fp = fopen("reservas.dat", "rb");
+    if (fp == NULL) {
+        printf("Não foi possivel abrir o arquivo!");
+        exit(1);
+    }
+    while(fread(reser,sizeof(Reserva), 1, fp)){
+        if(reser->status!='I'){
+            most_reser(reser);
+        }
+    }
+    free(reser);
+    fclose(fp);
+}
+void most_reser(Reserva* reser){
+    printf("ID: %d\n", reser->id);
+    printf("Cliente: %s\n", reser->cliente);
+    printf("Funcionario Checkin: %s\n", reser->func_in);
+    printf("Quarto: %s\n", reser->quarto);
+    printf("Observacao: %s\n", reser->obs);
+    printf("Preco adicional: %f\n", reser->padd);
+    printf("Func checkout: %s\n", reser->func_out);
+    printf("Status: %c\n", reser->status);
     getchar();
 }
 void checkout(void){
+    int id;
+    FILE* fp;
+    Reserva* reser;
+    reser = (Reserva*) malloc(sizeof(Reserva));
+    fp = fopen("reservas.dat", "r+b");
     system("clear||cls");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("                 .......   Realizando Check-out   .......                        \n");
     printf("*-------------------------------------------------------------------------------*\n");
-    printf("|            - Informe o ID da reserva:                                         |\n");
-    printf("*-------------------------------------------------------------------------------*\n");
-    printf("|            - CPF do Funcionario:                                              |\n");
+    printf("|            - Informe o ID da reserva:");
+    scanf("%d",&id);
+    fflush(stdin);
+    if (fp == NULL) {
+        printf("Não foi possivel abrir o arquivo!");
+        exit(1);
+    }
+    while(fread(reser,sizeof(Reserva), 1, fp)){
+        if (reser->id== id && reser->status=='A') {
+            printf("*-------------------------------------------------------------------------------*\n");
+            w_funcionario(reser->func_out);
+            fseek(fp, -1*(sizeof(Reserva)), SEEK_CUR);
+            fwrite(reser, sizeof(Reserva), 1, fp);
+        }  
+    }
+    free(reser);
+    fclose(fp);
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>> Digite ENTER para prosseguir!");
     getchar();
 }
 void del_reser(void){
+    int id;
+    FILE* fp;
+    Reserva* reser;
+    reser = (Reserva*) malloc(sizeof(Reserva));
+    fp = fopen("reservas.dat", "r+b");
     system("clear||cls");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("                 .......   Deletando dados de reserva   .......                  \n");
     printf("*-------------------------------------------------------------------------------*\n");
-    printf("|            - Informe o ID da reserva:                                         |\n");
+    printf("|            - Informe o ID da reserva:");
+    scanf("%d",&id);
+    fflush(stdin);
+    if (fp == NULL) {
+        printf("Não foi possivel abrir o arquivo!");
+        exit(1);
+    }
+    while(fread(reser,sizeof(Reserva), 1, fp)){
+        if (reser->id== id && reser->status=='A') {
+            reser->status='I';
+            fseek(fp, -1*(sizeof(Reserva)), SEEK_CUR);
+            fwrite(reser, sizeof(Reserva), 1, fp);
+        }  
+    }
+    free(reser);
+    fclose(fp);
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>> Digite ENTER para prosseguir!");
     getchar();
 }
+//Feito com a ajuda do Chat Gpt e com Consultas no site StackOverflow 
+//Adapatado por Maria Eloisa e Matheus Diniz 
+int criar_id(void) {
+    FILE *arquivo = fopen("reserva.dat", "rb");
+    if (arquivo == NULL){
+        return 1;
+    }
+    fseek(arquivo, 0, SEEK_END);
+    if ((long)ftell(arquivo)==0){
+        fclose(arquivo);
+        return 1;
+    } else {
+        fseek(arquivo, -((long)sizeof(Reserva)), SEEK_END);
+        Reserva ultstruct;
+        fread(&ultstruct, sizeof(Reserva), 1, arquivo);
+        int id = ultstruct.id + 1; 
+        fclose(arquivo);
+        return id;
+    } 
+} 
