@@ -14,6 +14,6 @@ void grava_cli(Cliente*);
 void most_cli(Cliente*);
 void list_cli(void);
 void pesq_cli(void);
-void encont_cli(char cpf[]);
+int encont_cli(char cpf[], char ope);
 void edit_cli(void);
 void del_cli(char cpf[]);

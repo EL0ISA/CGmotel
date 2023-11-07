@@ -40,57 +40,184 @@ void menu_quartos(void){
         case 5:
             monitoramento();
             break;
+        case 6:
+            list_quart();
+            break;
         }
     } while (opc!=0);
     
 }
 void cad_quart(void){
-    char identificacao[10];
-    char descricao[100];
-    double preco;
-    int status=0;
     system("clear||cls");
+    Quarto* quart;
+    quart = (Quarto*) malloc(sizeof(Quarto));
     printf("*-------------------------------------------------------------------------------*\n");
     printf("                 .......   Cadastrando novo quarto   .......                     \n");
     printf("*-------------------------------------------------------------------------------*\n");
-    w_identificacao(identificacao);
-    w_descricao(descricao);
-    w_preco(&preco);
+    w_identificacao(quart->identificacao);
+    w_descricao(quart->descricao);
+    w_preco(&(quart->preco));
     printf("                    .......   Status do quarto   .......            \n");
     printf("|                             1. Disponivel                                     |\n");
     printf("|                             2. Manutencao                                     |\n");
     printf("|                             3. Limpando                                       |\n");
-    w_status(&status);
+    w_status(&(quart->status));
+    grava_quart(quart);
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>> Digite ENTER para prosseguir!");
     getchar();
 }
+void grava_quart(Quarto* quart){
+    FILE* fp;
+    fp = fopen("quartos.dat","ab");
+    if (fp == NULL) {
+        printf("Erro na abertura do arquivo\n");
+        exit(1);
+    }
+    fwrite(quart, sizeof(Quarto), 1, fp);
+    fclose(fp);
+}
+void list_quart(void){
+    FILE* fp;
+    Quarto* quart;
+    quart = (Quarto*) malloc(sizeof(Quarto));
+    fp = fopen("quartos.dat", "rb");
+    if (fp == NULL) {
+        printf("Não foi possivel abrir o arquivo!");
+        exit(1);
+    }
+    while(fread(quart,sizeof(Quarto), 1, fp)){
+        if(quart->status!=0){
+            most_quart(quart);
+        }
+    }
+    free(quart);
+    fclose(fp);
+}
+void most_quart(Quarto* quart){
+    printf("Identificacao: %s\n", quart->identificacao);
+    printf("Descrica: %s\n", quart->descricao);
+    printf("Preco: %f\n", quart->preco);
+    printf("Status: %d\n", quart->status);
+    getchar();
+}
 void pesq_quart(void){
+    char ide[10];
     system("clear||cls");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("                 .......   Pesquisando dados de quarto   .......                 \n");
     printf("*-------------------------------------------------------------------------------*\n");
-    printf("|            - Informe a identificacao do quarto:                               |\n");
+    w_identificacao(ide);
+    printf("                 .......   Resultados Encontrados   .......                      \n");
+    encont_quart(ide,'M');
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>> Digite ENTER para prosseguir!");
     getchar();
 }
+int encont_quart(char ide[], char ope){
+    FILE* fp;
+    Quarto* quart;
+    int existe=0;
+    quart = (Quarto*) malloc(sizeof(Quarto));
+    fp = fopen("quartos.dat", "rb");
+    if (fp == NULL) {
+        fp = fopen("quartos.dat","ab");
+        printf("Não foi possivel abrir o arquivo!");
+        exit(1);
+    }
+    while(fread(quart,sizeof(Quarto), 1, fp)){
+        if (strcmp(quart->identificacao, ide)==0 && quart->status!=0) {
+            if(ope=='M'){
+                most_quart(quart);
+            }
+            existe=1;
+        }
+    }
+    free(quart);
+    fclose(fp);
+    printf("%d\n",existe);
+    return existe;
+}
 void edit_quart(void){
+    char ide[12];
+    int opc;
+    FILE* fp;
+    Quarto* quart;
+    quart = (Quarto*) malloc(sizeof(Quarto));
+    fp = fopen("quartos.dat", "r+b");
     system("clear||cls");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("                 .......   Atualizando dados de quarto   .......                 \n");
     printf("*-------------------------------------------------------------------------------*\n");
-    printf("|            - Informe a identificacao do quarto:                               |\n");
+    w_identificacao(ide);
+    if(encont_quart(ide,'I')==1){
+        if (fp == NULL) {
+            printf("Não foi possivel abrir o arquivo!");
+            exit(1);
+        }
+        while(fread(quart,sizeof(Quarto), 1, fp)){
+
+            do
+            {
+                if (strcmp(quart->identificacao, ide)==0 && quart->status!=0) {
+                    printf("1 - Identificacao: %s\n", quart->descricao);
+                    printf("2 - Preco p/hora: %2.f\n", quart->preco);
+                    printf("3 - Status: %d\n", quart->status);
+                    printf("0 - Finalizar alteracoes.");
+                    printf("\n -Campo que deseja editar:");
+                    scanf("%d",&opc);
+                    fflush(stdin);
+                    switch (opc)
+                    {
+                    case 1:
+                        w_identificacao(quart->descricao);
+                        break;
+                    case 2:
+                        w_preco(&(quart->preco));
+                        break;
+                    case 3:
+                        w_status(&(quart->status));
+                        break;
+                    }
+                    fseek(fp, -1*(sizeof(Quarto)), SEEK_CUR);
+                    fwrite(quart, sizeof(Quarto), 1, fp);
+                }
+            } while (opc!=0);
+        }
+        free(quart);
+        fclose(fp);
+    }else{
+        printf("- Quarto não encontrado!\n");
+    }
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>> Digite ENTER para prosseguir!");
     getchar();
 }
 void del_quart(void){
     system("clear||cls");
+    char ide[10];
+    Quarto* quart;
+    FILE* fp;
+    quart = (Quarto*) malloc(sizeof(Quarto));
+    system("clear||cls");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("                 .......   Deletando dados de quarto   .......                   \n");
     printf("*-------------------------------------------------------------------------------*\n");
-    printf("|            - Informe a identificacao do quarto:                               |\n");
+    w_identificacao(ide);
+    fp = fopen("quartos.dat", "r+b");
+    if (fp == NULL) {
+        printf("Não foi possivel abrir o arquivo!");
+        exit(1);
+    }
+    while(fread(quart,sizeof(Quarto), 1, fp)){
+        if (strcmp(quart->identificacao, ide)==0) {
+            quart->status = 0;
+            fseek(fp, -1*(sizeof(Quarto)), SEEK_CUR);
+            fwrite(quart, sizeof(Quarto), 1, fp);
+        }
+    }
+    fclose(fp);
+    free(quart);
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>> Digite ENTER para prosseguir!");
     getchar();
