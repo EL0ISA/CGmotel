@@ -4,7 +4,7 @@ struct cliente {
     char cpf[12];
     char nome[50];
     char email[255];
-    char nasc[10];
+    char nasc[11];
     char status;
 };
 

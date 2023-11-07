@@ -15,6 +15,6 @@ void grava_func(Funcionario*);
 void most_func(Funcionario*);
 void list_func(void);
 void pesq_func(void);
-void encont_func(char cpf[]);
+int encont_func(char cpf[], char ope);
 void edit_func(void);
 void del_func(void);

@@ -3,7 +3,7 @@
 #include <string.h>
 #include "reserva.h"
 #include "auxiliares.h"
-
+#include "uteis.h"
 void menu_reservas(void){
     int opc;
     do
@@ -20,6 +20,7 @@ void menu_reservas(void){
         printf("*-------------------------------------------------------------------------------*\n");
         printf("-- Sua opc: ");
         scanf("%d",&opc);
+        getchar();
         fflush(stdin);
         switch (opc)
             {
@@ -72,6 +73,27 @@ void encont_reser(char cliente[]){
     free(reser);
     fclose(fp);
 }
+int bus_id_reser(int id){
+    FILE* fp;
+    Reserva* reser;
+
+    reser= (Reserva*) malloc(sizeof(Reserva));
+    fp = fopen("reservas.dat", "rb");
+    if (fp == NULL) {
+        printf("Não foi possivel abrir o arquivo!");
+        exit(1);
+    }
+    while(fread(reser,sizeof(Reserva), 1, fp)){
+        if (reser->id== id && reser->status=='A' && reser->status=='A' && (reser->func_out==NULL || strcmp(reser->func_out,"")==0)) {
+            free(reser);
+            fclose(fp);
+            return 1;
+        }
+    }
+    free(reser);
+    fclose(fp);
+    return 0;
+}
 void checkin(void){
     system("clear||cls");
     Reserva* reser;
@@ -90,6 +112,7 @@ void checkin(void){
     w_funcionario(reser->func_in);
     reser->status='A';
     reser->id=criar_id();
+    data_hora(reser->hora_in, sizeof(reser->hora_in));
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>> Digite ENTER para prosseguir!");
     grava_reser(reser);
@@ -112,8 +135,7 @@ void list_reser(void){
     reser = (Reserva*) malloc(sizeof(Reserva));
     fp = fopen("reservas.dat", "rb");
     if (fp == NULL) {
-        printf("Não foi possivel abrir o arquivo!");
-        exit(1);
+        printf("Não foi possivel abrir o arquivo!\n");
     }
     while(fread(reser,sizeof(Reserva), 1, fp)){
         if(reser->status!='I'){
@@ -126,12 +148,17 @@ void list_reser(void){
 void most_reser(Reserva* reser){
     printf("ID: %d\n", reser->id);
     printf("Cliente: %s\n", reser->cliente);
-    printf("Funcionario Checkin: %s\n", reser->func_in);
     printf("Quarto: %s\n", reser->quarto);
     printf("Observacao: %s\n", reser->obs);
     printf("Preco adicional: %f\n", reser->padd);
-    printf("Func checkout: %s\n", reser->func_out);
-    printf("Status: %c\n", reser->status);
+    printf("*-------------------------------------------------------------------------------*\n");
+    printf("                 .......   Informacoes Check-in   .......                        \n");
+    printf("Funcionario: %s\n", reser->func_in);
+    printf("Data e horario: %s\n", reser->hora_in);
+    printf("*-------------------------------------------------------------------------------*\n");
+    printf("                 .......   Informacoes Check-out   .......                        \n");
+    printf("Funcionario: %s\n", reser->func_out);
+    printf("Data e horario: %s\n",reser->hora_out);
     getchar();
 }
 void checkout(void){
@@ -146,18 +173,24 @@ void checkout(void){
     printf("*-------------------------------------------------------------------------------*\n");
     printf("|            - Informe o ID da reserva:");
     scanf("%d",&id);
+    getchar();
     fflush(stdin);
     if (fp == NULL) {
         printf("Não foi possivel abrir o arquivo!");
         exit(1);
     }
-    while(fread(reser,sizeof(Reserva), 1, fp)){
-        if (reser->id== id && reser->status=='A') {
-            printf("*-------------------------------------------------------------------------------*\n");
-            w_funcionario(reser->func_out);
-            fseek(fp, -1*(sizeof(Reserva)), SEEK_CUR);
-            fwrite(reser, sizeof(Reserva), 1, fp);
-        }  
+    if (bus_id_reser(id)==1){
+        while(fread(reser,sizeof(Reserva), 1, fp)){
+            if (reser->id== id && reser->status=='A') {
+                printf("*-------------------------------------------------------------------------------*\n");
+                w_funcionario(reser->func_out);
+                data_hora(reser->hora_out, sizeof(reser->hora_out));
+                fseek(fp, -1*(sizeof(Reserva)), SEEK_CUR);
+                fwrite(reser, sizeof(Reserva), 1, fp);
+            }
+        }
+    }else{
+        printf("\nEssa reserva ja teve seu checkout realizado");
     }
     free(reser);
     fclose(fp);
