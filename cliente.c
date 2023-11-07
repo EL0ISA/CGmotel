@@ -90,7 +90,7 @@ void list_cli(void){
     fp = fopen("clientes.dat", "rb");
     if (fp == NULL) {
         printf("Não foi possivel abrir o arquivo!");
-        exit(1);
+        getchar();
     }
     while(fread(cli,sizeof(Cliente), 1, fp)){
         if(cli->status!='I'){
@@ -129,7 +129,7 @@ int encont_cli(char cpf[], char ope){
     cli = (Cliente*) malloc(sizeof(Cliente));
     fp = fopen("clientes.dat", "rb");
     if (fp == NULL) {
-        fp = fopen("clientes.dat","ab");
+        printf("Não foi possivel abrir o arquivo!\n");
     }
     while(!feof(fp)){
         fread(cli,sizeof(Cliente), 1, fp);
@@ -157,10 +157,6 @@ void edit_cli(void){
     printf("*-------------------------------------------------------------------------------*\n");
     w_cpf(cpf);
     if(encont_cli(cpf,'I')==1){
-        if (fp == NULL) {
-            printf("Não foi possivel abrir o arquivo!");
-            exit(1);
-        }
         while(fread(cli,sizeof(Cliente), 1, fp)){
             do
             {
@@ -189,11 +185,11 @@ void edit_cli(void){
                 }
             } while (opc!=0);
         }
-        free(cli);
-        fclose(fp);
     }else{
         printf("- Cliente não encontrado!\n");
     }
+    free(cli);
+    fclose(fp);
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>> Digite ENTER para prosseguir!");
     getchar();

@@ -31,7 +31,6 @@ double* w_padd(double*padd){
         fflush(stdin);
         valido=verif_preco(cpreco);
     } while (valido!=1);
-    printf("oka");
     double vfloat=atof(cpreco);
     *padd=vfloat;
     return padd;

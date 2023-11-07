@@ -13,3 +13,5 @@ int verif_descricao(char* descricao);
 
 int verif_horas(char* choras);
 int verif_obs(char* obs);
+
+char* data_hora(char* data_hora, size_t tam);

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
+#include <time.h>
 #include "uteis.h"
 
 int verif_preco(char* cpreco){
@@ -290,7 +291,6 @@ int verif_horas(char* choras){
     }
     
     int n=atoi(choras);
-    printf("%d",n);
     if(1>n || n>12){
         return 0;
     }
@@ -301,4 +301,13 @@ int verif_obs(char* obs){
         return 0;
     }
     return 1;
+}
+//Adpatado do ChatGPT por Maria Eloisa(eu)
+char* data_hora(char* data_hora, size_t tam){
+    struct tm current_time;
+    time_t t = time(NULL);
+    current_time = *localtime(&t);
+    strftime(data_hora, tam, "%d-%m-%Y %H:%M:%S", &current_time);
+
+    return data_hora;
 }

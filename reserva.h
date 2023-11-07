@@ -6,6 +6,8 @@ struct reserva {
     char quarto[10];
     char func_in[12];
     char func_out[12];
+    char hora_in[20];
+    char hora_out[20];
     char obs[100];
     int horas;
     double padd;
@@ -15,6 +17,7 @@ struct reserva {
 void menu_reservas(void);
 void pesq_reser(void);
 void encont_reser(char cliente[]);
+int bus_id_reser(int id);
 void del_reser(void);
 void checkin(void);
 void grava_reser(Reserva*);

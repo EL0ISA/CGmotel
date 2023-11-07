@@ -51,20 +51,24 @@ void cad_func(void){
     printf("                 .......   Cadastrando novo funcionario   .......                \n");
     printf("*-------------------------------------------------------------------------------*\n");
     w_cpf(cpf);
-    strcpy(func->cpf,cpf);
-    w_email(func->email);
-    w_nome(func->nome);
-    w_nasc(func->nasc);
-    printf("                 .......   Funcao do funcionario   .......            \n");
-    printf("|                             1. Gerente                                        |\n");
-    printf("|                             2. Recepcao                                       |\n");
-    printf("|                             3. Faxineiro(a)                                   |\n");
-    w_funcao(&(func->funcao));
-    func->status='A';
+    if(encont_func(cpf,'I')==0){
+        strcpy(func->cpf,cpf);
+        w_email(func->email);
+        w_nome(func->nome);
+        w_nasc(func->nasc);
+        printf("                 .......   Funcao do funcionario   .......            \n");
+        printf("|                             1. Gerente                                        |\n");
+        printf("|                             2. Recepcao                                       |\n");
+        printf("|                             3. Faxineiro(a)                                   |\n");
+        w_funcao(&(func->funcao));
+        func->status='A';
+        grava_func(func);
+    }else{
+        printf("- Funcionario ja cadastrado com esse CPF!\n");
+    }
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>>");
     getchar();
-    grava_func(func);
     free(func);
 }
 void grava_func(Funcionario* func){
@@ -84,7 +88,7 @@ void list_func(void){
     fp = fopen("funcionarios.dat", "rb");
     if (fp == NULL) {
         printf("Não foi possivel abrir o arquivo!");
-        exit(1);
+        getchar();
     }
     while(fread(func,sizeof(Funcionario), 1, fp)){
         if(func->status!='I'){
@@ -111,27 +115,31 @@ void pesq_func(void){
     w_cpf(cpf);
     printf("*-------------------------------------------------------------------------------*\n");
     printf("                 .......   Resultados Encontrados   .......                      \n");
-    encont_func(cpf);
+    encont_func(cpf,'M');
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>> Digite ENTER para prosseguir!");
     getchar();
 }
-void encont_func(char cpf[]){
+int encont_func(char cpf[],char ope){
     FILE* fp;
+    int existe=0;
     Funcionario* func;
     func = (Funcionario*) malloc(sizeof(Funcionario));
     fp = fopen("funcionarios.dat", "rb");
     if (fp == NULL) {
-        printf("Não foi possivel abrir o arquivo!");
-        exit(1);
+        printf("Não foi possivel abrir o arquivo!\n");
     }
     while(fread(func,sizeof(Funcionario), 1, fp)){
         if (strcmp(func->cpf, cpf)==0 && func->status=='A') {
-            most_func(func);
+            if(ope=='M'){
+                most_func(func);
+            }
+            existe=1;
         }
     }
     free(func);
     fclose(fp);
+    return existe;
 }
 void edit_func(void){
     char cpf[12];
@@ -147,35 +155,39 @@ void edit_func(void){
     w_cpf(cpf);
     if (fp == NULL) {
         printf("Não foi possivel abrir o arquivo!");
-        exit(1);
+        getchar();
     }
-    while(fread(func,sizeof(Funcionario), 1, fp)){
-        do
-        {
-            if (strcmp(func->cpf, cpf)==0 && func->status=='A') {
-            printf("1 - Email: %s\n", func->email);
-            printf("2 - Nome: %s\n", func->nome);
-            printf("3 - Data de Nascimento: %s\n", func->nasc);
-            printf("0 - Finalizar alteracoes.");
-            printf("\n -Campo que deseja editar:");
-            scanf("%d",&opc);
-            fflush(stdin);
-            switch (opc)
+    if(encont_func(cpf,'I')==1){
+        while(fread(func,sizeof(Funcionario), 1, fp)){
+            do
             {
-            case 1:
-                w_email(func->email);
-                break;
-            case 2:
-                w_nome(func->nome);
-                break;
-            case 3:
-                w_nasc(func->nasc);
-                break;
-            }
-            fseek(fp, -1*(sizeof(Funcionario)), SEEK_CUR);
-            fwrite(func, sizeof(Funcionario), 1, fp);
+                if (strcmp(func->cpf, cpf)==0 && func->status=='A') {
+                    printf("1 - Email: %s\n", func->email);
+                    printf("2 - Nome: %s\n", func->nome);
+                    printf("3 - Data de Nascimento: %s\n", func->nasc);
+                    printf("0 - Finalizar alteracoes.");
+                    printf("\n -Campo que deseja editar:");
+                    scanf("%d",&opc);
+                    fflush(stdin);
+                    switch (opc)
+                    {
+                    case 1:
+                        w_email(func->email);
+                        break;
+                    case 2:
+                        w_nome(func->nome);
+                        break;
+                    case 3:
+                        w_nasc(func->nasc);
+                        break;
+                    }
+                    fseek(fp, -1*(sizeof(Funcionario)), SEEK_CUR);
+                    fwrite(func, sizeof(Funcionario), 1, fp);
+                }
+            } while (opc!=0);
         }
-        } while (opc!=0);
+    }else{
+        printf("- Funcionario nao encontrado!\n");
     }
     free(func);
     fclose(fp);
