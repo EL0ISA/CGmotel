@@ -19,6 +19,7 @@ void menu_reservas(void){
         printf("|                             2. Pesquisar                                      |\n");
         printf("|                             3. Check-out                                      |\n");
         printf("|                             4. Deletar reserva                                |\n");
+        printf("|                             5. Listar tudo                                    |\n");
         printf("|                             0. Voltar                                         |\n");
         printf("*-------------------------------------------------------------------------------*\n");
         printf("-- Sua opc: ");
@@ -201,6 +202,7 @@ void most_reser(Reserva* reser){
 void checkout(void){
     int id;
     FILE* fp;
+    char funcionario[12];
     Reserva* reser;
     reser = (Reserva*) malloc(sizeof(Reserva));
     fp = fopen("reservas.dat", "r+b");
@@ -219,10 +221,15 @@ void checkout(void){
         while(fread(reser,sizeof(Reserva), 1, fp)){
             if (reser->id== id && reser->status=='A') {
                 printf("*-------------------------------------------------------------------------------*\n");
-                w_funcionario(reser->func_out);
-                data_hora(reser->hora_out, sizeof(reser->hora_out));
-                fseek(fp, -1*(sizeof(Reserva)), SEEK_CUR);
-                fwrite(reser, sizeof(Reserva), 1, fp);
+                w_funcionario(funcionario);
+                if(encont_func(funcionario,'I')==1){
+                    strcpy(reser->func_out,funcionario);
+                    data_hora(reser->hora_out, sizeof(reser->hora_out));
+                    fseek(fp, -1*(sizeof(Reserva)), SEEK_CUR);
+                    fwrite(reser, sizeof(Reserva), 1, fp);
+                }else{
+                    printf("\n-Funcionario nao encontrado!");
+                }
             }
         }
     }else{
@@ -251,12 +258,14 @@ void del_reser(void){
         printf("Não foi possivel abrir o arquivo!");
         exit(1);
     }
-    while(fread(reser,sizeof(Reserva), 1, fp)){
-        if (reser->id== id && reser->status=='A') {
-            reser->status='I';
-            fseek(fp, -1*(sizeof(Reserva)), SEEK_CUR);
-            fwrite(reser, sizeof(Reserva), 1, fp);
-        }  
+    if(bus_id_reser(id)==1){
+        while(fread(reser,sizeof(Reserva), 1, fp)){
+            if (reser->id== id && reser->status=='A') {
+                reser->status='I';
+                fseek(fp, -1*(sizeof(Reserva)), SEEK_CUR);
+                fwrite(reser, sizeof(Reserva), 1, fp);
+            }
+        }
     }
     free(reser);
     fclose(fp);
