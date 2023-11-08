@@ -22,6 +22,7 @@ void menu_quartos(void){
         printf("*-------------------------------------------------------------------------------*\n");
         printf("-- Sua opc: ");
         scanf("%d",&opc);
+        getchar();
         fflush(stdin);
         switch (opc)
         {
@@ -50,19 +51,25 @@ void menu_quartos(void){
 void cad_quart(void){
     system("clear||cls");
     Quarto* quart;
+    char ide[10];
     quart = (Quarto*) malloc(sizeof(Quarto));
     printf("*-------------------------------------------------------------------------------*\n");
     printf("                 .......   Cadastrando novo quarto   .......                     \n");
     printf("*-------------------------------------------------------------------------------*\n");
-    w_identificacao(quart->identificacao);
-    w_descricao(quart->descricao);
-    w_preco(&(quart->preco));
-    printf("                    .......   Status do quarto   .......            \n");
-    printf("|                             1. Disponivel                                     |\n");
-    printf("|                             2. Manutencao                                     |\n");
-    printf("|                             3. Limpando                                       |\n");
-    w_status(&(quart->status));
-    grava_quart(quart);
+    w_identificacao(ide);
+    if(encont_quart(ide,'I')==0){
+        strcpy(quart->identificacao,ide);
+        w_descricao(quart->descricao);
+        w_preco(&(quart->preco));
+        printf("                    .......   Status do quarto   .......            \n");
+        printf("|                             1. Disponivel                                     |\n");
+        printf("|                             2. Manutencao                                     |\n");
+        printf("|                             3. Limpando                                       |\n");
+        w_status(&(quart->status));
+        grava_quart(quart);
+    }else{
+        printf("- Quarto já cadastrado com essa identificacao!\n");
+    }
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>> Digite ENTER para prosseguir!");
     getchar();
@@ -97,8 +104,14 @@ void list_quart(void){
 void most_quart(Quarto* quart){
     printf("Identificacao: %s\n", quart->identificacao);
     printf("Descrica: %s\n", quart->descricao);
-    printf("Preco: %f\n", quart->preco);
-    printf("Status: %d\n", quart->status);
+    printf("Preco: %.2f\n", quart->preco);
+    if(quart->status==1){
+        printf("Status: Disponivel \n");
+    }else if(quart->status==2){
+        printf("Status: Manutencao \n");
+    }else if(quart->status==3){
+        printf("Status: Limpando \n");
+    }
     getchar();
 }
 void pesq_quart(void){
@@ -121,9 +134,7 @@ int encont_quart(char ide[], char ope){
     quart = (Quarto*) malloc(sizeof(Quarto));
     fp = fopen("quartos.dat", "rb");
     if (fp == NULL) {
-        fp = fopen("quartos.dat","ab");
-        printf("Não foi possivel abrir o arquivo!");
-        exit(1);
+        fp = fopen("funcionarios.dat","ab");
     }
     while(fread(quart,sizeof(Quarto), 1, fp)){
         if (strcmp(quart->identificacao, ide)==0 && quart->status!=0) {
@@ -135,7 +146,6 @@ int encont_quart(char ide[], char ope){
     }
     free(quart);
     fclose(fp);
-    printf("%d\n",existe);
     return existe;
 }
 void edit_quart(void){
@@ -156,7 +166,6 @@ void edit_quart(void){
             exit(1);
         }
         while(fread(quart,sizeof(Quarto), 1, fp)){
-
             do
             {
                 if (strcmp(quart->identificacao, ide)==0 && quart->status!=0) {
@@ -209,12 +218,16 @@ void del_quart(void){
         printf("Não foi possivel abrir o arquivo!");
         exit(1);
     }
-    while(fread(quart,sizeof(Quarto), 1, fp)){
-        if (strcmp(quart->identificacao, ide)==0) {
-            quart->status = 0;
-            fseek(fp, -1*(sizeof(Quarto)), SEEK_CUR);
-            fwrite(quart, sizeof(Quarto), 1, fp);
+    if(encont_quart(ide,'I')==1){
+        while(fread(quart,sizeof(Quarto), 1, fp)){
+            if (strcmp(quart->identificacao, ide)==0) {
+                quart->status = 0;
+                fseek(fp, -1*(sizeof(Quarto)), SEEK_CUR);
+                fwrite(quart, sizeof(Quarto), 1, fp);
+            }
         }
+    }else{
+        printf("-Quarto nao encontrado");
     }
     fclose(fp);
     free(quart);
@@ -228,7 +241,7 @@ void monitoramento(void){
     {
         system("clear||cls");
         printf("\n*-------------------------------------------------------------------------------*\n");
-        printf("*                               Monitoramento                                   *\n");
+        printf("*                            Monitoramento(Ainda a ser desenvolvido)            *\n");
         printf("*-------------------------------------------------------------------------------*\n");
         printf("|                             1. Quartos disponiveis                            |\n");
         printf("|                             2. Quartos em manutencao                          |/\n");

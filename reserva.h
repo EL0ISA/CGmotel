@@ -11,6 +11,7 @@ struct reserva {
     char obs[100];
     int horas;
     double padd;
+    double ptotal;
     char status;
 };
 

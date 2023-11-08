@@ -129,10 +129,9 @@ int encont_cli(char cpf[], char ope){
     cli = (Cliente*) malloc(sizeof(Cliente));
     fp = fopen("clientes.dat", "rb");
     if (fp == NULL) {
-        printf("Não foi possivel abrir o arquivo!\n");
+        fp = fopen("clientes.dat","ab");
     }
-    while(!feof(fp)){
-        fread(cli,sizeof(Cliente), 1, fp);
+    while(fread(cli,sizeof(Cliente), 1, fp)){
         if (strcmp(cli->cpf, cpf)==0 && cli->status=='A') {
             if(ope=='M'){
                 most_cli(cli);
@@ -204,11 +203,13 @@ void del_cli(char cpf[]){
         printf("Não foi possivel abrir o arquivo!");
         exit(1);
     }
-    while(fread(cli,sizeof(Cliente), 1, fp)){
-        if (strcmp(cli->cpf, cpf)==0) {
-            cli->status = 'I';
-            fseek(fp, -1*(sizeof(Cliente)), SEEK_CUR);
-            fwrite(cli, sizeof(Cliente), 1, fp);
+    if(encont_cli(cpf,'I')==1){
+        while(fread(cli,sizeof(Cliente), 1, fp)){
+            if (strcmp(cli->cpf, cpf)==0) {
+                cli->status = 'I';
+                fseek(fp, -1*(sizeof(Cliente)), SEEK_CUR);
+                fwrite(cli, sizeof(Cliente), 1, fp);
+            }
         }
     }
     fclose(fp);

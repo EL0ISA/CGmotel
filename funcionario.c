@@ -98,6 +98,7 @@ void list_func(void){
     free(func);
     fclose(fp);
 }
+
 void most_func(Funcionario* func){
     printf("CPF: %s\n", func->cpf);
     printf("Email: %s\n", func->email);
@@ -127,7 +128,7 @@ int encont_func(char cpf[],char ope){
     func = (Funcionario*) malloc(sizeof(Funcionario));
     fp = fopen("funcionarios.dat", "rb");
     if (fp == NULL) {
-        printf("Não foi possivel abrir o arquivo!\n");
+        fp = fopen("funcionarios.dat","ab");
     }
     while(fread(func,sizeof(Funcionario), 1, fp)){
         if (strcmp(func->cpf, cpf)==0 && func->status=='A') {
@@ -208,14 +209,18 @@ void del_func(void){
     fp = fopen("clientes.dat", "r+b");
     if (fp == NULL) {
         printf("Não foi possivel abrir o arquivo!");
-        exit(1);
+        getchar();
     }
-    while(fread(func,sizeof(Funcionario), 1, fp)){
-        if (strcmp(func->cpf, cpf)==0) {
-            func->status = 'I';
-            fseek(fp, -1*(sizeof(Funcionario)), SEEK_CUR);
-            fwrite(func, sizeof(Funcionario), 1, fp);
+    if(encont_func(cpf,'I')==1){
+        while(fread(func,sizeof(Funcionario), 1, fp)){
+            if (strcmp(func->cpf, cpf)==0) {
+                func->status = 'I';
+                fseek(fp, -1*(sizeof(Funcionario)), SEEK_CUR);
+                fwrite(func, sizeof(Funcionario), 1, fp);
+            }
         }
+    }else{
+        printf("- Funcionario nao encontrado!");
     }
     fclose(fp);
     free(func);
