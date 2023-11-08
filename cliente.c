@@ -37,6 +37,7 @@ void menu_clientes(void){
             edit_cli();
             break;
         case 4:
+            system("clear||cls");
             printf("*-------------------------------------------------------------------------------*\n");
             printf("                 .......   Deletando cliente   .......                           \n");
             printf("*-------------------------------------------------------------------------------*\n");
@@ -195,7 +196,6 @@ void edit_cli(void){
     getchar();
 }
 void del_cli(char cpf[]){
-    system("clear||cls");
     FILE* fp;
     Cliente* cli;
     cli = (Cliente*) malloc(sizeof(Cliente));
@@ -203,6 +203,7 @@ void del_cli(char cpf[]){
     if (fp == NULL) {
         printf("Não foi possivel abrir o arquivo!");
         getchar();
+        return;
     }
     if(encont_cli(cpf,'I')==1){
         while(fread(cli,sizeof(Cliente), 1, fp)){
@@ -212,10 +213,12 @@ void del_cli(char cpf[]){
                 fwrite(cli, sizeof(Cliente), 1, fp);
             }
         }
+    }else{
+        printf("- Cliente nao encontrado!");
     }
     fclose(fp);
     free(cli);
-    printf("*-------------------------------------------------------------------------------*\n");
+    printf("\n*-------------------------------------------------------------------------------*\n");
     printf("\t>> Digite ENTER para prosseguir!");
     getchar();
 }

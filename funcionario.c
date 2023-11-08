@@ -78,7 +78,7 @@ void grava_func(Funcionario* func){
     fp = fopen("funcionarios.dat","ab");
     if (fp == NULL) {
         printf("Erro na abertura do arquivo\n");
-        exit(1);
+        return;
     }
     fwrite(func, sizeof(Funcionario), 1, fp);
     fclose(fp);
@@ -227,7 +227,7 @@ void del_func(void){
     }
     fclose(fp);
     free(func);
-    printf("*-------------------------------------------------------------------------------*\n");
+    printf("\n*-------------------------------------------------------------------------------*\n");
     printf("\t>> Digite ENTER para prosseguir!");
     getchar();
 }
