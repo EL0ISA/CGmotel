@@ -17,7 +17,7 @@ void menu_quartos(void){
         printf("|                             2. Pesquisar dados                                |\n");
         printf("|                             3. Atualizar dados                                |\n");
         printf("|                             4. Deletar quarto                                 |\n");
-        printf("|                             5. Monitoramento                                  |\n");
+        printf("|                             5. Listar tudo                                    |\n");
         printf("|                             0. Voltar                                         |\n");
         printf("*-------------------------------------------------------------------------------*\n");
         printf("-- Sua opc: ");
@@ -39,10 +39,10 @@ void menu_quartos(void){
             del_quart();
             break;
         case 5:
-            monitoramento();
+            list_quart();
             break;
         case 6:
-            list_quart();
+            monitoramento();
             break;
         }
     } while (opc!=0);
@@ -175,6 +175,7 @@ void edit_quart(void){
                     printf("0 - Finalizar alteracoes.");
                     printf("\n -Campo que deseja editar:");
                     scanf("%d",&opc);
+                    getchar();
                     fflush(stdin);
                     switch (opc)
                     {
@@ -185,6 +186,10 @@ void edit_quart(void){
                         w_preco(&(quart->preco));
                         break;
                     case 3:
+                        printf("                    .......   Status do quarto   .......            \n");
+                        printf("|                             1. Disponivel                                     |\n");
+                        printf("|                             2. Manutencao                                     |\n");
+                        printf("|                             3. Limpando                                       |\n");
                         w_status(&(quart->status));
                         break;
                     }
@@ -216,7 +221,6 @@ void del_quart(void){
     fp = fopen("quartos.dat", "r+b");
     if (fp == NULL) {
         printf("Não foi possivel abrir o arquivo!");
-        exit(1);
     }
     if(encont_quart(ide,'I')==1){
         while(fread(quart,sizeof(Quarto), 1, fp)){
@@ -250,6 +254,7 @@ void monitoramento(void){
         printf("*-------------------------------------------------------------------------------*\n");
         printf("-- Sua opc: ");
         scanf("%d",&opc);
+        getchar();
         fflush(stdin);
         switch (opc)
             {

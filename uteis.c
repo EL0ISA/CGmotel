@@ -190,7 +190,10 @@ int verif_nasc(char* nasc){
     /*validação data*/
     time_t t = time(NULL);
     struct tm tm = *localtime(&t);
-    if (ano>=1800 && ano<=(tm.tm_year+1900) && dia>0){
+    if (a>=1800 && a<=(tm.tm_year+1900) && d>0){
+        if(m>(tm.tm_mon) &&d>(tm.tm_mday)&& a>=(tm.tm_year+1900)){
+            return 0; 
+        }
         if(1>m && m>12){
             return 0;
         }
@@ -251,6 +254,9 @@ int verif_funcao(char* cfuncao){
 }
 int verif_identificacao(char* identificacao){
     int tam=strlen(identificacao);
+    if (identificacao==NULL || strcmp(identificacao,"")==0){
+        return 0;
+    }
     for (int i = 0; i < tam; i++)
     {
         if(!isalnum(identificacao[i])){
@@ -264,7 +270,10 @@ int verif_identificacao(char* identificacao){
     return 1;
 }
 int verif_descricao(char* descricao){
-    if(strlen(descricao)>100){
+    if (descricao==NULL || strcmp(descricao,"")==0){
+        return 0;
+    }
+    if(strlen(descricao)>99){
         return 0;
     }
     return 1;
@@ -278,7 +287,7 @@ int verif_status(char* cstatus){
         return 0;
     }
     int n=atoi(cstatus);
-    if(0>n || n>3){
+    if(0>n && n>3){
         return 0;
     }
     return 1;
@@ -303,7 +312,7 @@ int verif_horas(char* choras){
     return 1;
 }
 int verif_obs(char* obs){
-    if(strlen(obs)>100){
+    if(strlen(obs)>99){
         return 0;
     }
     return 1;

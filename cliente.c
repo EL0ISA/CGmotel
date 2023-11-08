@@ -202,7 +202,7 @@ void del_cli(char cpf[]){
     fp = fopen("clientes.dat", "r+b");
     if (fp == NULL) {
         printf("Não foi possivel abrir o arquivo!");
-        exit(1);
+        getchar();
     }
     if(encont_cli(cpf,'I')==1){
         while(fread(cli,sizeof(Cliente), 1, fp)){
