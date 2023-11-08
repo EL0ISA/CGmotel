@@ -169,6 +169,7 @@ void edit_func(void){
                     printf("0 - Finalizar alteracoes.");
                     printf("\n -Campo que deseja editar:");
                     scanf("%d",&opc);
+                    getchar();
                     fflush(stdin);
                     switch (opc)
                     {

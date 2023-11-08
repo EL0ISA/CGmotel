@@ -22,6 +22,7 @@ void menu_clientes(void){
         printf("*-------------------------------------------------------------------------------*\n");
         printf("-- Sua opc: ");
         scanf("%d",&opc);
+        getchar();
         fflush(stdin);
         switch (opc)
         {
@@ -105,7 +106,6 @@ void most_cli(Cliente* cli){
     printf("Email: %s\n", cli->email);
     printf("Nome: %s\n", cli->nome);
     printf("Data de Nascimento: %s\n", cli->nasc);
-    printf("Status: %c\n", cli->status);
     getchar();
 }
 void pesq_cli(void){
@@ -166,6 +166,7 @@ void edit_cli(void){
                     printf("0 - Finalizar alteracoes.");
                     printf("\n -Campo que deseja editar:");
                     scanf("%d",&opc);
+                    getchar();
                     fflush(stdin);
                     switch (opc)
                     {

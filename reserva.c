@@ -253,6 +253,7 @@ void del_reser(void){
     printf("*-------------------------------------------------------------------------------*\n");
     printf("|            - Informe o ID da reserva:");
     scanf("%d",&id);
+    getchar();
     fflush(stdin);
     if (fp == NULL) {
         printf("Não foi possivel abrir o arquivo!");
