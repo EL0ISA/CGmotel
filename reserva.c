@@ -18,8 +18,7 @@ void menu_reservas(void){
         printf("|                             1. Check-in                                       |\n");
         printf("|                             2. Pesquisar                                      |\n");
         printf("|                             3. Check-out                                      |\n");
-        printf("|                             4. Deletar reserva                                |\n");
-        printf("|                             5. Listar tudo                                    |\n");
+        printf("|                             4. Listar tudo                                    |\n");
         printf("|                             0. Voltar                                         |\n");
         printf("*-------------------------------------------------------------------------------*\n");
         printf("-- Sua opc: ");
@@ -38,9 +37,6 @@ void menu_reservas(void){
                 checkout();
                 break;
             case 4:
-                del_reser();
-                break;
-            case 5:
                 list_reser();
                 break;
             }
@@ -110,43 +106,45 @@ void checkin(void){
     printf("*-------------------------------------------------------------------------------*\n");
     w_cliente(cliente);
     if(encont_cli(cliente,'I')==1){
-        strcpy(reser->cliente,cliente);
-        w_quarto(quarto);
-        if(encont_quart(quarto,'I')==1){
-            FILE* fp;
-            Quarto* quart;
-            quart = (Quarto*) malloc(sizeof(Quarto));
-            fp = fopen("quartos.dat", "rb");
-                while(fread(quart,sizeof(Quarto), 1, fp)){
-                    if (strcmp(quart->identificacao,quarto)==0 && quart->status==1) {
-                        strcpy(reser->quarto,quarto);
-                        quart_dis=1;
-                        w_horas(&(reser->horas));
-                        w_obs(reser->obs);
-                        w_padd(&(reser->padd));
-                        reser->ptotal= ((quart->preco)*(reser->horas))+ reser->padd;
-                        printf("*-------------------------------------------------------------------------------*\n");
-                        printf("                 .......   Realizando Check-in   .......                         \n");
-                        printf("*-------------------------------------------------------------------------------*\n");
-                        w_funcionario(funcionario);
-                        if(encont_func(funcionario,'I')==1){
-                            strcpy(reser->func_in,funcionario);
-                            reser->status='A';
-                            reser->id=criar_id();
-                            data_hora(reser->hora_in, sizeof(reser->hora_in));
-                            status_quart(quarto,4);
-                            grava_reser(reser);
-                        }else{
-                            printf("- Funcionario nao encontrado!");
+        if(cli_out(cliente)==0){
+            strcpy(reser->cliente,cliente);
+            w_quarto(quarto);
+            if(encont_quart(quarto,'I')==1){
+                FILE* fp;
+                Quarto* quart;
+                quart = (Quarto*) malloc(sizeof(Quarto));
+                fp = fopen("quartos.dat", "rb");
+                    while(fread(quart,sizeof(Quarto), 1, fp)){
+                        if (strcmp(quart->identificacao,quarto)==0 && quart->status==1) {
+                            strcpy(reser->quarto,quarto);
+                            quart_dis=1;
+                            w_horas(&(reser->horas));
+                            w_obs(reser->obs);
+                            w_padd(&(reser->padd));
+                            reser->ptotal= ((quart->preco)*(reser->horas))+ reser->padd;
+                            printf("*-------------------------------------------------------------------------------*\n");
+                            printf("                 .......   Realizando Check-in   .......                         \n");
+                            printf("*-------------------------------------------------------------------------------*\n");
+                            w_funcionario(funcionario);
+                            if(encont_func(funcionario,'I')==1){
+                                strcpy(reser->func_in,funcionario);
+                                reser->status='A';
+                                reser->id=criar_id();
+                                data_hora(reser->hora_in, sizeof(reser->hora_in));
+                                status_quart(quarto,4);
+                                grava_reser(reser);
+                            }else{
+                                printf("- Funcionario nao encontrado!");
+                            }
                         }
                     }
+                free(quart);
+                if(quart_dis==0){
+                    printf("- Quarto nao disponivel!");
                 }
-            free(quart);
-            if(quart_dis==0){
-                printf("- Quarto nao disponivel!");
+            }else{
+                printf("- Quarto nao encontrado!");
             }
-        }else{
-            printf("- Quarto nao encontrado!");
         }
     }else{
         printf("- Cliente nao encontrado!");
@@ -161,7 +159,7 @@ void grava_reser(Reserva* reser){
     fp = fopen("reservas.dat","ab");
     if (fp == NULL) {
         printf("Erro na abertura do arquivo\n");
-        exit(1);
+        return;
     }
     fwrite(reser, sizeof(Reserva), 1, fp);
     fclose(fp);
@@ -172,7 +170,9 @@ void list_reser(void){
     reser = (Reserva*) malloc(sizeof(Reserva));
     fp = fopen("reservas.dat", "rb");
     if (fp == NULL) {
-        printf("Não foi possivel abrir o arquivo!\n");
+        printf("Nao ha reservas cadastradas!\n");
+        getchar();
+        return;
     }
     while(fread(reser,sizeof(Reserva), 1, fp)){
         if(reser->status!='I'){
@@ -243,6 +243,38 @@ void checkout(void){
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>> Digite ENTER para prosseguir!");
     getchar();
+}
+int cli_out(char cliente[]){
+    FILE* fp;
+    Cliente* cli;
+    int existe=0;
+    cli = (Cliente*) malloc(sizeof(Cliente));
+    fp = fopen("clientes.dat", "rb");
+    if (fp == NULL) {
+        fp = fopen("clientes.dat","ab");
+    }
+    while(fread(cli,sizeof(Cliente), 1, fp)){
+        if (strcmp(cli->cpf,cliente)==0 && cli->status=='A') {
+            FILE* fr;
+            Reserva* reser;
+            reser = (Reserva*) malloc(sizeof(Reserva));
+            fr = fopen("reservas.dat", "rb");
+            if (fr == NULL) {
+                fr = fopen("reservas.dat","ab");
+            }
+            while(fread(reser,sizeof(Reserva), 1, fr)){
+                if (strcmp(reser->cliente, cliente)==0 && (reser->func_out==NULL || strcmp(reser->func_out,"")==0)) {
+                    printf("- Esse cliente ainda conta com checkin ativo");
+                    existe=1;
+                }
+            }
+            free(reser);
+            fclose(fr);
+        }
+    }
+    free(cli);
+    fclose(fp);
+    return existe;
 }
 void del_reser(void){
     int id;

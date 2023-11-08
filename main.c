@@ -10,6 +10,7 @@
 
 void inicio(void);
 void cabecalho(void);
+void instrucoes(void);
 void sobre(void);
 int menu_principal(void);
 
@@ -36,6 +37,9 @@ int main(void) {
             menu_reservas();
             break;
         case 5:
+            instrucoes();
+            break;
+        case 6:
             sobre();
             break;
         }
@@ -68,6 +72,16 @@ void cabecalho(void){
     printf("|                     Projeto Sistema de Gestao de Motel                        |\n");
     printf("|               Desenvolvido por M� Eloisa da Silva Santos (@EL0ISA)            |\n");
     printf("*-------------------------------------------------------------------------------*\n");
+}
+void instrucoes(void){
+    system("clear||cls");
+    printf("*-------------------------------------------------------------------------------*\n");
+    printf("|                          Intrucoes de uso do programa                         |\n");
+    printf("|       1. Nas entradas de dados so serao aceito letras simples e pontuacao     |\n");
+    printf("| 2. Entradas de valores reais so aceitarao . e nao , como separador de centavos|\n");
+    printf("|                      3. Entradas sensiveis ao case                            |\n");
+    printf("*-------------------------------------------------------------------------------*\n");
+    getchar();
 }
 void sobre(void){
     system("clear||cls");
