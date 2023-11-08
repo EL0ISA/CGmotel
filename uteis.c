@@ -188,26 +188,32 @@ int verif_nasc(char* nasc){
     }
     int a=atoi(ano);
     /*validação data*/
-    if(1>m && m>12){
-        return 0;
-    }
-    if(m==1 || m==3 || m==5 || m==7 || m==8 || m==10 || m==12){
-        if(d>31||d<1){
+    time_t t = time(NULL);
+    struct tm tm = *localtime(&t);
+    if (ano>=1800 && ano<=(tm.tm_year+1900) && dia>0){
+        if(1>m && m>12){
             return 0;
         }
-    }else if(m==4 || m==6 || m==9 || m==11){
-        if(d>30||d<1){
-            return 0;
-        }
-    }else if(m==2){
-        if(bissexto(a)==1){
-            if(d>29||d<1){
+        if(m==1 || m==3 || m==5 || m==7 || m==8 || m==10 || m==12){
+            if(d>31||d<1){
                 return 0;
+            }
+        }else if(m==4 || m==6 || m==9 || m==11){
+            if(d>30||d<1){
+                return 0;
+            }
+        }else if(m==2){
+            if(bissexto(a)==1){
+                if(d>29||d<1){
+                    return 0;
+                }
+            }else{
+                if(d>28||d<1){
+                    return 0;
+                }
             }
         }else{
-            if(d>28||d<1){
-                return 0;
-            }
+            return 0;
         }
     }else{
         return 0;
