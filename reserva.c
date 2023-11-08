@@ -102,6 +102,7 @@ void checkin(void){
     char cliente[12];
     char quarto[10];
     char funcionario[12];
+    int quart_dis=0;
     Reserva* reser;
     reser = (Reserva*) malloc(sizeof(Reserva));
     printf("*-------------------------------------------------------------------------------*\n");
@@ -116,33 +117,34 @@ void checkin(void){
             Quarto* quart;
             quart = (Quarto*) malloc(sizeof(Quarto));
             fp = fopen("quartos.dat", "rb");
-            if(quart->status!=1){
-                strcpy(reser->quarto,quarto);
-                w_horas(&(reser->horas));
-                w_obs(reser->obs);
-                w_padd(&(reser->padd));
                 while(fread(quart,sizeof(Quarto), 1, fp)){
-                    if (strcmp(quart->identificacao,reser->quarto)==0) {
+                    if (strcmp(quart->identificacao,quarto)==0 && quart->status==1) {
+                        strcpy(reser->quarto,quarto);
+                        quart_dis=1;
+                        w_horas(&(reser->horas));
+                        w_obs(reser->obs);
+                        w_padd(&(reser->padd));
                         reser->ptotal= ((quart->preco)*(reser->horas))+ reser->padd;
+                        printf("*-------------------------------------------------------------------------------*\n");
+                        printf("                 .......   Realizando Check-in   .......                         \n");
+                        printf("*-------------------------------------------------------------------------------*\n");
+                        w_funcionario(funcionario);
+                        if(encont_func(funcionario,'I')==1){
+                            strcpy(reser->func_in,funcionario);
+                            reser->status='A';
+                            reser->id=criar_id();
+                            data_hora(reser->hora_in, sizeof(reser->hora_in));
+                            status_quart(quarto,4);
+                            grava_reser(reser);
+                        }else{
+                            printf("- Funcionario nao encontrado!");
+                        }
                     }
                 }
-                printf("*-------------------------------------------------------------------------------*\n");
-                printf("                 .......   Realizando Check-in   .......                         \n");
-                printf("*-------------------------------------------------------------------------------*\n");
-                w_funcionario(funcionario);
-                if(encont_func(funcionario,'I')==1){
-                    strcpy(reser->func_in,funcionario);
-                    reser->status='A';
-                    reser->id=criar_id();
-                    data_hora(reser->hora_in, sizeof(reser->hora_in));
-                    grava_reser(reser);
-                }else{
-                    printf("- Funcionario nao encontrado!");
-                }
-            }else{
+            free(quart);
+            if(quart_dis==0){
                 printf("- Quarto nao disponivel!");
             }
-            free(quart);
         }else{
             printf("- Quarto nao encontrado!");
         }
@@ -227,6 +229,7 @@ void checkout(void){
                     data_hora(reser->hora_out, sizeof(reser->hora_out));
                     fseek(fp, -1*(sizeof(Reserva)), SEEK_CUR);
                     fwrite(reser, sizeof(Reserva), 1, fp);
+                    status_quart(reser->quarto,3);
                 }else{
                     printf("\n-Funcionario nao encontrado!");
                 }
@@ -274,10 +277,25 @@ void del_reser(void){
     printf("\t>> Digite ENTER para prosseguir!");
     getchar();
 }
+void status_quart(char ide[],int ope){
+    Quarto* quart;
+    FILE* fp;
+    quart = (Quarto*) malloc(sizeof(Quarto));
+    fp = fopen("quartos.dat", "r+b");
+        while(fread(quart,sizeof(Quarto), 1, fp)){
+            if (strcmp(quart->identificacao, ide)==0) {
+                quart->status = ope;
+                fseek(fp, -1*(sizeof(Quarto)), SEEK_CUR);
+                fwrite(quart, sizeof(Quarto), 1, fp);
+            }
+        }
+    fclose(fp);
+    free(quart);
+}
 //Feito com a ajuda do Chat Gpt e com Consultas no site StackOverflow 
 //Adapatado por Maria Eloisa e Matheus Diniz 
 int criar_id(void) {
-    FILE *arquivo = fopen("reserva.dat", "rb");
+    FILE *arquivo = fopen("reservas.dat", "rb");
     if (arquivo == NULL){
         return 1;
     }

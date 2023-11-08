@@ -16,10 +16,12 @@ void menu_funcionarios(void){
         printf("|                             2. Pesquisar dados                                |\n");
         printf("|                             3. Atualizar dados                                |\n");
         printf("|                             4. Deletar funcionario                            |\n");
+        printf("|                             5. Listar todos                                   |\n");
         printf("|                             0. Voltar                                         |\n");
         printf("*-------------------------------------------------------------------------------*\n");
         printf("-- Sua opc: ");
         scanf("%d",&opc);
+        getchar();
         fflush(stdin);
         switch (opc)
             {
