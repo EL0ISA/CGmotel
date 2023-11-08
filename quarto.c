@@ -111,6 +111,8 @@ void most_quart(Quarto* quart){
         printf("Status: Manutencao \n");
     }else if(quart->status==3){
         printf("Status: Limpando \n");
+    }else if(quart->status==4){
+        printf("Status: Ocupado \n");
     }
     getchar();
 }

@@ -26,3 +26,4 @@ void most_reser(Reserva*);
 void list_reser(void);
 int criar_id(void);
 void checkout(void);
+void status_quart(char ide[],int ope);

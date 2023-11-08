@@ -134,6 +134,7 @@ void checkin(void){
                             reser->status='A';
                             reser->id=criar_id();
                             data_hora(reser->hora_in, sizeof(reser->hora_in));
+                            status_quart(quarto,4);
                             grava_reser(reser);
                         }else{
                             printf("- Funcionario nao encontrado!");
@@ -228,6 +229,7 @@ void checkout(void){
                     data_hora(reser->hora_out, sizeof(reser->hora_out));
                     fseek(fp, -1*(sizeof(Reserva)), SEEK_CUR);
                     fwrite(reser, sizeof(Reserva), 1, fp);
+                    status_quart(reser->quarto,3);
                 }else{
                     printf("\n-Funcionario nao encontrado!");
                 }
@@ -274,6 +276,21 @@ void del_reser(void){
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>> Digite ENTER para prosseguir!");
     getchar();
+}
+void status_quart(char ide[],int ope){
+    Quarto* quart;
+    FILE* fp;
+    quart = (Quarto*) malloc(sizeof(Quarto));
+    fp = fopen("quartos.dat", "r+b");
+        while(fread(quart,sizeof(Quarto), 1, fp)){
+            if (strcmp(quart->identificacao, ide)==0) {
+                quart->status = ope;
+                fseek(fp, -1*(sizeof(Quarto)), SEEK_CUR);
+                fwrite(quart, sizeof(Quarto), 1, fp);
+            }
+        }
+    fclose(fp);
+    free(quart);
 }
 //Feito com a ajuda do Chat Gpt e com Consultas no site StackOverflow 
 //Adapatado por Maria Eloisa e Matheus Diniz 
