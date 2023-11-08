@@ -3,6 +3,9 @@
 #include <string.h>
 #include "reserva.h"
 #include "auxiliares.h"
+#include "quarto.h"
+#include "funcionario.h"
+#include "cliente.h"
 #include "uteis.h"
 void menu_reservas(void){
     int opc;
@@ -81,7 +84,6 @@ int bus_id_reser(int id){
     fp = fopen("reservas.dat", "rb");
     if (fp == NULL) {
         printf("Não foi possivel abrir o arquivo!");
-        exit(1);
     }
     while(fread(reser,sizeof(Reserva), 1, fp)){
         if (reser->id== id && reser->status=='A' && reser->status=='A' && (reser->func_out==NULL || strcmp(reser->func_out,"")==0)) {
@@ -96,26 +98,58 @@ int bus_id_reser(int id){
 }
 void checkin(void){
     system("clear||cls");
+    char cliente[12];
+    char quarto[10];
+    char funcionario[12];
     Reserva* reser;
     reser = (Reserva*) malloc(sizeof(Reserva));
     printf("*-------------------------------------------------------------------------------*\n");
     printf("                 .......   Cadastrando nova reserva   .......                    \n");
     printf("*-------------------------------------------------------------------------------*\n");
-    w_cliente(reser->cliente);
-    w_quarto(reser->quarto);
-    w_horas(&(reser->horas));
-    w_obs(reser->obs);
-    w_padd(&(reser->padd));
-    printf("*-------------------------------------------------------------------------------*\n");
-    printf("                 .......   Realizando Check-in   .......                         \n");
-    printf("*-------------------------------------------------------------------------------*\n");
-    w_funcionario(reser->func_in);
-    reser->status='A';
-    reser->id=criar_id();
-    data_hora(reser->hora_in, sizeof(reser->hora_in));
-    printf("*-------------------------------------------------------------------------------*\n");
+    w_cliente(cliente);
+    if(encont_cli(cliente,'I')==1){
+        strcpy(reser->cliente,cliente);
+        w_quarto(quarto);
+        if(encont_quart(quarto,'I')==1){
+            FILE* fp;
+            Quarto* quart;
+            quart = (Quarto*) malloc(sizeof(Quarto));
+            fp = fopen("quartos.dat", "rb");
+            if(quart->status!=1){
+                strcpy(reser->quarto,quarto);
+                w_horas(&(reser->horas));
+                w_obs(reser->obs);
+                w_padd(&(reser->padd));
+                while(fread(quart,sizeof(Quarto), 1, fp)){
+                    if (strcmp(quart->identificacao,reser->quarto)==0) {
+                        reser->ptotal= ((quart->preco)*(reser->horas))+ reser->padd;
+                    }
+                }
+                printf("*-------------------------------------------------------------------------------*\n");
+                printf("                 .......   Realizando Check-in   .......                         \n");
+                printf("*-------------------------------------------------------------------------------*\n");
+                w_funcionario(funcionario);
+                if(encont_func(funcionario,'I')==1){
+                    strcpy(reser->func_in,funcionario);
+                    reser->status='A';
+                    reser->id=criar_id();
+                    data_hora(reser->hora_in, sizeof(reser->hora_in));
+                    grava_reser(reser);
+                }else{
+                    printf("- Funcionario nao encontrado!");
+                }
+            }else{
+                printf("- Quarto nao disponivel!");
+            }
+            free(quart);
+        }else{
+            printf("- Quarto nao encontrado!");
+        }
+    }else{
+        printf("- Cliente nao encontrado!");
+    }
+    printf("\n*-------------------------------------------------------------------------------*\n");
     printf("\t>> Digite ENTER para prosseguir!");
-    grava_reser(reser);
     free(reser);
     getchar();
 }
@@ -146,11 +180,14 @@ void list_reser(void){
     fclose(fp);
 }
 void most_reser(Reserva* reser){
+    printf("\n*-------------------------------------------------------------------------------*\n");
     printf("ID: %d\n", reser->id);
     printf("Cliente: %s\n", reser->cliente);
     printf("Quarto: %s\n", reser->quarto);
     printf("Observacao: %s\n", reser->obs);
-    printf("Preco adicional: %f\n", reser->padd);
+    printf("Preco adicional: %.2f\n", reser->padd);
+    printf("Horas de reserva: %d\n", reser->horas);
+    printf("Total a pagar: %.2f\n", reser->ptotal);
     printf("*-------------------------------------------------------------------------------*\n");
     printf("                 .......   Informacoes Check-in   .......                        \n");
     printf("Funcionario: %s\n", reser->func_in);
@@ -177,7 +214,6 @@ void checkout(void){
     fflush(stdin);
     if (fp == NULL) {
         printf("Não foi possivel abrir o arquivo!");
-        exit(1);
     }
     if (bus_id_reser(id)==1){
         while(fread(reser,sizeof(Reserva), 1, fp)){
@@ -190,7 +226,7 @@ void checkout(void){
             }
         }
     }else{
-        printf("\nEssa reserva ja teve seu checkout realizado");
+        printf("\n-Essa reserva ja teve seu checkout realizado!");
     }
     free(reser);
     fclose(fp);
