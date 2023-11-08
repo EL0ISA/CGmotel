@@ -27,3 +27,4 @@ void list_reser(void);
 int criar_id(void);
 void checkout(void);
 void status_quart(char ide[],int ope);
+int cli_out(char cliente[]);
