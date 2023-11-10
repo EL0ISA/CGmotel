@@ -158,9 +158,9 @@ void edit_cli(void){
     w_cpf(cpf);
     if(encont_cli(cpf,'I')==1){
         while(fread(cli,sizeof(Cliente), 1, fp)){
-            do
-            {
-                if (strcmp(cli->cpf, cpf)==0 && cli->status=='A') {
+            if (strcmp(cli->cpf, cpf)==0 && cli->status=='A') {
+                do
+                {
                     printf("1 - Email: %s\n", cli->email);
                     printf("2 - Nome: %s\n", cli->nome);
                     printf("3 - Data de Nascimento: %s\n", cli->nasc);
@@ -183,8 +183,9 @@ void edit_cli(void){
                     }
                     fseek(fp, -1*(sizeof(Cliente)), SEEK_CUR);
                     fwrite(cli, sizeof(Cliente), 1, fp);
-                }
-            } while (opc!=0);
+                }while (opc!=0);
+                break;
+            } 
         }
     }else{
         printf("- Cliente não encontrado!\n");
@@ -207,10 +208,11 @@ void del_cli(char cpf[]){
     }
     if(encont_cli(cpf,'I')==1){
         while(fread(cli,sizeof(Cliente), 1, fp)){
-            if (strcmp(cli->cpf, cpf)==0) {
+            if ((strcmp(cli->cpf, cpf))==0) {
                 cli->status = 'I';
                 fseek(fp, -1*(sizeof(Cliente)), SEEK_CUR);
                 fwrite(cli, sizeof(Cliente), 1, fp);
+                break;
             }
         }
     }else{
