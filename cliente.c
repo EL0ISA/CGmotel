@@ -91,7 +91,7 @@ void list_cli(void){
     cli = (Cliente*) malloc(sizeof(Cliente));
     fp = fopen("clientes.dat", "rb");
     if (fp == NULL) {
-        printf("Não foi possivel abrir o arquivo!");
+        printf("- Nao clientes cadastrados!");
         getchar();
     }
     while(fread(cli,sizeof(Cliente), 1, fp)){
@@ -216,7 +216,7 @@ void del_cli(char cpf[]){
             }
         }
     }else{
-        printf("- Cliente nao encontrado!");
+        printf("\t\t- Cliente nao encontrado!");
     }
     fclose(fp);
     free(cli);
