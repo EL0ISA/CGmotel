@@ -98,7 +98,7 @@ void list_func(void)
     fp = fopen("funcionarios.dat", "rb");
     if (fp == NULL)
     {
-        printf("Não foi possivel abrir o arquivo!");
+        printf("- Nao clientes cadastrados!");
         getchar();
     }
     while (fread(func, sizeof(Funcionario), 1, fp))
@@ -118,7 +118,13 @@ void most_func(Funcionario *func)
     printf("Email: %s\n", func->email);
     printf("Nome: %s\n", func->nome);
     printf("Data de Nascimento: %s\n", func->nasc);
-    printf("Status: %c\n", func->status);
+    if(func->funcao==1){
+        printf("Funcao: Gerente \n");
+    }else if(func->funcao==2){
+        printf("Funcao: Recepcao \n");
+    }else if(func->funcao==3){
+        printf("Funcao: Faxineiro(a) \n");
+    }
     getchar();
 }
 void pesq_func(void)
@@ -214,7 +220,7 @@ void edit_func(void)
     }
     else
     {
-        printf("- Funcionario nao encontrado!\n");
+        printf("\t\t- Funcionario nao encontrado!\n");
     }
     free(func);
     fclose(fp);
@@ -254,7 +260,7 @@ void del_func(void)
     }
     else
     {
-        printf("- Funcionario nao encontrado!");
+        printf("\t\t- Funcionario nao encontrado!");
         getchar();
     }
     fclose(fp);

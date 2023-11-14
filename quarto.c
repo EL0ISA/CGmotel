@@ -85,25 +85,61 @@ void grava_quart(Quarto* quart){
     fclose(fp);
 }
 void list_quart(void){
+    
     FILE* fp;
     Quarto* quart;
     quart = (Quarto*) malloc(sizeof(Quarto));
     fp = fopen("quartos.dat", "rb");
+    char nomeTrunc[10];
+    char precoTrunc[21];
+    char ide[10];
+    size_t tamN,tamP;
     if (fp == NULL) {
         printf("Não foi possivel abrir o arquivo!");
         exit(1);
     }
+    printf("*-------------------------------------------------------------------------------*\n");
+    printf("                     .......   Todos os quartos   .......                     \n");
+    printf("*-------------------------------------------------------------------------------*\n");
+    printf("|   Identificacao               -    Preco por Hora                             |\n");
+    printf("*-------------------------------------------------------------------------------*\n");
     while(fread(quart,sizeof(Quarto), 1, fp)){
         if(quart->status!=0){
-            most_quart(quart);
+            tamN = strlen(quart->identificacao);
+            snprintf(precoTrunc, sizeof(precoTrunc), "%.2f", quart->preco);
+            tamP = strlen(precoTrunc);
+            strncpy(nomeTrunc, quart->identificacao, tamN);
+            for (int i = tamN; i < 9; i++) {
+                nomeTrunc[i] = ' ';
+            }
+            nomeTrunc[9] = '\0';
+            for (int j = tamP; j < 20; j++) {
+                precoTrunc[j] = ' ';
+            }
+            precoTrunc[20] = '\0';
+            printf("|   %-3s                     -    %-2s                     |\n",nomeTrunc,precoTrunc);
         }
     }
+    do
+    {
+        printf("- Digite a identificacao do quarto que deseja ver mais infor ou 0 p/voltar:\n");
+        scanf("%[^\n]",ide);
+        getchar();
+        fflush(stdin);
+        if(encont_quart(ide,'I')==1){
+            encont_quart(ide,'M');
+        }else{
+            printf("Identificacao invalida!");
+            getchar();
+        }
+    } while (strcmp(ide,"0")!=0);
     free(quart);
     fclose(fp);
 }
 void most_quart(Quarto* quart){
+    printf("                 .......   Dados do Quarto   .......                 \n");
     printf("Identificacao: %s\n", quart->identificacao);
-    printf("Descrica: %s\n", quart->descricao);
+    printf("Descricacao: %s\n", quart->descricao);
     printf("Preco: %.2f\n", quart->preco);
     if(quart->status==1){
         printf("Status: Disponivel \n");

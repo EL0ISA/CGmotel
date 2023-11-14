@@ -12,6 +12,7 @@ void cad_quart(void);
 void grava_quart(Quarto*);
 void most_quart(Quarto*);
 void list_quart(void);
+char* preco(char* precoTrunc, size_t tamP);
 void pesq_quart(void);
 int encont_quart(char ide[], char ope);
 void edit_quart(void);
