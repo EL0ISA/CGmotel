@@ -107,10 +107,13 @@ int menu_principal(void){
     printf("|                               2. Funcionarios                                 |\n");
     printf("|                               3. Quartos                                      |\n");
     printf("|                               4. Reservas                                     |\n");
-    printf("|                               5. Sobre o projeto                              |\n");
+    printf("|                               5. Instrucoes                                   |\n");
+    printf("|                               6. Sobre o projeto                              |\n");
     printf("|                               0. Sair                                         |\n");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("-- Sua opc: ");
     scanf(" %d",&opc);
+    getchar();
+    fflush(stdin);
     return opc;
 }

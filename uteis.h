@@ -1,3 +1,4 @@
+#include <stddef.h>
 int verif_preco(char* cpreco);
 int verif_nome(char* nome);
 int verif_cpf(char* cpf);

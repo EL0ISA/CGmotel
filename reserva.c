@@ -136,6 +136,7 @@ void checkin(void){
                             }else{
                                 printf("- Funcionario nao encontrado!");
                             }
+                            break;
                         }
                     }
                 free(quart);
@@ -233,6 +234,7 @@ void checkout(void){
                 }else{
                     printf("\n-Funcionario nao encontrado!");
                 }
+                break;
             }
         }
     }else{
@@ -319,6 +321,7 @@ void status_quart(char ide[],int ope){
                 quart->status = ope;
                 fseek(fp, -1*(sizeof(Quarto)), SEEK_CUR);
                 fwrite(quart, sizeof(Quarto), 1, fp);
+                break;
             }
         }
     fclose(fp);

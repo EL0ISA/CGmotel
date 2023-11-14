@@ -136,7 +136,7 @@ int encont_quart(char ide[], char ope){
     quart = (Quarto*) malloc(sizeof(Quarto));
     fp = fopen("quartos.dat", "rb");
     if (fp == NULL) {
-        fp = fopen("funcionarios.dat","ab");
+        fp = fopen("quartos.dat","ab");
     }
     while(fread(quart,sizeof(Quarto), 1, fp)){
         if (strcmp(quart->identificacao, ide)==0 && quart->status!=0) {
@@ -168,10 +168,9 @@ void edit_quart(void){
             exit(1);
         }
         while(fread(quart,sizeof(Quarto), 1, fp)){
-            do
-            {
-                if (strcmp(quart->identificacao, ide)==0 && quart->status!=0) {
-                    printf("1 - Identificacao: %s\n", quart->descricao);
+            if (strcmp(quart->identificacao, ide)==0 && quart->status!=0){
+                do {
+                    printf("1 - Descricao: %s\n", quart->descricao);
                     printf("2 - Preco p/hora: %2.f\n", quart->preco);
                     printf("3 - Status: %d\n", quart->status);
                     printf("0 - Finalizar alteracoes.");
@@ -182,7 +181,7 @@ void edit_quart(void){
                     switch (opc)
                     {
                     case 1:
-                        w_identificacao(quart->descricao);
+                        w_descricao(quart->descricao);
                         break;
                     case 2:
                         w_preco(&(quart->preco));
@@ -197,8 +196,9 @@ void edit_quart(void){
                     }
                     fseek(fp, -1*(sizeof(Quarto)), SEEK_CUR);
                     fwrite(quart, sizeof(Quarto), 1, fp);
-                }
-            } while (opc!=0);
+                }while (opc!=0);
+                break;
+            } 
         }
         free(quart);
         fclose(fp);
@@ -230,6 +230,7 @@ void del_quart(void){
                 quart->status = 0;
                 fseek(fp, -1*(sizeof(Quarto)), SEEK_CUR);
                 fwrite(quart, sizeof(Quarto), 1, fp);
+                break;
             }
         }
     }else{

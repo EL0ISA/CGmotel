@@ -37,6 +37,7 @@ void menu_clientes(void){
             edit_cli();
             break;
         case 4:
+            system("clear||cls");
             printf("*-------------------------------------------------------------------------------*\n");
             printf("                 .......   Deletando cliente   .......                           \n");
             printf("*-------------------------------------------------------------------------------*\n");
@@ -157,9 +158,9 @@ void edit_cli(void){
     w_cpf(cpf);
     if(encont_cli(cpf,'I')==1){
         while(fread(cli,sizeof(Cliente), 1, fp)){
-            do
-            {
-                if (strcmp(cli->cpf, cpf)==0 && cli->status=='A') {
+            if (strcmp(cli->cpf, cpf)==0 && cli->status=='A') {
+                do
+                {
                     printf("1 - Email: %s\n", cli->email);
                     printf("2 - Nome: %s\n", cli->nome);
                     printf("3 - Data de Nascimento: %s\n", cli->nasc);
@@ -182,8 +183,9 @@ void edit_cli(void){
                     }
                     fseek(fp, -1*(sizeof(Cliente)), SEEK_CUR);
                     fwrite(cli, sizeof(Cliente), 1, fp);
-                }
-            } while (opc!=0);
+                }while (opc!=0);
+                break;
+            } 
         }
     }else{
         printf("- Cliente não encontrado!\n");
@@ -195,7 +197,6 @@ void edit_cli(void){
     getchar();
 }
 void del_cli(char cpf[]){
-    system("clear||cls");
     FILE* fp;
     Cliente* cli;
     cli = (Cliente*) malloc(sizeof(Cliente));
@@ -203,19 +204,23 @@ void del_cli(char cpf[]){
     if (fp == NULL) {
         printf("Não foi possivel abrir o arquivo!");
         getchar();
+        return;
     }
     if(encont_cli(cpf,'I')==1){
         while(fread(cli,sizeof(Cliente), 1, fp)){
-            if (strcmp(cli->cpf, cpf)==0) {
+            if ((strcmp(cli->cpf, cpf))==0) {
                 cli->status = 'I';
                 fseek(fp, -1*(sizeof(Cliente)), SEEK_CUR);
                 fwrite(cli, sizeof(Cliente), 1, fp);
+                break;
             }
         }
+    }else{
+        printf("- Cliente nao encontrado!");
     }
     fclose(fp);
     free(cli);
-    printf("*-------------------------------------------------------------------------------*\n");
+    printf("\n*-------------------------------------------------------------------------------*\n");
     printf("\t>> Digite ENTER para prosseguir!");
     getchar();
 }

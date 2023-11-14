@@ -4,7 +4,8 @@
 #include "funcionario.h"
 #include "auxiliares.h"
 
-void menu_funcionarios(void){
+void menu_funcionarios(void)
+{
     int opc;
     do
     {
@@ -20,41 +21,43 @@ void menu_funcionarios(void){
         printf("|                             0. Voltar                                         |\n");
         printf("*-------------------------------------------------------------------------------*\n");
         printf("-- Sua opc: ");
-        scanf("%d",&opc);
+        scanf("%d", &opc);
         getchar();
         fflush(stdin);
         switch (opc)
-            {
-            case 1:
-                cad_func();
-                break;
-            
-            case 2:
-                pesq_func();
-                break;
-            case 3:
-                edit_func();
-                break;
-            case 4:
-                del_func();
-                break;
-            case 5:
-                list_func();
-                break;
-            }
-    } while (opc!=0);
+        {
+        case 1:
+            cad_func();
+            break;
+
+        case 2:
+            pesq_func();
+            break;
+        case 3:
+            edit_func();
+            break;
+        case 4:
+            del_func();
+            break;
+        case 5:
+            list_func();
+            break;
+        }
+    } while (opc != 0);
 }
-void cad_func(void){
+void cad_func(void)
+{
     system("clear||cls");
     char cpf[12];
-    Funcionario* func;
-    func = (Funcionario*) malloc(sizeof(Funcionario));
+    Funcionario *func;
+    func = (Funcionario *)malloc(sizeof(Funcionario));
     printf("*-------------------------------------------------------------------------------*\n");
     printf("                 .......   Cadastrando novo funcionario   .......                \n");
     printf("*-------------------------------------------------------------------------------*\n");
     w_cpf(cpf);
-    if(encont_func(cpf,'I')==0){
-        strcpy(func->cpf,cpf);
+    if (encont_func(cpf, 'I') == 0)
+    {
+        strcpy(func->cpf, cpf);
         w_email(func->email);
         w_nome(func->nome);
         w_nasc(func->nasc);
@@ -63,9 +66,11 @@ void cad_func(void){
         printf("|                             2. Recepcao                                       |\n");
         printf("|                             3. Faxineiro(a)                                   |\n");
         w_funcao(&(func->funcao));
-        func->status='A';
+        func->status = 'A';
         grava_func(func);
-    }else{
+    }
+    else
+    {
         printf("- Funcionario ja cadastrado com esse CPF!\n");
     }
     printf("*-------------------------------------------------------------------------------*\n");
@@ -73,27 +78,33 @@ void cad_func(void){
     getchar();
     free(func);
 }
-void grava_func(Funcionario* func){
-    FILE* fp;
-    fp = fopen("funcionarios.dat","ab");
-    if (fp == NULL) {
+void grava_func(Funcionario *func)
+{
+    FILE *fp;
+    fp = fopen("funcionarios.dat", "ab");
+    if (fp == NULL)
+    {
         printf("Erro na abertura do arquivo\n");
-        exit(1);
+        return;
     }
     fwrite(func, sizeof(Funcionario), 1, fp);
     fclose(fp);
 }
-void list_func(void){
-    FILE* fp;
-    Funcionario* func;
-    func = (Funcionario*) malloc(sizeof(Funcionario));
+void list_func(void)
+{
+    FILE *fp;
+    Funcionario *func;
+    func = (Funcionario *)malloc(sizeof(Funcionario));
     fp = fopen("funcionarios.dat", "rb");
-    if (fp == NULL) {
+    if (fp == NULL)
+    {
         printf("Não foi possivel abrir o arquivo!");
         getchar();
     }
-    while(fread(func,sizeof(Funcionario), 1, fp)){
-        if(func->status!='I'){
+    while (fread(func, sizeof(Funcionario), 1, fp))
+    {
+        if (func->status != 'I')
+        {
             most_func(func);
         }
     }
@@ -101,7 +112,8 @@ void list_func(void){
     fclose(fp);
 }
 
-void most_func(Funcionario* func){
+void most_func(Funcionario *func)
+{
     printf("CPF: %s\n", func->cpf);
     printf("Email: %s\n", func->email);
     printf("Nome: %s\n", func->nome);
@@ -109,7 +121,8 @@ void most_func(Funcionario* func){
     printf("Status: %c\n", func->status);
     getchar();
 }
-void pesq_func(void){
+void pesq_func(void)
+{
     system("clear||cls");
     char cpf[12];
     printf("*-------------------------------------------------------------------------------*\n");
@@ -118,59 +131,66 @@ void pesq_func(void){
     w_cpf(cpf);
     printf("*-------------------------------------------------------------------------------*\n");
     printf("                 .......   Resultados Encontrados   .......                      \n");
-    encont_func(cpf,'M');
+    encont_func(cpf, 'M');
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>> Digite ENTER para prosseguir!");
     getchar();
 }
-int encont_func(char cpf[],char ope){
-    FILE* fp;
-    int existe=0;
-    Funcionario* func;
-    func = (Funcionario*) malloc(sizeof(Funcionario));
+int encont_func(char cpf[], char ope)
+{
+    FILE *fp;
+    int existe = 0;
+    Funcionario *func;
+    func = (Funcionario *)malloc(sizeof(Funcionario));
     fp = fopen("funcionarios.dat", "rb");
-    if (fp == NULL) {
-        fp = fopen("funcionarios.dat","ab");
+    if (fp == NULL)
+    {
+        fp = fopen("funcionarios.dat", "ab");
     }
-    while(fread(func,sizeof(Funcionario), 1, fp)){
-        if (strcmp(func->cpf, cpf)==0 && func->status=='A') {
-            if(ope=='M'){
+    while (fread(func, sizeof(Funcionario), 1, fp))
+    {
+        if (strcmp(func->cpf, cpf) == 0 && func->status == 'A')
+        {
+            if (ope == 'M')
+            {
                 most_func(func);
             }
-            existe=1;
+            existe = 1;
         }
     }
     free(func);
     fclose(fp);
     return existe;
 }
-void edit_func(void){
+void edit_func(void)
+{
     char cpf[12];
     int opc;
-    FILE* fp;
-    Funcionario* func;
-    func = (Funcionario*) malloc(sizeof(Funcionario));
-    fp = fopen("clientes.dat", "r+b");
+    FILE *fp;
+    Funcionario *func;
+    func = (Funcionario *)malloc(sizeof(Funcionario));
+    fp = fopen("funcionarios.dat", "r+b");
     system("clear||cls");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("                 .......   Atualizando dados de funcionario   .......            \n");
     printf("*-------------------------------------------------------------------------------*\n");
     w_cpf(cpf);
-    if (fp == NULL) {
+    if (fp == NULL)
+    {
         printf("Não foi possivel abrir o arquivo!");
         getchar();
     }
-    if(encont_func(cpf,'I')==1){
-        while(fread(func,sizeof(Funcionario), 1, fp)){
-            do
-            {
-                if (strcmp(func->cpf, cpf)==0 && func->status=='A') {
+    if (encont_func(cpf, 'I') == 1){
+        while (fread(func, sizeof(Funcionario), 1, fp)){
+            if (strcmp(func->cpf, cpf) == 0 && func->status == 'A') {
+                do
+                {
                     printf("1 - Email: %s\n", func->email);
                     printf("2 - Nome: %s\n", func->nome);
                     printf("3 - Data de Nascimento: %s\n", func->nasc);
                     printf("0 - Finalizar alteracoes.");
                     printf("\n -Campo que deseja editar:");
-                    scanf("%d",&opc);
+                    scanf("%d", &opc);
                     getchar();
                     fflush(stdin);
                     switch (opc)
@@ -185,12 +205,15 @@ void edit_func(void){
                         w_nasc(func->nasc);
                         break;
                     }
-                    fseek(fp, -1*(sizeof(Funcionario)), SEEK_CUR);
+                    fseek(fp, -1 * (sizeof(Funcionario)), SEEK_CUR);
                     fwrite(func, sizeof(Funcionario), 1, fp);
-                }
-            } while (opc!=0);
+                } while (opc!=0);
+                break;
+            }
         }
-    }else{
+    }
+    else
+    {
         printf("- Funcionario nao encontrado!\n");
     }
     free(func);
@@ -199,35 +222,44 @@ void edit_func(void){
     printf("\t>> Digite ENTER para prosseguir!");
     getchar();
 }
-void del_func(void){
+void del_func(void)
+{
     char cpf[12];
-    Funcionario* func;
-    FILE* fp;
-    func = (Funcionario*) malloc(sizeof(Funcionario));
+    Funcionario *func;
+    FILE *fp;
+    func = (Funcionario *)malloc(sizeof(Funcionario));
     system("clear||cls");
     printf("*-------------------------------------------------------------------------------*\n");
     printf("                 .......   Deletando funcionario   .......                       \n");
     printf("*-------------------------------------------------------------------------------*\n");
     w_cpf(cpf);
-    fp = fopen("clientes.dat", "r+b");
-    if (fp == NULL) {
+    fp = fopen("funcionarios.dat", "r+b");
+    if (fp == NULL)
+    {
         printf("Não foi possivel abrir o arquivo!");
         getchar();
     }
-    if(encont_func(cpf,'I')==1){
-        while(fread(func,sizeof(Funcionario), 1, fp)){
-            if (strcmp(func->cpf, cpf)==0) {
+    if (encont_func(cpf, 'I') == 1)
+    {
+        while (fread(func, sizeof(Funcionario), 1, fp) == 1)
+        {
+            if ((strcmp(func->cpf, cpf) == 0) && func->status == 'A')
+            {
                 func->status = 'I';
-                fseek(fp, -1*(sizeof(Funcionario)), SEEK_CUR);
+                fseek(fp, -1 * (sizeof(Funcionario)), SEEK_CUR);
                 fwrite(func, sizeof(Funcionario), 1, fp);
+                break;
             }
         }
-    }else{
+    }
+    else
+    {
         printf("- Funcionario nao encontrado!");
+        getchar();
     }
     fclose(fp);
     free(func);
-    printf("*-------------------------------------------------------------------------------*\n");
+    printf("\n*-------------------------------------------------------------------------------*\n");
     printf("\t>> Digite ENTER para prosseguir!");
     getchar();
 }
