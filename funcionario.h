@@ -13,7 +13,7 @@ void menu_funcionarios(void);
 void cad_func(void);
 void grava_func(Funcionario*);
 void most_func(Funcionario*);
-void list_func(void);
+void list_func(char ope);
 void pesq_func(void);
 int encont_func(char cpf[], char ope);
 void edit_func(void);

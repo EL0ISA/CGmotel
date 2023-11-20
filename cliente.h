@@ -12,7 +12,7 @@ void menu_clientes(void);
 void cad_cli(void);
 void grava_cli(Cliente*);
 void most_cli(Cliente*);
-void list_cli(void);
+void list_cli(char ope);
 void pesq_cli(void);
 int encont_cli(char cpf[], char ope);
 void edit_cli(void);

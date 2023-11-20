@@ -16,3 +16,4 @@ int verif_horas(char* choras);
 int verif_obs(char* obs);
 
 char* data_hora(char* data_hora, size_t tam);
+int data(char* nasc);

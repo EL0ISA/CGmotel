@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "cliente.h"
 #include "auxiliares.h"
+#include "uteis.h"
 
 void menu_clientes(void){
     int opc;
@@ -18,6 +20,7 @@ void menu_clientes(void){
         printf("|                             3. Atualizar dados                                |\n");
         printf("|                             4. Deletar cliente                                |\n");
         printf("|                             5. Listar todos                                   |\n");
+        printf("|                             6. Aniversariantes do mes                         |\n");
         printf("|                             0. Voltar                                         |\n");
         printf("*-------------------------------------------------------------------------------*\n");
         printf("-- Sua opc: ");
@@ -45,7 +48,10 @@ void menu_clientes(void){
             del_cli(cpf);
             break;
         case 5:
-            list_cli();
+            list_cli('T');
+            break;
+        case 6:
+            list_cli('A');
             break;
         }
     } while (opc!=0);
@@ -85,7 +91,7 @@ void grava_cli(Cliente* cli){
     fwrite(cli, sizeof(Cliente), 1, fp);
     fclose(fp);
 }
-void list_cli(void){
+void list_cli(char ope){
     FILE* fp;
     Cliente* cli;
     cli = (Cliente*) malloc(sizeof(Cliente));
@@ -95,10 +101,21 @@ void list_cli(void){
         getchar();
     }
     while(fread(cli,sizeof(Cliente), 1, fp)){
-        if(cli->status!='I'){
-            most_cli(cli);
+        if(ope=='T'){
+            if(cli->status!='I'){
+                most_cli(cli);
+            }
+        }
+        if(ope=='A'){
+            time_t t = time(NULL);
+            struct tm tm = *localtime(&t);
+            int m=data(cli->nasc);
+            if(m==(tm.tm_mon+1)){
+                most_cli(cli);
+            }
         }
     }
+    getchar();
     free(cli);
     fclose(fp);
 }

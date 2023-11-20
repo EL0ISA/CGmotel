@@ -150,6 +150,20 @@ int verif_email(char* email){
     }
     return 1;
 }
+int data(char* nasc){
+    char dia[2]="",mes[2]="";
+    int p_barra=0,s_barra=0;
+    for (int i = 0; nasc[i]!='/'; i++){
+        concatenar(dia,nasc[i]);
+        p_barra++;
+    }
+    for (int i = (p_barra+1); nasc[i]!='/'; i++){
+        concatenar(mes,nasc[i]);
+        s_barra++;
+    }
+    int m=atoi(mes);
+    return m;
+}
 int verif_nasc(char* nasc){
     int tam=strlen(nasc);
     char dia[2]="",mes[2]="",ano[4]="";

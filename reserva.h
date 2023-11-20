@@ -18,12 +18,12 @@ struct reserva {
 void menu_reservas(void);
 void pesq_reser(void);
 void encont_reser(char cliente[]);
-int bus_id_reser(int id);
+int bus_id_reser(int id, char ope);
 void del_reser(void);
 void checkin(void);
 void grava_reser(Reserva*);
 void most_reser(Reserva*);
-void list_reser(void);
+void list_reser(char ope);
 int criar_id(void);
 void checkout(void);
 void status_quart(char ide[],int ope);
