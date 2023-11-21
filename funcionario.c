@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "funcionario.h"
 #include "auxiliares.h"
+#include "uteis.h"
 
 void menu_funcionarios(void)
 {
@@ -18,6 +20,7 @@ void menu_funcionarios(void)
         printf("|                             3. Atualizar dados                                |\n");
         printf("|                             4. Deletar funcionario                            |\n");
         printf("|                             5. Listar todos                                   |\n");
+        printf("|                             6. Aniversariantes do mes                         |\n");
         printf("|                             0. Voltar                                         |\n");
         printf("*-------------------------------------------------------------------------------*\n");
         printf("-- Sua opc: ");
@@ -40,7 +43,10 @@ void menu_funcionarios(void)
             del_func();
             break;
         case 5:
-            list_func();
+            list_func('T');
+            break;
+        case 6:
+            list_func('A');
             break;
         }
     } while (opc != 0);
@@ -90,7 +96,7 @@ void grava_func(Funcionario *func)
     fwrite(func, sizeof(Funcionario), 1, fp);
     fclose(fp);
 }
-void list_func(void)
+void list_func(char ope)
 {
     FILE *fp;
     Funcionario *func;
@@ -103,11 +109,22 @@ void list_func(void)
     }
     while (fread(func, sizeof(Funcionario), 1, fp))
     {
-        if (func->status != 'I')
-        {
-            most_func(func);
+        if(ope=='T'){
+            if (func->status != 'I')
+            {
+                most_func(func);
+            }
+        }
+        if(ope=='A'){
+            time_t t = time(NULL);
+            struct tm tm = *localtime(&t);
+            int m=data(func->nasc);
+            if(m==(tm.tm_mon+1)){
+                most_func(func);
+            }
         }
     }
+    getchar();
     free(func);
     fclose(fp);
 }

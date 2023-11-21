@@ -18,6 +18,7 @@ void menu_quartos(void){
         printf("|                             3. Atualizar dados                                |\n");
         printf("|                             4. Deletar quarto                                 |\n");
         printf("|                             5. Listar tudo                                    |\n");
+        printf("|                             6. Monitoramento                                  |\n");
         printf("|                             0. Voltar                                         |\n");
         printf("*-------------------------------------------------------------------------------*\n");
         printf("-- Sua opc: ");
@@ -39,7 +40,7 @@ void menu_quartos(void){
             del_quart();
             break;
         case 5:
-            list_quart();
+            list_quart('T');
             break;
         case 6:
             monitoramento();
@@ -84,40 +85,44 @@ void grava_quart(Quarto* quart){
     fwrite(quart, sizeof(Quarto), 1, fp);
     fclose(fp);
 }
-void list_quart(void){
-    
+void list_quart(char ope){
     FILE* fp;
     Quarto* quart;
     quart = (Quarto*) malloc(sizeof(Quarto));
     fp = fopen("quartos.dat", "rb");
-    char nomeTrunc[10];
-    char precoTrunc[21];
     char ide[10];
-    size_t tamN,tamP;
     if (fp == NULL) {
         printf("Não foi possivel abrir o arquivo!");
-        exit(1);
+        getchar();
+        return;
     }
-    printf("*-------------------------------------------------------------------------------*\n");
-    printf("                     .......   Todos os quartos   .......                     \n");
+    if(ope=='T'){
+        printf("*-------------------------------------------------------------------------------*\n");
+        printf("                     .......   Todos os quartos   .......                     \n");
+    }
     printf("*-------------------------------------------------------------------------------*\n");
     printf("|   Identificacao               -    Preco por Hora                             |\n");
     printf("*-------------------------------------------------------------------------------*\n");
     while(fread(quart,sizeof(Quarto), 1, fp)){
-        if(quart->status!=0){
-            tamN = strlen(quart->identificacao);
-            snprintf(precoTrunc, sizeof(precoTrunc), "%.2f", quart->preco);
-            tamP = strlen(precoTrunc);
-            strncpy(nomeTrunc, quart->identificacao, tamN);
-            for (int i = tamN; i < 9; i++) {
-                nomeTrunc[i] = ' ';
+        if(ope=='T'){
+            if(quart->status!=0){
+                printf("|        %-20s -      %-42.2f |   \n", quart->identificacao, quart->preco);
             }
-            nomeTrunc[9] = '\0';
-            for (int j = tamP; j < 20; j++) {
-                precoTrunc[j] = ' ';
+        }
+        if(ope=='D'){
+            if(quart->status==1){
+                printf("|        %-20s -      %-42.2f |   \n", quart->identificacao, quart->preco);
             }
-            precoTrunc[20] = '\0';
-            printf("|   %-3s                     -    %-2s                     |\n",nomeTrunc,precoTrunc);
+        }
+        if(ope=='M'){
+            if(quart->status==2){
+                printf("|        %-20s -      %-42.2f |   \n", quart->identificacao, quart->preco);
+            }
+        }
+        if(ope=='L'){
+            if(quart->status==3){
+                printf("|        %-20s -      %-42.2f |   \n", quart->identificacao, quart->preco);
+            }
         }
     }
     do
@@ -301,11 +306,7 @@ void monitoramento(void){
                 system("clear||cls");
                 printf("*-------------------------------------------------------------------------------*\n");
                 printf("                 .......   Listando quartos os disponiveis   .......                \n");
-                printf("*-------------------------------------------------------------------------------*\n");
-                printf("|   Identificacao           -    Preco por Hora                                 |\n");
-                printf("*-------------------------------------------------------------------------------*\n");
-                printf("|   27E                     -    R$ 55                                          |\n");
-                printf("*-------------------------------------------------------------------------------*\n");
+                list_quart('D');
                 printf("\t>> Digite ENTER para prosseguir!");
                 getchar();
                 break;
@@ -313,11 +314,7 @@ void monitoramento(void){
                 system("clear||cls");
                 printf("*-------------------------------------------------------------------------------*\n");
                 printf("                 .......   Listando quartos em manutencao   .......              \n");
-                printf("*-------------------------------------------------------------------------------*\n");
-                printf("|   Identificacao           -    Preco por Hora                                 |\n");
-                printf("*-------------------------------------------------------------------------------*\n");
-                printf("|   27E                     -    R$ 55                                          |\n");
-                printf("*-------------------------------------------------------------------------------*\n");
+                list_quart('M');
                 printf("\t>> Digite ENTER para prosseguir!");
                 getchar();
                 break;
@@ -325,11 +322,7 @@ void monitoramento(void){
                 system("clear||cls");
                 printf("*-------------------------------------------------------------------------------*\n");
                 printf("                 .......   Listando quartos para limpeza   .......              \n");
-                printf("*-------------------------------------------------------------------------------*\n");
-                printf("|   Identificacao           -    Preco por Hora                                 |\n");
-                printf("*-------------------------------------------------------------------------------*\n");
-                printf("|   27E                     -    R$ 55                                          |\n");
-                printf("*-------------------------------------------------------------------------------*\n");
+                list_quart('L');
                 printf("\t>> Digite ENTER para prosseguir!");
                 getchar();
                 break;

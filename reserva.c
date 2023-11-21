@@ -19,6 +19,7 @@ void menu_reservas(void){
         printf("|                             2. Pesquisar                                      |\n");
         printf("|                             3. Check-out                                      |\n");
         printf("|                             4. Listar tudo                                    |\n");
+        printf("|                             5. Reservas sem Checkout                          |\n");
         printf("|                             0. Voltar                                         |\n");
         printf("*-------------------------------------------------------------------------------*\n");
         printf("-- Sua opc: ");
@@ -37,7 +38,10 @@ void menu_reservas(void){
                 checkout();
                 break;
             case 4:
-                list_reser();
+                list_reser('T');
+                break;
+            case 5:
+                list_reser('A');
                 break;
             }
     } while (opc!=0);
@@ -73,10 +77,9 @@ void encont_reser(char cliente[]){
     free(reser);
     fclose(fp);
 }
-int bus_id_reser(int id){
+int bus_id_reser(int id, char ope){
     FILE* fp;
     Reserva* reser;
-
     reser= (Reserva*) malloc(sizeof(Reserva));
     fp = fopen("reservas.dat", "rb");
     if (fp == NULL) {
@@ -84,6 +87,9 @@ int bus_id_reser(int id){
     }
     while(fread(reser,sizeof(Reserva), 1, fp)){
         if (reser->id== id && reser->status=='A' && reser->status=='A' && (reser->func_out==NULL || strcmp(reser->func_out,"")==0)) {
+            if(ope=='M'){
+                most_reser(reser);
+            }
             free(reser);
             fclose(fp);
             return 1;
@@ -165,7 +171,8 @@ void grava_reser(Reserva* reser){
     fwrite(reser, sizeof(Reserva), 1, fp);
     fclose(fp);
 }
-void list_reser(void){
+void list_reser(char ope){
+    int id;
     FILE* fp;
     Reserva* reser;
     reser = (Reserva*) malloc(sizeof(Reserva));
@@ -175,11 +182,34 @@ void list_reser(void){
         getchar();
         return;
     }
+    printf("*-------------------------------------------------------------------------------*\n");
+    printf("| ID      - Quarto               -    Cliente               - Custo total       |\n");
+    printf("*-------------------------------------------------------------------------------*\n");
     while(fread(reser,sizeof(Reserva), 1, fp)){
-        if(reser->status!='I'){
-            most_reser(reser);
+        if(ope=='T'){
+            if(reser->status!='I'){
+                printf("| %-6d - %-10s        -%-15s           -%-20.2f |   \n", reser->id,reser->quarto,reser->cliente,reser->ptotal);
+            }
+        }
+        if(ope=='A'){
+            if(reser->func_out==NULL || strcmp(reser->func_out,"")==0){
+                printf("| %-6d - %-10s        -%-15s           -%-20.2f |   \n", reser->id,reser->quarto,reser->cliente,reser->ptotal);
+            }
         }
     }
+    do
+    {
+        printf("- Digite o ID que deseja ver mais infor ou 0 p/voltar:\n");
+        scanf("%d",&id);
+        getchar();
+        fflush(stdin);
+        if(bus_id_reser(id,'I')==1){
+            bus_id_reser(id,'M');
+        }else{
+            printf("Identificacao invalida!");
+            getchar();
+        }
+    } while (id!=0);
     free(reser);
     fclose(fp);
 }
@@ -220,7 +250,7 @@ void checkout(void){
     if (fp == NULL) {
         printf("Não foi possivel abrir o arquivo!");
     }
-    if (bus_id_reser(id)==1){
+    if (bus_id_reser(id,'I')==1){
         while(fread(reser,sizeof(Reserva), 1, fp)){
             if (reser->id== id && reser->status=='A') {
                 printf("*-------------------------------------------------------------------------------*\n");
@@ -296,7 +326,7 @@ void del_reser(void){
         printf("Não foi possivel abrir o arquivo!");
         exit(1);
     }
-    if(bus_id_reser(id)==1){
+    if(bus_id_reser(id,'I')==1){
         while(fread(reser,sizeof(Reserva), 1, fp)){
             if (reser->id== id && reser->status=='A') {
                 reser->status='I';
