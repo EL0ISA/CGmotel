@@ -99,7 +99,9 @@ void list_cli(char ope){
     if (fp == NULL) {
         printf("- Nao clientes cadastrados!");
         getchar();
+        return;
     }
+    int ani=0;
     while(fread(cli,sizeof(Cliente), 1, fp)){
         if(ope=='T'){
             if(cli->status!='I'){
@@ -112,8 +114,12 @@ void list_cli(char ope){
             int m=data(cli->nasc);
             if(m==(tm.tm_mon+1)){
                 most_cli(cli);
+                ani=1;
             }
         }
+    }
+    if(ope=='A' && ani==0){
+        printf("- Nao ha aniversariantes esse mes.\n");
     }
     getchar();
     free(cli);
@@ -124,7 +130,6 @@ void most_cli(Cliente* cli){
     printf("Email: %s\n", cli->email);
     printf("Nome: %s\n", cli->nome);
     printf("Data de Nascimento: %s\n", cli->nasc);
-    getchar();
 }
 void pesq_cli(void){
     system("clear||cls");
