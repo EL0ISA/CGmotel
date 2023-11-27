@@ -190,7 +190,15 @@ void list_reser(char ope){
     while(fread(reser,sizeof(Reserva), 1, fp)){
         if(ope=='T'){
             if(reser->status!='I'){
-                printf("| %-6d - %-10s        -%-15s           -%-20.2f |   \n", reser->id,reser->quarto,reser->cliente,reser->ptotal);
+                FILE* fp;
+                Cliente* cli;
+                cli = (Cliente*) malloc(sizeof(Cliente));
+                fp = fopen("clientes.dat", "rb");
+                while(fread(cli,sizeof(Cliente), 1, fp)){
+                    if (strcmp(reser->cliente,cli->cpf)==0) {
+                        printf("| %-6d - %-10s        -%-15s           -%-20.2f |   \n", reser->id,reser->quarto,cli->nome,reser->ptotal);
+                    }
+                }
             }
         }
         if(ope=='A'){
