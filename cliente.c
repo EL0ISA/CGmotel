@@ -3,6 +3,7 @@
 #include <string.h>
 #include <time.h>
 #include "cliente.h"
+#include "reserva.h"
 #include "auxiliares.h"
 #include "uteis.h"
 
@@ -53,6 +54,9 @@ void menu_clientes(void){
         case 6:
             list_cli('A');
             break;
+        case 7:
+            list_cli('C');
+            break;
         }
     } while (opc!=0);
 }
@@ -99,7 +103,9 @@ void list_cli(char ope){
     if (fp == NULL) {
         printf("- Nao clientes cadastrados!");
         getchar();
+        return;
     }
+    int ani=0;
     while(fread(cli,sizeof(Cliente), 1, fp)){
         if(ope=='T'){
             if(cli->status!='I'){
@@ -112,8 +118,30 @@ void list_cli(char ope){
             int m=data(cli->nasc);
             if(m==(tm.tm_mon+1)){
                 most_cli(cli);
+                ani=1;
             }
         }
+        if(ope=='C'){
+            if(cli->status!='I'){
+                FILE* fr;
+                Reserva* reser;
+                reser = (Reserva*) malloc(sizeof(Reserva));
+                fr = fopen("reservas.dat", "rb");
+                if (fr == NULL) {
+                    fr = fopen("reservas.dat","ab");
+                }
+                while(fread(reser,sizeof(Reserva), 1, fr)){
+                    if (strcmp(reser->cliente, cli->cpf)==0 && (reser->func_out==NULL || strcmp(reser->func_out,"")==0)) {
+                        printf("| %-6d - %-10s        -%-15s      |   \n", reser->id,reser->quarto,cli->nome);
+                    }
+                }
+                free(reser);
+                fclose(fr);
+            }
+        }
+    }
+    if(ope=='A' && ani==0){
+        printf("- Nao ha aniversariantes esse mes.\n");
     }
     getchar();
     free(cli);
@@ -124,7 +152,6 @@ void most_cli(Cliente* cli){
     printf("Email: %s\n", cli->email);
     printf("Nome: %s\n", cli->nome);
     printf("Data de Nascimento: %s\n", cli->nasc);
-    getchar();
 }
 void pesq_cli(void){
     system("clear||cls");

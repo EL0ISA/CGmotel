@@ -86,7 +86,7 @@ int bus_id_reser(int id, char ope){
         printf("Não foi possivel abrir o arquivo!");
     }
     while(fread(reser,sizeof(Reserva), 1, fp)){
-        if (reser->id== id && reser->status=='A' && reser->status=='A' && (reser->func_out==NULL || strcmp(reser->func_out,"")==0)) {
+        if (reser->id== id && reser->status=='A' && (reser->func_out==NULL || strcmp(reser->func_out,"")==0)) {
             if(ope=='M'){
                 most_reser(reser);
             }
@@ -138,6 +138,8 @@ void checkin(void){
                                 reser->id=criar_id();
                                 data_hora(reser->hora_in, sizeof(reser->hora_in));
                                 status_quart(quarto,4);
+                                strcpy(reser->func_out,"");
+                                // reser->hora_out=NULL;
                                 grava_reser(reser);
                             }else{
                                 printf("- Funcionario nao encontrado!");
@@ -188,7 +190,15 @@ void list_reser(char ope){
     while(fread(reser,sizeof(Reserva), 1, fp)){
         if(ope=='T'){
             if(reser->status!='I'){
-                printf("| %-6d - %-10s        -%-15s           -%-20.2f |   \n", reser->id,reser->quarto,reser->cliente,reser->ptotal);
+                FILE* fp;
+                Cliente* cli;
+                cli = (Cliente*) malloc(sizeof(Cliente));
+                fp = fopen("clientes.dat", "rb");
+                while(fread(cli,sizeof(Cliente), 1, fp)){
+                    if (strcmp(reser->cliente,cli->cpf)==0) {
+                        printf("| %-6d - %-10s        -%-15s           -%-20.2f |   \n", reser->id,reser->quarto,cli->nome,reser->ptotal);
+                    }
+                }
             }
         }
         if(ope=='A'){
@@ -205,7 +215,7 @@ void list_reser(char ope){
         fflush(stdin);
         if(bus_id_reser(id,'I')==1){
             bus_id_reser(id,'M');
-        }else{
+        }else if(id!=0){
             printf("Identificacao invalida!");
             getchar();
         }

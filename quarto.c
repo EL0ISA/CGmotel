@@ -3,6 +3,7 @@
 #include <ctype.h>
 #include <string.h>
 #include "quarto.h"
+#include "reserva.h"
 #include "auxiliares.h"
 
 void menu_quartos(void){
@@ -19,6 +20,7 @@ void menu_quartos(void){
         printf("|                             4. Deletar quarto                                 |\n");
         printf("|                             5. Listar tudo                                    |\n");
         printf("|                             6. Monitoramento                                  |\n");
+        printf("|                             7. Quartos por cliente                            |\n");
         printf("|                             0. Voltar                                         |\n");
         printf("*-------------------------------------------------------------------------------*\n");
         printf("-- Sua opc: ");
@@ -44,6 +46,9 @@ void menu_quartos(void){
             break;
         case 6:
             monitoramento();
+            break;
+        case 7:
+            quart_cli();
             break;
         }
     } while (opc!=0);
@@ -166,6 +171,41 @@ void pesq_quart(void){
     w_identificacao(ide);
     printf("                 .......   Resultados Encontrados   .......                      \n");
     encont_quart(ide,'M');
+    printf("*-------------------------------------------------------------------------------*\n");
+    printf("\t>> Digite ENTER para prosseguir!");
+    getchar();
+}
+void quart_cli(void){
+    char cli[12];
+    system("clear||cls");
+    printf("*-------------------------------------------------------------------------------*\n");
+    printf("              .......   Listar quartos alugados por cliente   .......            \n");
+    printf("*-------------------------------------------------------------------------------*\n");
+    w_cliente(cli);
+    printf("                 .......   Resultados Encontrados   .......                      \n");
+    FILE* fp;
+    Quarto* quart;
+    quart = (Quarto*) malloc(sizeof(Quarto));
+    fp = fopen("quartos.dat", "rb");
+    if (fp == NULL) {
+        fp = fopen("quartos.dat","ab");
+    }
+    FILE* fr;
+    Reserva* reser;
+    reser = (Reserva*) malloc(sizeof(Reserva));
+    fr = fopen("reservas.dat", "rb");
+    printf("*-------------------------------------------------------------------------------*\n");
+    printf("| ID reserva                  - Quarto                  - Data                  |\n");
+    printf("*-------------------------------------------------------------------------------*\n");
+    while(fread(quart,sizeof(Quarto), 1, fp)){
+        while (fread(reser, sizeof(Reserva), 1, fr)){
+            if (strcmp(quart->identificacao, reser->quarto)==0 && strcmp(reser->cliente, cli)==0) {
+                printf("|   %-6d                    - %-10s          -%-10s        |   \n", reser->id,quart->identificacao,reser->hora_in);
+            }
+        }
+    }
+    free(quart);
+    fclose(fp);
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>> Digite ENTER para prosseguir!");
     getchar();
