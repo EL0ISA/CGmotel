@@ -3,6 +3,7 @@
 #include <string.h>
 #include <time.h>
 #include "funcionario.h"
+#include "reserva.h"
 #include "auxiliares.h"
 #include "uteis.h"
 
@@ -21,6 +22,8 @@ void menu_funcionarios(void)
         printf("|                             4. Deletar funcionario                            |\n");
         printf("|                             5. Listar todos                                   |\n");
         printf("|                             6. Aniversariantes do mes                         |\n");
+        printf("|                             7. Ordem Alfabetica                               |\n");
+        printf("|                             8. Ordem por mais reservas                        |\n");
         printf("|                             0. Voltar                                         |\n");
         printf("*-------------------------------------------------------------------------------*\n");
         printf("-- Sua opc: ");
@@ -47,6 +50,12 @@ void menu_funcionarios(void)
             break;
         case 6:
             list_func('A');
+            break;
+        case 7:
+            list_fun_alf();
+            break;
+        case 8:
+            list_fun_r();
             break;
         }
     } while (opc != 0);
@@ -284,5 +293,127 @@ void del_func(void)
     free(func);
     printf("\n*-------------------------------------------------------------------------------*\n");
     printf("\t>> Digite ENTER para prosseguir!");
+    getchar();
+}
+void list_fun_alf(void){
+    Funcionario *list;
+    list = NULL;
+    gerar_list_fun(&list);
+    exibir_list_fun(list);
+    del_list_fun(&list);
+}
+void list_fun_r(void){
+    Funcionario *list;
+    list = NULL;
+    gerar_reser_fun(&list);
+    exibir_list_fun(list);
+    del_list_fun(&list);
+}
+void gerar_list_fun(Funcionario **list){
+    FILE *fp;
+    Funcionario *fun;
+    del_list_fun(&(*list));
+    *list = NULL;
+    fp = fopen("funcionarios.dat","rb");
+    if (fp == NULL) {
+        printf("Erro na abertura do arquivo... \n");
+        return;
+    } else {
+        fun = (Funcionario *) malloc(sizeof(Funcionario));
+        while (fread(fun, sizeof(Funcionario), 1, fp)) {
+            if ((*list == NULL) || (strcmp(fun->nome, (*list)->nome) < 0)) {
+                fun->prox = *list;
+                *list = fun;
+            } else {
+                Funcionario* ant = *list;
+                Funcionario* at = (*list)->prox;
+                while ((at != NULL) && (strcmp(at->nome, fun->nome) < 0)) {
+                    ant = at;
+                    at = at->prox;
+                }
+                ant->prox = fun;
+                fun->prox = at;
+            }
+            fun = (Funcionario*) malloc(sizeof(Funcionario));
+        }
+        free(fun);
+        fclose(fp);
+    } 
+}
+void gerar_reser_fun(Funcionario **list){
+    FILE *fp;
+    Funcionario *fun;
+    del_list_fun(&(*list));
+    *list = NULL;
+    fp = fopen("funcionarios.dat","rb");
+    if (fp == NULL) {
+        printf("Erro na abertura do arquivo... \n");
+        return;
+    } else {
+        fun = (Funcionario *) malloc(sizeof(Funcionario));
+        while (fread(fun, sizeof(Funcionario), 1, fp)) {
+            if ((*list == NULL) || (cont_reser_fun(fun->cpf)>cont_reser_fun((*list)->cpf))) {
+                fun->prox = *list;
+                *list = fun;
+            } else {
+                Funcionario* ant = *list;
+                Funcionario* at = (*list)->prox;
+                while ((at != NULL) && (cont_reser_fun(ant->cpf)>cont_reser_fun(at->cpf))) {
+                    ant = at;
+                    at = at->prox;
+                }
+                ant->prox = fun;
+                fun->prox = at;
+            }
+            fun = (Funcionario*) malloc(sizeof(Funcionario));
+        }
+        free(fun);
+        fclose(fp);
+    } 
+}
+int cont_reser_fun(char funcionario[]){
+    FILE* fp;
+    Funcionario* fun;
+    int existe=0;
+    fun = (Funcionario*) malloc(sizeof(Funcionario));
+    fp = fopen("funcionarios.dat", "rb");
+    if (fp == NULL) {
+        fp = fopen("funcionarios.dat","ab");
+    }
+    while(fread(fun,sizeof(Funcionario), 1, fp)){
+        if (strcmp(fun->cpf,funcionario)==0 && fun->status=='A') {
+            FILE* fr;
+            Reserva* reser;
+            reser = (Reserva*) malloc(sizeof(Reserva));
+            fr = fopen("reservas.dat", "rb");
+            if (fr == NULL) {
+                fr = fopen("reservas.dat","ab");
+            }
+            while(fread(reser,sizeof(Reserva), 1, fr)){
+                if (strcmp(reser->func_in, funcionario)==0) {
+                    existe=existe+1;
+                }
+            }
+            free(reser);
+            fclose(fr);
+        }
+    }
+    free(fun);
+    fclose(fp);
+    return existe;
+}
+void del_list_fun(Funcionario **list){
+    Funcionario *fun;
+    while (*list != NULL) {
+        fun = *list;
+        *list = (*list)->prox;
+        free(fun);
+    }  
+}
+void exibir_list_fun(Funcionario *aux){
+    while (aux != NULL) {
+        printf("| %-15s - %-10s        -%-12s   -%-12d   |   \n", aux->nome, aux->nasc ,aux->cpf,cont_reser_fun(aux->cpf));
+        aux =aux->prox;
+	}
     getchar();
 }
