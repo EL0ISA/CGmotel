@@ -22,6 +22,8 @@ void menu_clientes(void){
         printf("|                             4. Deletar cliente                                |\n");
         printf("|                             5. Listar todos                                   |\n");
         printf("|                             6. Aniversariantes do mes                         |\n");
+        printf("|                             7. Ordem Alfabetica                               |\n");
+        printf("|                             8. Ordem por mais reservas                        |\n");
         printf("|                             0. Voltar                                         |\n");
         printf("*-------------------------------------------------------------------------------*\n");
         printf("-- Sua opc: ");
@@ -55,12 +57,31 @@ void menu_clientes(void){
             list_cli('A');
             break;
         case 7:
+            list_alf();
+            break;
+        case 8:
+            list_cli_r();
+            break;
+        case 9:
             list_cli('C');
             break;
         }
     } while (opc!=0);
 }
-
+void list_alf(void){
+    Cliente *list;
+    list = NULL;
+    gerar_list(&list);
+    exibir_list(list);
+    del_list(&list);
+}
+void list_cli_r(void){
+    Cliente *list;
+    list = NULL;
+    gerar_reser(&list);
+    exibir_list(list);
+    del_list(&list);
+}
 void cad_cli(void){
     system("clear||cls");
     char cpf[12];
@@ -266,5 +287,113 @@ void del_cli(char cpf[]){
     free(cli);
     printf("\n*-------------------------------------------------------------------------------*\n");
     printf("\t>> Digite ENTER para prosseguir!");
+    getchar();
+}
+void gerar_list(Cliente **list){
+    FILE *fp;
+    Cliente *cli;
+    del_list(&(*list));
+    *list = NULL;
+    fp = fopen("clientes.dat","rb");
+    if (fp == NULL) {
+        printf("Erro na abertura do arquivo... \n");
+        return;
+    } else {
+        cli = (Cliente *) malloc(sizeof(Cliente));
+        while (fread(cli, sizeof(Cliente), 1, fp)) {
+            if ((*list == NULL) || (strcmp(cli->nome, (*list)->nome) < 0)) {
+                cli->prox = *list;
+                *list = cli;
+            } else {
+                Cliente* ant = *list;
+                Cliente* at = (*list)->prox;
+                while ((at != NULL) && (strcmp(at->nome, cli->nome) < 0)) {
+                    ant = at;
+                    at = at->prox;
+                }
+                ant->prox = cli;
+                cli->prox = at;
+            }
+            cli = (Cliente*) malloc(sizeof(Cliente));
+        }
+        free(cli);
+        fclose(fp);
+    } 
+}
+void gerar_reser(Cliente **list){
+    FILE *fp;
+    Cliente *cli;
+    del_list(&(*list));
+    *list = NULL;
+    fp = fopen("clientes.dat","rb");
+    if (fp == NULL) {
+        printf("Erro na abertura do arquivo... \n");
+        return;
+    } else {
+        cli = (Cliente *) malloc(sizeof(Cliente));
+        while (fread(cli, sizeof(Cliente), 1, fp)) {
+            if ((*list == NULL) || (cont_reser(cli->cpf)>cont_reser((*list)->cpf))) {
+                cli->prox = *list;
+                *list = cli;
+            } else {
+                Cliente* ant = *list;
+                Cliente* at = (*list)->prox;
+                while ((at != NULL) && (cont_reser(ant->cpf)>cont_reser(at->cpf))) {
+                    ant = at;
+                    at = at->prox;
+                }
+                ant->prox = cli;
+                cli->prox = at;
+            }
+            cli = (Cliente*) malloc(sizeof(Cliente));
+        }
+        free(cli);
+        fclose(fp);
+    } 
+}
+int cont_reser(char cliente[]){
+    FILE* fp;
+    Cliente* cli;
+    int existe=0;
+    cli = (Cliente*) malloc(sizeof(Cliente));
+    fp = fopen("clientes.dat", "rb");
+    if (fp == NULL) {
+        fp = fopen("clientes.dat","ab");
+    }
+    while(fread(cli,sizeof(Cliente), 1, fp)){
+        if (strcmp(cli->cpf,cliente)==0 && cli->status=='A') {
+            FILE* fr;
+            Reserva* reser;
+            reser = (Reserva*) malloc(sizeof(Reserva));
+            fr = fopen("reservas.dat", "rb");
+            if (fr == NULL) {
+                fr = fopen("reservas.dat","ab");
+            }
+            while(fread(reser,sizeof(Reserva), 1, fr)){
+                if (strcmp(reser->cliente, cliente)==0) {
+                    existe=existe+1;
+                }
+            }
+            free(reser);
+            fclose(fr);
+        }
+    }
+    free(cli);
+    fclose(fp);
+    return existe;
+}
+void del_list(Cliente **list){
+    Cliente *cli;
+    while (*list != NULL) {
+        cli = *list;
+        *list = (*list)->prox;
+        free(cli);
+    }  
+}
+void exibir_list(Cliente *aux){
+    while (aux != NULL) {
+        printf("| %-15s - %-10s        -%-12s   -%-12d   |   \n", aux->nome, aux->nasc ,aux->cpf,cont_reser(aux->cpf));
+        aux =aux->prox;
+	}
     getchar();
 }
