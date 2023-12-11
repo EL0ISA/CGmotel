@@ -113,7 +113,7 @@ void list_func(char ope)
     fp = fopen("funcionarios.dat", "rb");
     if (fp == NULL)
     {
-        printf("- Nao clientes cadastrados!");
+        printf("- Nao funcionarios cadastrados!");
         getchar();
     }
     while (fread(func, sizeof(Funcionario), 1, fp))

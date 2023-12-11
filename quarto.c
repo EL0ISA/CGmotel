@@ -21,6 +21,7 @@ void menu_quartos(void){
         printf("|                             5. Listar tudo                                    |\n");
         printf("|                             6. Monitoramento                                  |\n");
         printf("|                             7. Quartos por cliente                            |\n");
+        printf("|                             8. Quartos ordenados por mais reservas            |\n");
         printf("|                             0. Voltar                                         |\n");
         printf("*-------------------------------------------------------------------------------*\n");
         printf("-- Sua opc: ");
@@ -49,6 +50,9 @@ void menu_quartos(void){
             break;
         case 7:
             quart_cli();
+            break;
+        case 8:
+            list_mais_reser();
             break;
         }
     } while (opc!=0);
@@ -369,4 +373,88 @@ void monitoramento(void){
             }
     } while (opc!=0);
     
+}
+void list_mais_reser(void){
+    Quarto *list;
+    list = NULL;
+    gerar_mais_reser(&list);
+    exibir_mais_reser(list);
+    del_mais_reser(&list);
+}
+void gerar_mais_reser(Quarto **list){
+    FILE *fp;
+    Quarto *quart;
+    del_mais_reser(&(*list));
+    *list = NULL;
+    fp = fopen("quartos.dat","rb");
+    if (fp == NULL) {
+        printf("Erro na abertura do arquivo... \n");
+        return;
+    } else {
+        quart = (Quarto*) malloc(sizeof(Quarto));
+        while (fread(quart, sizeof(Quarto), 1, fp)) {
+            if ((*list == NULL) || (cont_quart(quart->identificacao)>cont_quart((*list)->identificacao))) {
+                quart->prox = *list;
+                *list = quart;
+            } else {
+                Quarto* ant = *list;
+                Quarto* at = (*list)->prox;
+                while ((at != NULL) && (cont_quart(ant->identificacao)>cont_quart(at->identificacao))) {
+                    ant = at;
+                    at = at->prox;
+                }
+                ant->prox = quart;
+                quart->prox = at;
+            }
+            quart = (Quarto*) malloc(sizeof(Quarto));
+        }
+        free(quart);
+        fclose(fp);
+    } 
+}
+int cont_quart(char quarto[]){
+    FILE* fp;
+    Quarto* quart;
+    int existe=0;
+    quart = (Quarto*) malloc(sizeof(Quarto));
+    fp = fopen("quartos.dat", "rb");
+    if (fp == NULL) {
+        fp = fopen("quartos.dat","ab");
+    }
+    while(fread(quart,sizeof(Quarto), 1, fp)){
+        if (strcmp(quart->identificacao,quarto)==0) {
+            FILE* fr;
+            Reserva* reser;
+            reser = (Reserva*) malloc(sizeof(Reserva));
+            fr = fopen("reservas.dat", "rb");
+            if (fr == NULL) {
+                fr = fopen("reservas.dat","ab");
+            }
+            while(fread(reser,sizeof(Reserva), 1, fr)){
+                if (strcmp(reser->quarto, quarto)==0) {
+                    existe=existe+1;
+                }
+            }
+            free(reser);
+            fclose(fr);
+        }
+    }
+    free(quart);
+    fclose(fp);
+    return existe;
+}
+void del_mais_reser(Quarto **list){
+    Quarto*quart;
+    while (*list != NULL) {
+        quart = *list;
+        *list = (*list)->prox;
+        free(quart);
+    }  
+}
+void exibir_mais_reser(Quarto *aux){
+    while (aux != NULL) {
+        printf("| %-15s - %-12.2f   -%-12d   |   \n", aux->identificacao, aux->preco,cont_quart(aux->identificacao));
+        aux =aux->prox;
+	}
+    getchar();
 }

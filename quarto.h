@@ -5,6 +5,7 @@ struct quarto {
     char descricao[100];
     double preco;
     int status;
+    struct quarto *prox;
 };
 
 void menu_quartos(void);
@@ -19,3 +20,8 @@ int encont_quart(char ide[], char ope);
 void edit_quart(void);
 void del_quart(void);
 void monitoramento(void);
+void list_mais_reser(void);
+void gerar_mais_reser(Quarto **list);
+int cont_quart(char quarto[]);
+void del_mais_reser(Quarto **list);
+void exibir_mais_reser(Quarto *aux);
