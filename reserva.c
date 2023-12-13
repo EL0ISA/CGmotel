@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "reserva.h"
 #include "auxiliares.h"
 #include "quarto.h"
@@ -42,6 +43,9 @@ void menu_reservas(void){
                 break;
             case 5:
                 list_reser('A');
+                break;
+            case 6:
+                list_mais_rec();
                 break;
             }
     } while (opc!=0);
@@ -387,3 +391,74 @@ int criar_id(void) {
         return id;
     } 
 } 
+time_t data_form(char *data){
+    // Estrutura para armazenar a data e a hora
+    struct tm tm_result;
+    int day, month, year, hour, min, sec;
+    sscanf(data,"%d-%*d-%*d", &day);
+    sscanf(data,"%*d-%d", &month);
+    sscanf(data,"%*d-%*d-%d", &year);
+    sscanf(data,"%*d-%*d-%*d %d:%d:%d", &hour, &min, &sec);
+    tm_result.tm_mday = day;
+    tm_result.tm_mon = month - 1;  // Mês é indexado de 0 a 11
+    tm_result.tm_year = year - 1900;  // Ano é contado a partir de 1900
+    tm_result.tm_hour = hour;
+    tm_result.tm_min = min;
+    tm_result.tm_sec = sec;
+    return mktime(&tm_result);
+}
+void list_mais_rec(void){
+    Reserva *list;
+    list = NULL;
+    gerar_mais_rec(&list);
+    exibir_mais_rec(list);
+    del_mais_rec(&list);
+}
+void gerar_mais_rec(Reserva **list){
+    FILE *fp;
+    Reserva *reser;
+    del_mais_rec(&(*list));
+    *list = NULL;
+    fp = fopen("reservas.dat","rb");
+    time_t tem = time(NULL);
+    if (fp == NULL) {
+        printf("Erro na abertura do arquivo... \n");
+        return;
+    } else {
+        reser = (Reserva*) malloc(sizeof(Reserva));
+        
+        while (fread(reser, sizeof(Reserva), 1, fp)) {
+            if ((*list == NULL) || difftime(data_form((reser->hora_in)), tem)> difftime(data_form((*list)->hora_in),tem)) {
+                reser->prox = *list;
+                *list = reser;
+            } else {
+                Reserva* ant = *list;
+                Reserva* at = (*list)->prox;
+                while ((at != NULL) && (difftime(data_form(ant->hora_in), tem)> difftime(data_form(at->hora_in),tem))) {
+                    ant = at;
+                    at = at->prox;
+                }
+                ant->prox = reser;
+                reser->prox = at;
+            }
+            reser = (Reserva*) malloc(sizeof(Reserva));
+        }
+        free(reser);
+        fclose(fp);
+    } 
+}
+void del_mais_rec(Reserva **list){
+    Reserva*reser;
+    while (*list != NULL) {
+        reser = *list;
+        *list = (*list)->prox;
+        free(reser);
+    }  
+}
+void exibir_mais_rec(Reserva *aux){
+    while (aux != NULL) {
+        printf("| %-15d - %-12s      |   \n", aux->id, aux->quarto);
+        aux =aux->prox;
+	}
+    getchar();
+}
