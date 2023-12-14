@@ -181,6 +181,8 @@ void checkin(void){
             strcpy(reser->cliente,cliente);
             printf("|            - Informe o ID do quarto:");
             scanf("%d",&quarto);
+            getchar();
+            fflush(stdin);
             if(encont_quart(quarto,'I')==2){
                 FILE* fp;
                 Quarto* quart;
