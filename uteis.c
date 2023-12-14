@@ -268,7 +268,7 @@ int verif_funcao(char* cfuncao){
 }
 int verif_identificacao(char* identificacao){
     int tam=strlen(identificacao);
-    if (identificacao==NULL || strcmp(identificacao,"")==0){
+    if (identificacao==NULL){
         return 0;
     }
     for (int i = 0; i < tam; i++)
@@ -278,7 +278,7 @@ int verif_identificacao(char* identificacao){
         }
     }
     
-    if(tam>10){
+    if(tam>15){
         return 0;
     }
     return 1;

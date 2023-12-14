@@ -1,9 +1,10 @@
+#include <time.h>
 typedef struct reserva Reserva;
 
 struct reserva {
     int id;
     char cliente[12];
-    char quarto[10];
+    int quarto;
     char func_in[12];
     char func_out[12];
     char hora_in[20];
@@ -13,6 +14,7 @@ struct reserva {
     double padd;
     double ptotal;
     char status;
+    struct reserva *prox;
 };
 
 void menu_reservas(void);
@@ -24,7 +26,13 @@ void checkin(void);
 void grava_reser(Reserva*);
 void most_reser(Reserva*);
 void list_reser(char ope);
-int criar_id(void);
 void checkout(void);
-void status_quart(char ide[],int ope);
+void status_quart(int id,int ope);
 int cli_out(char cliente[]);
+void list_mais_rec(void);
+void gerar_mais_rec(Reserva **);
+void del_mais_rec(Reserva **);
+void exibir_mais_rec(Reserva*);
+time_t data_form(char *data);
+int reser_cont(void);
+int criar_id(void);

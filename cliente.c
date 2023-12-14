@@ -98,6 +98,32 @@ void cad_cli(void){
         w_nasc(cli->nasc);
         cli->status = 'A';
         grava_cli(cli);
+    }else if(encont_cli(cpf,'I')==1){
+        int op=-1;
+        printf("-- Um cliente desativado com esse ID ja cadastrado\n");
+        printf("-- Deseja reativa-lo:");
+        printf("1- Sim");
+        printf("2- Nao");
+        scanf("%d",&op);
+        if(op==1){
+            FILE *fp;
+            fp = fopen("clientes.dat", "r+b");
+            if (fp == NULL)
+            {
+                printf("Não foi possivel abrir o arquivo!");
+                getchar();
+                return;
+            }
+            while (fread(cli, sizeof(Cliente), 1, fp) == 1){
+                if ((strcmp(cli->cpf, cpf) == 0) && cli->status == 'I'){
+                    cli->status = 'A';
+                    fseek(fp, -1 * (sizeof(Cliente)), SEEK_CUR);
+                    fwrite(cli, sizeof(Cliente), 1, fp);
+                    break;
+                }
+            }
+            fclose(fp);
+        }
     }else{
         printf("- Cliente já cadastrado com esse CPF!\n");
     }
@@ -153,7 +179,7 @@ void list_cli(char ope){
                 }
                 while(fread(reser,sizeof(Reserva), 1, fr)){
                     if (strcmp(reser->cliente, cli->cpf)==0 && (reser->func_out==NULL || strcmp(reser->func_out,"")==0)) {
-                        printf("| %-6d - %-10s        -%-15s      |   \n", reser->id,reser->quarto,cli->nome);
+                        printf("| %-6d - %-10d        -%-15s      |   \n", reser->id,reser->quarto,cli->nome);
                     }
                 }
                 free(reser);
@@ -198,11 +224,14 @@ int encont_cli(char cpf[], char ope){
         fp = fopen("clientes.dat","ab");
     }
     while(fread(cli,sizeof(Cliente), 1, fp)){
-        if (strcmp(cli->cpf, cpf)==0 && cli->status=='A') {
-            if(ope=='M'){
-                most_cli(cli);
-            }
+        if (strcmp(cli->cpf, cpf)==0) {
             existe=1;
+            if(cli->status == 'A'){
+                if (ope == 'M') {
+                    most_cli(cli);
+                }
+            existe = 2; //existe e esta ativo
+            }
         }
     }
     free(cli);
@@ -221,7 +250,7 @@ void edit_cli(void){
     printf("                 .......   Atualizando dados de cliente   .......                \n");
     printf("*-------------------------------------------------------------------------------*\n");
     w_cpf(cpf);
-    if(encont_cli(cpf,'I')==1){
+    if(encont_cli(cpf,'I')==2){
         while(fread(cli,sizeof(Cliente), 1, fp)){
             if (strcmp(cli->cpf, cpf)==0 && cli->status=='A') {
                 do
@@ -271,7 +300,7 @@ void del_cli(char cpf[]){
         getchar();
         return;
     }
-    if(encont_cli(cpf,'I')==1){
+    if(encont_cli(cpf,'I')==2){
         while(fread(cli,sizeof(Cliente), 1, fp)){
             if ((strcmp(cli->cpf, cpf))==0) {
                 cli->status = 'I';
