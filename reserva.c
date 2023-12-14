@@ -115,11 +115,11 @@ void checkin(void){
     printf("                 .......   Cadastrando nova reserva   .......                    \n");
     printf("*-------------------------------------------------------------------------------*\n");
     w_cliente(cliente);
-    if(encont_cli(cliente,'I')==1){
+    if(encont_cli(cliente,'I')==2){
         if(cli_out(cliente)==0){
             strcpy(reser->cliente,cliente);
             w_quarto(quarto);
-            if(encont_quart(quarto,'I')==1){
+            if(encont_quart(quarto,'I')==2){
                 FILE* fp;
                 Quarto* quart;
                 quart = (Quarto*) malloc(sizeof(Quarto));
@@ -136,7 +136,7 @@ void checkin(void){
                             printf("                 .......   Realizando Check-in   .......                         \n");
                             printf("*-------------------------------------------------------------------------------*\n");
                             w_funcionario(funcionario);
-                            if(encont_func(funcionario,'I')==1){
+                            if(encont_func(funcionario,'I')==2){
                                 strcpy(reser->func_in,funcionario);
                                 reser->status='A';
                                 reser->id=criar_id();
@@ -146,21 +146,21 @@ void checkin(void){
                                 // reser->hora_out=NULL;
                                 grava_reser(reser);
                             }else{
-                                printf("- Funcionario nao encontrado!");
+                                printf("- Funcionario nao encontrado!\n");
                             }
                             break;
                         }
                     }
                 free(quart);
                 if(quart_dis==0){
-                    printf("- Quarto nao disponivel!");
+                    printf("- Quarto nao disponivel!\n");
                 }
             }else{
-                printf("- Quarto nao encontrado!");
+                printf("- Quarto nao encontrado!\n");
             }
         }
     }else{
-        printf("- Cliente nao encontrado!");
+        printf("- Cliente nao encontrado!\n");
     }
     printf("\n*-------------------------------------------------------------------------------*\n");
     printf("\t>> Digite ENTER para prosseguir!");
@@ -269,7 +269,7 @@ void checkout(void){
             if (reser->id== id && reser->status=='A') {
                 printf("*-------------------------------------------------------------------------------*\n");
                 w_funcionario(funcionario);
-                if(encont_func(funcionario,'I')==1){
+                if(encont_func(funcionario,'I')==2){
                     strcpy(reser->func_out,funcionario);
                     data_hora(reser->hora_out, sizeof(reser->hora_out));
                     fseek(fp, -1*(sizeof(Reserva)), SEEK_CUR);

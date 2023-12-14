@@ -83,6 +83,32 @@ void cad_func(void)
         w_funcao(&(func->funcao));
         func->status = 'A';
         grava_func(func);
+    }else if(encont_func(cpf,'I')==1){
+        int op=-1;
+        printf("-- Um cliente desativado com esse ID ja cadastrado\n");
+        printf("-- Deseja reativa-lo:");
+        printf("1- Sim");
+        printf("2- Nao");
+        scanf("%d",&op);
+        if(op==1){
+            FILE *fp;
+            fp = fopen("funcionarios.dat", "r+b");
+            if (fp == NULL)
+            {
+                printf("Não foi possivel abrir o arquivo!");
+                getchar();
+                return;
+            }
+            while (fread(func, sizeof(Funcionario), 1, fp) == 1){
+                if ((strcmp(func->cpf, cpf) == 0) && func->status == 'I'){
+                    func->status = 'A';
+                    fseek(fp, -1 * (sizeof(Funcionario)), SEEK_CUR);
+                    fwrite(func, sizeof(Funcionario), 1, fp);
+                    break;
+                }
+            }
+            fclose(fp);
+        }
     }
     else
     {
@@ -181,13 +207,15 @@ int encont_func(char cpf[], char ope)
     }
     while (fread(func, sizeof(Funcionario), 1, fp))
     {
-        if (strcmp(func->cpf, cpf) == 0 && func->status == 'A')
+        if (strcmp(func->cpf, cpf) == 0)
         {
-            if (ope == 'M')
-            {
-                most_func(func);
+            existe=1;
+            if(func->status == 'A'){
+                if (ope == 'M') {
+                    most_func(func);
+                }
+            existe = 2; //existe e esta ativo
             }
-            existe = 1;
         }
     }
     free(func);
@@ -212,7 +240,7 @@ void edit_func(void)
         printf("Não foi possivel abrir o arquivo!");
         getchar();
     }
-    if (encont_func(cpf, 'I') == 1){
+    if (encont_func(cpf, 'I') == 2){
         while (fread(func, sizeof(Funcionario), 1, fp)){
             if (strcmp(func->cpf, cpf) == 0 && func->status == 'A') {
                 do
@@ -271,7 +299,7 @@ void del_func(void)
         printf("Não foi possivel abrir o arquivo!");
         getchar();
     }
-    if (encont_func(cpf, 'I') == 1)
+    if (encont_func(cpf, 'I') == 2)
     {
         while (fread(func, sizeof(Funcionario), 1, fp) == 1)
         {

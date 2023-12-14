@@ -1,3 +1,4 @@
+//criar id.
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -77,7 +78,18 @@ void cad_quart(void){
         printf("|                             3. Limpando                                       |\n");
         w_status(&(quart->status));
         grava_quart(quart);
-    }else{
+    }else if(encont_quart(ide,'I')==1){
+        int op=-1;
+        printf("-- Um quarto desativado com esse ID ja cadastrado\n");
+        printf("-- Deseja reativa-lo:");
+        printf("1- Sim");
+        printf("2- Nao");
+        scanf("%d",&op);
+        if(op==1){
+            status_quart(ide,1);
+        }
+    }
+    else{
         printf("- Quarto já cadastrado com essa identificacao!\n");
     }
     printf("*-------------------------------------------------------------------------------*\n");
@@ -140,7 +152,7 @@ void list_quart(char ope){
         scanf("%[^\n]",ide);
         getchar();
         fflush(stdin);
-        if(encont_quart(ide,'I')==1){
+        if(encont_quart(ide,'I')==2){
             encont_quart(ide,'M');
         }else{
             printf("Identificacao invalida!");
@@ -224,11 +236,14 @@ int encont_quart(char ide[], char ope){
         fp = fopen("quartos.dat","ab");
     }
     while(fread(quart,sizeof(Quarto), 1, fp)){
-        if (strcmp(quart->identificacao, ide)==0 && quart->status!=0) {
-            if(ope=='M'){
-                most_quart(quart);
-            }
+        if (strcmp(quart->identificacao, ide)==0) {
             existe=1;
+            if(quart->status!=0){
+                if(ope=='M'){
+                    most_quart(quart);
+                }
+                existe=2; //existe e esta ativo   
+            }
         }
     }
     free(quart);
@@ -247,7 +262,7 @@ void edit_quart(void){
     printf("                 .......   Atualizando dados de quarto   .......                 \n");
     printf("*-------------------------------------------------------------------------------*\n");
     w_identificacao(ide);
-    if(encont_quart(ide,'I')==1){
+    if(encont_quart(ide,'I')==2){
         if (fp == NULL) {
             printf("Não foi possivel abrir o arquivo!");
             exit(1);
@@ -309,7 +324,7 @@ void del_quart(void){
     if (fp == NULL) {
         printf("Não foi possivel abrir o arquivo!");
     }
-    if(encont_quart(ide,'I')==1){
+    if(encont_quart(ide,'I')==2){
         while(fread(quart,sizeof(Quarto), 1, fp)){
             if (strcmp(quart->identificacao, ide)==0) {
                 quart->status = 0;
