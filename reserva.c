@@ -10,6 +10,7 @@
 #include "uteis.h"
 void menu_reservas(void){
     int opc;
+    int id;
     do
     {
         system("clear||cls");
@@ -39,13 +40,73 @@ void menu_reservas(void){
                 checkout();
                 break;
             case 4:
-                list_reser('T');
+                if (reser_cont()==0){
+                    printf("Nao ha reservas ativas/cadastradas!");
+                }else{
+                    do {
+                        system("clear||cls");
+                        printf("*-------------------------------------------------------------------------------*\n");
+                        printf("                .......   Todas as reservas ativas   .......                      \n");
+                        printf("*-------------------------------------------------------------------------------*\n");
+                        list_reser('T');
+                        printf("- Digite o ID que deseja ver mais infor ou 0 p/voltar:\n");
+                        scanf("%d",&id);
+                        getchar();
+                        fflush(stdin);
+                        if(bus_id_reser(id,'I')==1){
+                            bus_id_reser(id,'M');
+                        }else if(id!=0){
+                            printf("Identificacao invalida!");
+                            getchar();
+                        }
+                    } while (id!=0);
+                }
                 break;
             case 5:
-                list_reser('A');
+                if (reser_cont()==0){
+                    printf("Nao ha reservas ativas/cadastradas!");
+                }else{
+                    do {
+                        system("clear||cls");
+                        printf("*-------------------------------------------------------------------------------*\n");
+                        printf("         .......   Todas as reservas que estao sem checkout   .......            \n");
+                        printf("*-------------------------------------------------------------------------------*\n");
+                        list_reser('A');
+                        printf("- Digite o ID que deseja ver mais infor ou 0 p/voltar:\n");
+                        scanf("%d",&id);
+                        getchar();
+                        fflush(stdin);
+                        if(bus_id_reser(id,'I')==1){
+                            bus_id_reser(id,'M');
+                        }else if(id!=0){
+                            printf("Identificacao invalida!");
+                            getchar();
+                        }
+                    } while (id!=0);
+                }
                 break;
             case 6:
-                list_mais_rec();
+                if (reser_cont()==0){
+                    printf("Nao ha reservas ativas/cadastradas!");
+                }else{
+                    do {
+                        system("clear||cls");
+                        printf("*-------------------------------------------------------------------------------*\n");
+                        printf("       .......   Reservas ordenas a partir da mais recentes   .......            \n");
+                        printf("*-------------------------------------------------------------------------------*\n");
+                        list_mais_rec();
+                        printf("- Digite o ID que deseja ver mais infor ou 0 p/voltar:\n");
+                        scanf("%d",&id);
+                        getchar();
+                        fflush(stdin);
+                        if(bus_id_reser(id,'I')==1){
+                            bus_id_reser(id,'M');
+                        }else if(id!=0){
+                            printf("Identificacao invalida!");
+                            getchar();
+                        }
+                    } while (id!=0);
+                }
                 break;
             }
     } while (opc!=0);
@@ -106,7 +167,7 @@ int bus_id_reser(int id, char ope){
 void checkin(void){
     system("clear||cls");
     char cliente[12];
-    char quarto[10];
+    int quarto;
     char funcionario[12];
     int quart_dis=0;
     Reserva* reser;
@@ -118,15 +179,16 @@ void checkin(void){
     if(encont_cli(cliente,'I')==2){
         if(cli_out(cliente)==0){
             strcpy(reser->cliente,cliente);
-            w_quarto(quarto);
+            printf("|            - Informe o ID do quarto:");
+            scanf("%d",&quarto);
             if(encont_quart(quarto,'I')==2){
                 FILE* fp;
                 Quarto* quart;
                 quart = (Quarto*) malloc(sizeof(Quarto));
                 fp = fopen("quartos.dat", "rb");
                     while(fread(quart,sizeof(Quarto), 1, fp)){
-                        if (strcmp(quart->identificacao,quarto)==0 && quart->status==1) {
-                            strcpy(reser->quarto,quarto);
+                        if (quart->id==quarto && quart->status==1) {
+                            reser->quarto=quarto;
                             quart_dis=1;
                             w_horas(&(reser->horas));
                             w_obs(reser->obs);
@@ -177,8 +239,24 @@ void grava_reser(Reserva* reser){
     fwrite(reser, sizeof(Reserva), 1, fp);
     fclose(fp);
 }
+int reser_cont(void){
+    FILE* fp;
+    Reserva* reser;
+    reser = (Reserva*) malloc(sizeof(Reserva));
+    fp = fopen("reservas.dat", "rb");
+    int cont=0;
+    if (fp == NULL) {
+        return 0;
+    }
+    while(fread(reser,sizeof(Reserva), 1, fp)){
+        if(reser->status!='I'){
+            cont++;
+        }
+
+    }
+    return cont;
+}
 void list_reser(char ope){
-    int id;
     FILE* fp;
     Reserva* reser;
     reser = (Reserva*) malloc(sizeof(Reserva));
@@ -200,30 +278,17 @@ void list_reser(char ope){
                 fp = fopen("clientes.dat", "rb");
                 while(fread(cli,sizeof(Cliente), 1, fp)){
                     if (strcmp(reser->cliente,cli->cpf)==0) {
-                        printf("| %-6d - %-10s        -%-15s           -%-20.2f |   \n", reser->id,reser->quarto,cli->nome,reser->ptotal);
+                        printf("| %-6d - %-10d        -%-15s           -%-20.2f |   \n", reser->id,reser->quarto,cli->nome,reser->ptotal);
                     }
                 }
             }
         }
         if(ope=='A'){
             if(reser->func_out==NULL || strcmp(reser->func_out,"")==0){
-                printf("| %-6d - %-10s        -%-15s           -%-20.2f |   \n", reser->id,reser->quarto,reser->cliente,reser->ptotal);
+                printf("| %-6d - %-10d        -%-15s           -%-20.2f |   \n", reser->id,reser->quarto,reser->cliente,reser->ptotal);
             }
         }
     }
-    do
-    {
-        printf("- Digite o ID que deseja ver mais infor ou 0 p/voltar:\n");
-        scanf("%d",&id);
-        getchar();
-        fflush(stdin);
-        if(bus_id_reser(id,'I')==1){
-            bus_id_reser(id,'M');
-        }else if(id!=0){
-            printf("Identificacao invalida!");
-            getchar();
-        }
-    } while (id!=0);
     free(reser);
     fclose(fp);
 }
@@ -231,7 +296,7 @@ void most_reser(Reserva* reser){
     printf("\n*-------------------------------------------------------------------------------*\n");
     printf("ID: %d\n", reser->id);
     printf("Cliente: %s\n", reser->cliente);
-    printf("Quarto: %s\n", reser->quarto);
+    printf("Quarto: %d\n", reser->quarto);
     printf("Observacao: %s\n", reser->obs);
     printf("Preco adicional: %.2f\n", reser->padd);
     printf("Horas de reserva: %d\n", reser->horas);
@@ -355,13 +420,13 @@ void del_reser(void){
     printf("\t>> Digite ENTER para prosseguir!");
     getchar();
 }
-void status_quart(char ide[],int ope){
+void status_quart(int id,int ope){
     Quarto* quart;
     FILE* fp;
     quart = (Quarto*) malloc(sizeof(Quarto));
     fp = fopen("quartos.dat", "r+b");
         while(fread(quart,sizeof(Quarto), 1, fp)){
-            if (strcmp(quart->identificacao, ide)==0) {
+            if (quart->id== id) {
                 quart->status = ope;
                 fseek(fp, -1*(sizeof(Quarto)), SEEK_CUR);
                 fwrite(quart, sizeof(Quarto), 1, fp);
@@ -457,8 +522,15 @@ void del_mais_rec(Reserva **list){
 }
 void exibir_mais_rec(Reserva *aux){
     while (aux != NULL) {
-        printf("| %-15d - %-12s      |   \n", aux->id, aux->quarto);
+        FILE* fp;
+        Cliente* cli;
+        cli = (Cliente*) malloc(sizeof(Cliente));
+        fp = fopen("clientes.dat", "rb");
+        while(fread(cli,sizeof(Cliente), 1, fp)){
+            if (strcmp(aux->cliente,cli->cpf)==0) {
+                printf("| %-6d - %-10d        -%-15s           -%-20.2f |   \n", aux->id,aux->quarto,cli->nome,aux->ptotal);
+            }
+        }
         aux =aux->prox;
 	}
-    getchar();
 }

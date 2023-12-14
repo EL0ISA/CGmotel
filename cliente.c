@@ -179,7 +179,7 @@ void list_cli(char ope){
                 }
                 while(fread(reser,sizeof(Reserva), 1, fr)){
                     if (strcmp(reser->cliente, cli->cpf)==0 && (reser->func_out==NULL || strcmp(reser->func_out,"")==0)) {
-                        printf("| %-6d - %-10s        -%-15s      |   \n", reser->id,reser->quarto,cli->nome);
+                        printf("| %-6d - %-10d        -%-15s      |   \n", reser->id,reser->quarto,cli->nome);
                     }
                 }
                 free(reser);

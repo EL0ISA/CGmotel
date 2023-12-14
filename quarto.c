@@ -9,6 +9,7 @@
 
 void menu_quartos(void){
     int opc;
+    int id;
     do
     {
         system("clear||cls");
@@ -44,7 +45,24 @@ void menu_quartos(void){
             del_quart();
             break;
         case 5:
-            list_quart('T');
+            if (cont_q()==0){
+                    printf("Nao ha quartos ativas/cadastradas!");
+            }else{
+                do {
+                    system("clear||cls");
+                    list_quart('T');
+                    printf("- Digite o ID que deseja ver mais infor ou 0 p/voltar:\n");
+                    scanf("%d",&id);
+                    getchar();
+                    fflush(stdin);
+                    if(bus_id_reser(id,'I')==1){
+                        bus_id_reser(id,'M');
+                    }else if(id!=0){
+                        printf("Identificacao invalida!");
+                        getchar();
+                    }
+                } while (id!=0);
+            }
             break;
         case 6:
             monitoramento();
@@ -53,7 +71,24 @@ void menu_quartos(void){
             quart_cli();
             break;
         case 8:
-            list_mais_reser();
+            if (cont_q()==0){
+                    printf("Nao ha quartos ativas/cadastradas!");
+            }else{
+                do {
+                    system("clear||cls");
+                    list_mais_reser();
+                    printf("- Digite o ID que deseja ver mais infor ou 0 p/voltar:\n");
+                    scanf("%d",&id);
+                    getchar();
+                    fflush(stdin);
+                    if(bus_id_reser(id,'I')==1){
+                        bus_id_reser(id,'M');
+                    }else if(id!=0){
+                        printf("Identificacao invalida!");
+                        getchar();
+                    }
+                } while (id!=0);
+            }
             break;
         }
     } while (opc!=0);
@@ -68,30 +103,16 @@ void cad_quart(void){
     printf("                 .......   Cadastrando novo quarto   .......                     \n");
     printf("*-------------------------------------------------------------------------------*\n");
     w_identificacao(ide);
-    if(encont_quart(ide,'I')==0){
-        strcpy(quart->identificacao,ide);
-        w_descricao(quart->descricao);
-        w_preco(&(quart->preco));
-        printf("                    .......   Status do quarto   .......            \n");
-        printf("|                             1. Disponivel                                     |\n");
-        printf("|                             2. Manutencao                                     |\n");
-        printf("|                             3. Limpando                                       |\n");
-        w_status(&(quart->status));
-        grava_quart(quart);
-    }else if(encont_quart(ide,'I')==1){
-        int op=-1;
-        printf("-- Um quarto desativado com esse ID ja cadastrado\n");
-        printf("-- Deseja reativa-lo:");
-        printf("1- Sim");
-        printf("2- Nao");
-        scanf("%d",&op);
-        if(op==1){
-            status_quart(ide,1);
-        }
-    }
-    else{
-        printf("- Quarto já cadastrado com essa identificacao!\n");
-    }
+    strcpy(quart->identificacao,ide);
+    w_descricao(quart->descricao);
+    w_preco(&(quart->preco));
+    printf("                    .......   Status do quarto   .......            \n");
+    printf("|                             1. Disponivel                                     |\n");
+    printf("|                             2. Manutencao                                     |\n");
+    printf("|                             3. Limpando                                       |\n");
+    w_status(&(quart->status));
+    quart->id=criar_id_quar();
+    grava_quart(quart);
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>> Digite ENTER para prosseguir!");
     getchar();
@@ -101,7 +122,7 @@ void grava_quart(Quarto* quart){
     fp = fopen("quartos.dat","ab");
     if (fp == NULL) {
         printf("Erro na abertura do arquivo\n");
-        exit(1);
+        return;
     }
     fwrite(quart, sizeof(Quarto), 1, fp);
     fclose(fp);
@@ -111,7 +132,6 @@ void list_quart(char ope){
     Quarto* quart;
     quart = (Quarto*) malloc(sizeof(Quarto));
     fp = fopen("quartos.dat", "rb");
-    char ide[10];
     if (fp == NULL) {
         printf("Não foi possivel abrir o arquivo!");
         getchar();
@@ -146,19 +166,6 @@ void list_quart(char ope){
             }
         }
     }
-    do
-    {
-        printf("- Digite a identificacao do quarto que deseja ver mais infor ou 0 p/voltar:\n");
-        scanf("%[^\n]",ide);
-        getchar();
-        fflush(stdin);
-        if(encont_quart(ide,'I')==2){
-            encont_quart(ide,'M');
-        }else{
-            printf("Identificacao invalida!");
-            getchar();
-        }
-    } while (strcmp(ide,"0")!=0);
     free(quart);
     fclose(fp);
 }
@@ -186,7 +193,7 @@ void pesq_quart(void){
     printf("*-------------------------------------------------------------------------------*\n");
     w_identificacao(ide);
     printf("                 .......   Resultados Encontrados   .......                      \n");
-    encont_quart(ide,'M');
+    bus_quart(ide);
     printf("*-------------------------------------------------------------------------------*\n");
     printf("\t>> Digite ENTER para prosseguir!");
     getchar();
@@ -205,6 +212,7 @@ void quart_cli(void){
     fp = fopen("quartos.dat", "rb");
     if (fp == NULL) {
         fp = fopen("quartos.dat","ab");
+        return;
     }
     FILE* fr;
     Reserva* reser;
@@ -215,7 +223,7 @@ void quart_cli(void){
     printf("*-------------------------------------------------------------------------------*\n");
     while(fread(quart,sizeof(Quarto), 1, fp)){
         while (fread(reser, sizeof(Reserva), 1, fr)){
-            if (strcmp(quart->identificacao, reser->quarto)==0 && strcmp(reser->cliente, cli)==0) {
+            if (quart->id==reser->quarto && strcmp(reser->cliente, cli)==0) {
                 printf("|   %-6d                    - %-10s          -%-10s        |   \n", reser->id,quart->identificacao,reser->hora_in);
             }
         }
@@ -226,7 +234,43 @@ void quart_cli(void){
     printf("\t>> Digite ENTER para prosseguir!");
     getchar();
 }
-int encont_quart(char ide[], char ope){
+int cont_q(void){
+    FILE* fp;
+    Quarto* quart;
+    quart = (Quarto*) malloc(sizeof(Quarto));
+    fp = fopen("quartos.dat", "rb");
+    int cont=0;
+    if (fp == NULL) {
+        return 0;
+    }
+    while(fread(quart,sizeof(Quarto), 1, fp)){
+        if(quart->status!=0){
+            cont++;
+        }
+
+    }
+    return cont;
+}
+void bus_quart(char ide[]){
+    FILE* fp;
+    Quarto* quart;
+    quart = (Quarto*) malloc(sizeof(Quarto));
+    fp = fopen("quartos.dat", "rb");
+    if (fp == NULL) {
+        fp = fopen("quartos.dat","ab");
+        return;
+    }
+    while(fread(quart,sizeof(Quarto), 1, fp)){
+        if (strstr(quart->identificacao, ide) != NULL) {
+            if(quart->status!=0){
+                most_quart(quart);
+            }
+        }
+    }
+    free(quart);
+    fclose(fp);
+}
+int encont_quart(int id, char ope){
     FILE* fp;
     Quarto* quart;
     int existe=0;
@@ -236,7 +280,7 @@ int encont_quart(char ide[], char ope){
         fp = fopen("quartos.dat","ab");
     }
     while(fread(quart,sizeof(Quarto), 1, fp)){
-        if (strcmp(quart->identificacao, ide)==0) {
+        if (quart->id== id) {
             existe=1;
             if(quart->status!=0){
                 if(ope=='M'){
@@ -251,8 +295,8 @@ int encont_quart(char ide[], char ope){
     return existe;
 }
 void edit_quart(void){
-    char ide[12];
     int opc;
+    int id;
     FILE* fp;
     Quarto* quart;
     quart = (Quarto*) malloc(sizeof(Quarto));
@@ -261,14 +305,15 @@ void edit_quart(void){
     printf("*-------------------------------------------------------------------------------*\n");
     printf("                 .......   Atualizando dados de quarto   .......                 \n");
     printf("*-------------------------------------------------------------------------------*\n");
-    w_identificacao(ide);
-    if(encont_quart(ide,'I')==2){
+    printf("|            - Informe o ID do quarto:");
+    scanf("%d",&id);
+    if(encont_quart(id,'I')==2){
         if (fp == NULL) {
             printf("Não foi possivel abrir o arquivo!");
             exit(1);
         }
         while(fread(quart,sizeof(Quarto), 1, fp)){
-            if (strcmp(quart->identificacao, ide)==0 && quart->status!=0){
+            if (quart->id== id && quart->status!=0){
                 do {
                     printf("1 - Descricao: %s\n", quart->descricao);
                     printf("2 - Preco p/hora: %2.f\n", quart->preco);
@@ -311,7 +356,7 @@ void edit_quart(void){
 }
 void del_quart(void){
     system("clear||cls");
-    char ide[10];
+    int id;
     Quarto* quart;
     FILE* fp;
     quart = (Quarto*) malloc(sizeof(Quarto));
@@ -319,14 +364,15 @@ void del_quart(void){
     printf("*-------------------------------------------------------------------------------*\n");
     printf("                 .......   Deletando dados de quarto   .......                   \n");
     printf("*-------------------------------------------------------------------------------*\n");
-    w_identificacao(ide);
+    printf("|            - Informe o ID do quarto:");
+    scanf("%d",&id);
     fp = fopen("quartos.dat", "r+b");
     if (fp == NULL) {
         printf("Não foi possivel abrir o arquivo!");
     }
-    if(encont_quart(ide,'I')==2){
+    if(encont_quart(id,'I')==2){
         while(fread(quart,sizeof(Quarto), 1, fp)){
-            if (strcmp(quart->identificacao, ide)==0) {
+            if (quart->id== id) {
                 quart->status = 0;
                 fseek(fp, -1*(sizeof(Quarto)), SEEK_CUR);
                 fwrite(quart, sizeof(Quarto), 1, fp);
@@ -408,13 +454,13 @@ void gerar_mais_reser(Quarto **list){
     } else {
         quart = (Quarto*) malloc(sizeof(Quarto));
         while (fread(quart, sizeof(Quarto), 1, fp)) {
-            if ((*list == NULL) || (cont_quart(quart->identificacao)>cont_quart((*list)->identificacao))) {
+            if ((*list == NULL) || (cont_quart(quart->id)>cont_quart((*list)->id))) {
                 quart->prox = *list;
                 *list = quart;
             } else {
                 Quarto* ant = *list;
                 Quarto* at = (*list)->prox;
-                while ((at != NULL) && (cont_quart(ant->identificacao)>cont_quart(at->identificacao))) {
+                while ((at != NULL) && (cont_quart(ant->id)>cont_quart(at->id))) {
                     ant = at;
                     at = at->prox;
                 }
@@ -427,7 +473,7 @@ void gerar_mais_reser(Quarto **list){
         fclose(fp);
     } 
 }
-int cont_quart(char quarto[]){
+int cont_quart(int quarto){
     FILE* fp;
     Quarto* quart;
     int existe=0;
@@ -437,7 +483,7 @@ int cont_quart(char quarto[]){
         fp = fopen("quartos.dat","ab");
     }
     while(fread(quart,sizeof(Quarto), 1, fp)){
-        if (strcmp(quart->identificacao,quarto)==0) {
+        if (quart->id==quarto) {
             FILE* fr;
             Reserva* reser;
             reser = (Reserva*) malloc(sizeof(Reserva));
@@ -446,7 +492,7 @@ int cont_quart(char quarto[]){
                 fr = fopen("reservas.dat","ab");
             }
             while(fread(reser,sizeof(Reserva), 1, fr)){
-                if (strcmp(reser->quarto, quarto)==0) {
+                if (reser->quarto==quarto) {
                     existe=existe+1;
                 }
             }
@@ -468,8 +514,26 @@ void del_mais_reser(Quarto **list){
 }
 void exibir_mais_reser(Quarto *aux){
     while (aux != NULL) {
-        printf("| %-15s - %-12.2f   -%-12d   |   \n", aux->identificacao, aux->preco,cont_quart(aux->identificacao));
+        printf("| %-15s - %-12.2f   -%-12d   |   \n", aux->identificacao, aux->preco,cont_quart(aux->id));
         aux =aux->prox;
 	}
     getchar();
 }
+int criar_id_quar(void) {
+    FILE *arquivo = fopen("reservas.dat", "rb");
+    if (arquivo == NULL){
+        return 1;
+    }
+    fseek(arquivo, 0, SEEK_END);
+    if ((long)ftell(arquivo)==0){
+        fclose(arquivo);
+        return 1;
+    } else {
+        fseek(arquivo, -((long)sizeof(Reserva)), SEEK_END);
+        Reserva ultstruct;
+        fread(&ultstruct, sizeof(Reserva), 1, arquivo);
+        int id = ultstruct.id + 1; 
+        fclose(arquivo);
+        return id;
+    } 
+} 
