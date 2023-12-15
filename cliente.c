@@ -20,7 +20,7 @@ void menu_clientes(void){
         printf("|                             2. Pesquisar dados                                |\n");
         printf("|                             3. Atualizar dados                                |\n");
         printf("|                             4. Deletar cliente                                |\n");
-        printf("|                             5. Relatorios                                   |\n");
+        printf("|                             5. Relatorios                                     |\n");
         printf("|                             0. Voltar                                         |\n");
         printf("*-------------------------------------------------------------------------------*\n");
         printf("-- Sua opc: ");
@@ -59,7 +59,7 @@ void relatorios_cli(void){
     {
         system("clear||cls");
         printf("*-------------------------------------------------------------------------------*\n");
-        printf("*                               Relatorios Funcionarios                         *\n");
+        printf("*                               Relatorios Clientes                             *\n");
         printf("*-------------------------------------------------------------------------------*\n");
         printf("|                             1. Listar todos                                   |\n");
         printf("|                             2. Aniversariantes do mes                         |\n");

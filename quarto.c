@@ -356,14 +356,17 @@ void edit_quart(void){
     if(encont_quart(id,'I')==2){
         if (fp == NULL) {
             printf("Não foi possivel abrir o arquivo!");
-            exit(1);
+            getchar();
+            return;
+
         }
         while(fread(quart,sizeof(Quarto), 1, fp)){
             if (quart->id== id && quart->status!=0){
                 do {
-                    printf("1 - Descricao: %s\n", quart->descricao);
-                    printf("2 - Preco p/hora: %2.f\n", quart->preco);
-                    printf("3 - Status: %d\n", quart->status);
+                    printf("1 - Identificacao: %s\n", quart->identificacao);
+                    printf("2 - Descricao: %s\n", quart->descricao);
+                    printf("3 - Preco p/hora: %2.f\n", quart->preco);
+                    printf("4 - Status: %d\n", quart->status);
                     printf("0 - Finalizar alteracoes.");
                     printf("\n -Campo que deseja editar:");
                     scanf("%d",&opc);
@@ -372,12 +375,15 @@ void edit_quart(void){
                     switch (opc)
                     {
                     case 1:
-                        w_descricao(quart->descricao);
+                        w_identificacao(quart->identificacao);
                         break;
                     case 2:
-                        w_preco(&(quart->preco));
+                        w_descricao(quart->descricao);
                         break;
                     case 3:
+                        w_preco(&(quart->preco));
+                        break;
+                    case 4:
                         printf("                    .......   Status do quarto   .......            \n");
                         printf("|                             1. Disponivel                                     |\n");
                         printf("|                             2. Manutencao                                     |\n");
@@ -521,20 +527,24 @@ void exibir_mais_reser(Quarto *aux){
 	}
 }
 int criar_id_quar(void) {
-    FILE *arquivo = fopen("reservas.dat", "rb");
+    FILE *arquivo = fopen("quartos.dat", "rb");
     if (arquivo == NULL){
         return 1;
+        fseek(arquivo, 0, SEEK_END);
+        if ((long)ftell(arquivo) == 0){
+            fclose(arquivo);
+            return 1;
+        }
     }
-    fseek(arquivo, 0, SEEK_END);
-    if ((long)ftell(arquivo)==0){
-        fclose(arquivo);
-        return 1;
-    } else {
-        fseek(arquivo, -((long)sizeof(Reserva)), SEEK_END);
-        Reserva ultstruct;
-        fread(&ultstruct, sizeof(Reserva), 1, arquivo);
-        int id = ultstruct.id + 1; 
-        fclose(arquivo);
+    else{
+        fseek(arquivo, -((long)sizeof(Quarto)), SEEK_END);
+
+        Quarto ultstruct;
+        fread(&ultstruct, sizeof(Quarto), 1, arquivo);
+
+        int id = ultstruct.id + 1;
+
+        fclose(arquivo); 
         return id;
-    } 
+    }
 } 

@@ -101,7 +101,7 @@ char* w_identificacao(char* identificacao){
     int valido;
     do
     {
-        printf("|            - Identificacao:");
+        printf("|            - Identificacao (Letras e numeros apenas):");
         scanf("%[^\n]",identificacao);
         getchar();
         fflush(stdin);
@@ -176,7 +176,7 @@ int* w_horas(int* horas){
     char choras[2];
     do
     {
-        printf("|            - Horas de reserva:");
+        printf("|            - Horas de reserva (1-12 hrs):");
         scanf("%[^\n]",choras);
         getchar();
         fflush(stdin);
