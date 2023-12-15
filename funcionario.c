@@ -20,10 +20,7 @@ void menu_funcionarios(void)
         printf("|                             2. Pesquisar dados                                |\n");
         printf("|                             3. Atualizar dados                                |\n");
         printf("|                             4. Deletar funcionario                            |\n");
-        printf("|                             5. Listar todos                                   |\n");
-        printf("|                             6. Aniversariantes do mes                         |\n");
-        printf("|                             7. Ordem Alfabetica                               |\n");
-        printf("|                             8. Ordem por mais reservas                        |\n");
+        printf("|                             5. Relatorios                                     |\n");
         printf("|                             0. Voltar                                         |\n");
         printf("*-------------------------------------------------------------------------------*\n");
         printf("-- Sua opc: ");
@@ -46,19 +43,64 @@ void menu_funcionarios(void)
             del_func();
             break;
         case 5:
-            list_func('T');
-            break;
-        case 6:
-            list_func('A');
-            break;
-        case 7:
-            list_fun_alf();
-            break;
-        case 8:
-            list_fun_r();
+            relatorios_fun();
             break;
         }
     } while (opc != 0);
+}
+void relatorios_fun(void){
+    int op;
+    do
+    {
+        system("clear||cls");
+        printf("*-------------------------------------------------------------------------------*\n");
+        printf("*                               Relatorios Funcionarios                         *\n");
+        printf("*-------------------------------------------------------------------------------*\n");
+        printf("|                             1. Listar todos                                   |\n");
+        printf("|                             2. Aniversariantes do mes                         |\n");
+        printf("|                             3. Ordem Alfabetica                               |\n");
+        printf("|                             4. Ordem por mais reservas                        |\n");
+        printf("|                             0. Voltar                                         |\n");
+        printf("*-------------------------------------------------------------------------------*\n");
+        printf("-- Sua opc: ");
+        scanf("%d", &op);
+        getchar();
+        fflush(stdin);
+        switch (op)
+        {
+        case 1:
+            system("clear||cls");
+            printf("*-------------------------------------------------------------------------------*\n");
+            printf("                     .......   Todos os funcionarios   .......                    \n");
+            printf("*-------------------------------------------------------------------------------*\n");
+            list_func('T');
+            break;
+        case 2:
+            system("clear||cls");
+            printf("*-------------------------------------------------------------------------------*\n");
+            printf("                .......   Funcionarios aniversarientes do mes  .......                    \n");
+            printf("*-------------------------------------------------------------------------------*\n");
+            list_func('A');
+            break;
+        case 3:
+            system("clear||cls");
+            printf("*-------------------------------------------------------------------------------*\n");
+            printf("                  .......   Funcionarios por ordem alfabetica   .......                    \n");
+            printf("*-------------------------------------------------------------------------------*\n");
+            list_fun_alf();
+            break;
+        case 4:
+            system("clear||cls");
+            printf("*-------------------------------------------------------------------------------*\n");
+            printf("                .......   Funcionarios por ordem de mais reservas   .......          \n");
+            printf("*-------------------------------------------------------------------------------*\n");
+            printf("|   -  CPF                  -  Nome                - Quant. de Reservas         |\n");
+            printf("*-------------------------------------------------------------------------------*\n");
+            list_fun_r();
+            break;
+        }
+    } while (op!=0);
+    
 }
 void cad_func(void)
 {
@@ -85,10 +127,10 @@ void cad_func(void)
         grava_func(func);
     }else if(encont_func(cpf,'I')==1){
         int op=-1;
-        printf("-- Um cliente desativado com esse ID ja cadastrado\n");
-        printf("-- Deseja reativa-lo:");
-        printf("1- Sim");
-        printf("2- Nao");
+        printf("-- Um funcionario desativado com esse ID ja cadastrado\n");
+        printf("-- Deseja reativa-lo:\n");
+        printf("1- Sim      2- Nao\n");
+        printf("Sua opc:");
         scanf("%d",&op);
         if(op==1){
             FILE *fp;
@@ -141,21 +183,25 @@ void list_func(char ope)
     {
         printf("- Nao funcionarios cadastrados!");
         getchar();
+        return;
     }
+    printf("*-------------------------------------------------------------------------------*\n");
+    printf("|      -    CPF                     -   Nome                                     |\n");
+    printf("*-------------------------------------------------------------------------------*\n");
     while (fread(func, sizeof(Funcionario), 1, fp))
     {
         if(ope=='T'){
             if (func->status != 'I')
             {
-                most_func(func);
+                printf("| %-12s             - %-50s |   \n", func->cpf,func->nome);
             }
         }
         if(ope=='A'){
             time_t t = time(NULL);
             struct tm tm = *localtime(&t);
             int m=data(func->nasc);
-            if(m==(tm.tm_mon+1)){
-                most_func(func);
+            if(m==(tm.tm_mon+1)&&func->status != 'I'){
+                printf("| %-12s             - %-50s |   \n", func->cpf,func->nome);
             }
         }
     }
@@ -334,7 +380,7 @@ void list_fun_r(void){
     Funcionario *list;
     list = NULL;
     gerar_reser_fun(&list);
-    exibir_list_fun(list);
+    exibir_list_fun_r(list);
     del_list_fun(&list);
 }
 void gerar_list_fun(Funcionario **list){
@@ -439,8 +485,18 @@ void del_list_fun(Funcionario **list){
     }  
 }
 void exibir_list_fun(Funcionario *aux){
+    printf("*-------------------------------------------------------------------------------*\n");
+    printf("|      -    CPF                     -   Nome                                    |\n");
+    printf("*-------------------------------------------------------------------------------*\n");
     while (aux != NULL) {
-        printf("| %-15s - %-10s        -%-12s   -%-12d   |   \n", aux->nome, aux->nasc ,aux->cpf,cont_reser_fun(aux->cpf));
+        printf("| %-12s             - %-50s |   \n", aux->cpf,aux->nome);
+        aux =aux->prox;
+	}
+    getchar();
+}
+void exibir_list_fun_r(Funcionario *aux){
+    while (aux != NULL) {
+        printf("| %-15s      -%-37s   - %-10d    |   \n",aux->cpf, aux->nome ,cont_reser_fun(aux->cpf));
         aux =aux->prox;
 	}
     getchar();

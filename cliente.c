@@ -20,10 +20,7 @@ void menu_clientes(void){
         printf("|                             2. Pesquisar dados                                |\n");
         printf("|                             3. Atualizar dados                                |\n");
         printf("|                             4. Deletar cliente                                |\n");
-        printf("|                             5. Listar todos                                   |\n");
-        printf("|                             6. Aniversariantes do mes                         |\n");
-        printf("|                             7. Ordem Alfabetica                               |\n");
-        printf("|                             8. Ordem por mais reservas                        |\n");
+        printf("|                             5. Relatorios                                   |\n");
         printf("|                             0. Voltar                                         |\n");
         printf("*-------------------------------------------------------------------------------*\n");
         printf("-- Sua opc: ");
@@ -51,28 +48,70 @@ void menu_clientes(void){
             del_cli(cpf);
             break;
         case 5:
-            list_cli('T');
-            break;
-        case 6:
-            list_cli('A');
-            break;
-        case 7:
-            list_alf();
-            break;
-        case 8:
-            list_cli_r();
-            break;
-        case 9:
-            list_cli('C');
+            relatorios_cli();
             break;
         }
     } while (opc!=0);
+}
+void relatorios_cli(void){
+    int op;
+    do
+    {
+        system("clear||cls");
+        printf("*-------------------------------------------------------------------------------*\n");
+        printf("*                               Relatorios Funcionarios                         *\n");
+        printf("*-------------------------------------------------------------------------------*\n");
+        printf("|                             1. Listar todos                                   |\n");
+        printf("|                             2. Aniversariantes do mes                         |\n");
+        printf("|                             3. Ordem Alfabetica                               |\n");
+        printf("|                             4. Ordem por mais reservas                        |\n");
+        printf("|                             0. Voltar                                         |\n");
+        printf("*-------------------------------------------------------------------------------*\n");
+        printf("-- Sua opc: ");
+        scanf("%d", &op);
+        getchar();
+        fflush(stdin);
+        switch (op)
+        {
+        case 1:
+            system("clear||cls");
+            printf("*-------------------------------------------------------------------------------*\n");
+            printf("                     .......   Todos os clientes   .......                    \n");
+            printf("*-------------------------------------------------------------------------------*\n");
+            list_cli('T');
+            break;
+        case 2:
+            system("clear||cls");
+            printf("*-------------------------------------------------------------------------------*\n");
+            printf("                .......   Clientes aniversarientes do mes  .......                    \n");
+            printf("*-------------------------------------------------------------------------------*\n");
+            list_cli('A');
+            break;
+        case 3:
+            system("clear||cls");
+            printf("*-------------------------------------------------------------------------------*\n");
+            printf("                  .......   Clientes por ordem alfabetica   .......                    \n");
+            printf("*-------------------------------------------------------------------------------*\n");
+            list_alf();
+            break;
+        case 4:
+            system("clear||cls");
+            printf("*-------------------------------------------------------------------------------*\n");
+            printf("                .......   Clientes por ordem de mais reservas   .......          \n");
+            printf("*-------------------------------------------------------------------------------*\n");
+            printf("|   -  CPF                  -  Nome                - Quant. de Reservas         |\n");
+            printf("*-------------------------------------------------------------------------------*\n");
+            list_cli_r();
+            break;
+        }
+    } while (op!=0);
+    
 }
 void list_alf(void){
     Cliente *list;
     list = NULL;
     gerar_list(&list);
-    exibir_list(list);
+    exibir_list_alf(list);
     del_list(&list);
 }
 void list_cli_r(void){
@@ -101,9 +140,9 @@ void cad_cli(void){
     }else if(encont_cli(cpf,'I')==1){
         int op=-1;
         printf("-- Um cliente desativado com esse ID ja cadastrado\n");
-        printf("-- Deseja reativa-lo:");
-        printf("1- Sim");
-        printf("2- Nao");
+        printf("-- Deseja reativa-lo:\n");
+        printf("1- Sim      2- Nao\n");
+        printf("Sua opc:");
         scanf("%d",&op);
         if(op==1){
             FILE *fp;
@@ -153,10 +192,13 @@ void list_cli(char ope){
         return;
     }
     int ani=0;
+    printf("*-------------------------------------------------------------------------------*\n");
+    printf("|      -    CPF                     -   Nome                                     |\n");
+    printf("*-------------------------------------------------------------------------------*\n");
     while(fread(cli,sizeof(Cliente), 1, fp)){
         if(ope=='T'){
             if(cli->status!='I'){
-                most_cli(cli);
+                printf("| %-12s             - %-50s |   \n", cli->cpf,cli->nome);
             }
         }
         if(ope=='A'){
@@ -164,26 +206,8 @@ void list_cli(char ope){
             struct tm tm = *localtime(&t);
             int m=data(cli->nasc);
             if(m==(tm.tm_mon+1)){
-                most_cli(cli);
+                printf("| %-12s             - %-50s |   \n", cli->cpf,cli->nome);
                 ani=1;
-            }
-        }
-        if(ope=='C'){
-            if(cli->status!='I'){
-                FILE* fr;
-                Reserva* reser;
-                reser = (Reserva*) malloc(sizeof(Reserva));
-                fr = fopen("reservas.dat", "rb");
-                if (fr == NULL) {
-                    fr = fopen("reservas.dat","ab");
-                }
-                while(fread(reser,sizeof(Reserva), 1, fr)){
-                    if (strcmp(reser->cliente, cli->cpf)==0 && (reser->func_out==NULL || strcmp(reser->func_out,"")==0)) {
-                        printf("| %-6d - %-10d        -%-15s      |   \n", reser->id,reser->quarto,cli->nome);
-                    }
-                }
-                free(reser);
-                fclose(fr);
             }
         }
     }
@@ -421,7 +445,14 @@ void del_list(Cliente **list){
 }
 void exibir_list(Cliente *aux){
     while (aux != NULL) {
-        printf("| %-15s - %-10s        -%-12s   -%-12d   |   \n", aux->nome, aux->nasc ,aux->cpf,cont_reser(aux->cpf));
+        printf("| %-15s      -%-37s   - %-10d    |   \n",aux->cpf, aux->nome ,cont_reser(aux->cpf));
+        aux =aux->prox;
+	}
+    getchar();
+}
+void exibir_list_alf(Cliente *aux){
+    while (aux != NULL) {
+        printf("| %-12s             - %-50s |   \n", aux->cpf,aux->nome);
         aux =aux->prox;
 	}
     getchar();

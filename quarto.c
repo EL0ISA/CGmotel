@@ -9,7 +9,6 @@
 
 void menu_quartos(void){
     int opc;
-    int id;
     do
     {
         system("clear||cls");
@@ -20,10 +19,7 @@ void menu_quartos(void){
         printf("|                             2. Pesquisar dados                                |\n");
         printf("|                             3. Atualizar dados                                |\n");
         printf("|                             4. Deletar quarto                                 |\n");
-        printf("|                             5. Listar tudo                                    |\n");
-        printf("|                             6. Monitoramento                                  |\n");
-        printf("|                             7. Quartos por cliente                            |\n");
-        printf("|                             8. Quartos ordenados por mais reservas            |\n");
+        printf("|                             5. Relatorios                                     |\n");
         printf("|                             0. Voltar                                         |\n");
         printf("*-------------------------------------------------------------------------------*\n");
         printf("-- Sua opc: ");
@@ -45,54 +41,104 @@ void menu_quartos(void){
             del_quart();
             break;
         case 5:
-            if (cont_q()==0){
-                    printf("Nao ha quartos ativas/cadastradas!");
-            }else{
-                do {
-                    system("clear||cls");
-                    list_quart('T');
-                    printf("- Digite o ID que deseja ver mais infor ou 0 p/voltar:\n");
-                    scanf("%d",&id);
-                    getchar();
-                    fflush(stdin);
-                    if(bus_id_reser(id,'I')==1){
-                        bus_id_reser(id,'M');
-                    }else if(id!=0){
-                        printf("Identificacao invalida!");
-                        getchar();
-                    }
-                } while (id!=0);
-            }
-            break;
-        case 6:
-            monitoramento();
-            break;
-        case 7:
-            quart_cli();
-            break;
-        case 8:
-            if (cont_q()==0){
-                    printf("Nao ha quartos ativas/cadastradas!");
-            }else{
-                do {
-                    system("clear||cls");
-                    list_mais_reser();
-                    printf("- Digite o ID que deseja ver mais infor ou 0 p/voltar:\n");
-                    scanf("%d",&id);
-                    getchar();
-                    fflush(stdin);
-                    if(bus_id_reser(id,'I')==1){
-                        bus_id_reser(id,'M');
-                    }else if(id!=0){
-                        printf("Identificacao invalida!");
-                        getchar();
-                    }
-                } while (id!=0);
-            }
+            relatorios_quart();
             break;
         }
     } while (opc!=0);
     
+}
+void relatorios_quart(void){
+int opc;
+int id;
+    do
+    {
+        system("clear||cls");
+        printf("\n*-------------------------------------------------------------------------------*\n");
+        printf("*                            Relatorios de quartos                              *\n");
+        printf("*-------------------------------------------------------------------------------*\n");
+        printf("|                             1. Listar tudo                                    |\n");
+        printf("|                             2. Quartos disponiveis                            |\n");
+        printf("|                             3. Quartos em manutencao                          |/\n");
+        printf("|                             4. Quartos para limpar                            |\n");
+        printf("|                             5. Quartos ordenados por mais reservas            |\n");
+        printf("|                             6. Quartos por cliente                            |\n");
+        printf("|                             0. Voltar                                         |\n");
+        printf("*-------------------------------------------------------------------------------*\n");
+        printf("-- Sua opc: ");
+        scanf("%d",&opc);
+        getchar();
+        fflush(stdin);
+        switch (opc)
+            {
+            case 1:
+                if (cont_q()==0){
+                        printf("Nao ha quartos ativas/cadastradas!");
+                }else{
+                    do {
+                        system("clear||cls");
+                        list_quart('T');
+                        printf("- Digite o ID que deseja ver mais infor ou 0 p/voltar:\n");
+                        scanf("%d",&id);
+                        getchar();
+                        fflush(stdin);
+                        if(encont_quart(id,'I')==2){
+                            encont_quart(id,'M');
+                        }else if(id!=0){
+                            printf("Identificacao invalida!");
+                            getchar();
+                        }
+                    } while (id!=0);
+                }
+                break;
+            case 2:
+                system("clear||cls");
+                printf("*-------------------------------------------------------------------------------*\n");
+                printf("                 .......   Listando quartos os disponiveis   .......                \n");
+                list_quart('D');
+                printf("\t>> Digite ENTER para prosseguir!");
+                getchar();
+                break;
+            case 3:
+                system("clear||cls");
+                printf("*-------------------------------------------------------------------------------*\n");
+                printf("                 .......   Listando quartos em manutencao   .......              \n");
+                list_quart('M');
+                printf("\t>> Digite ENTER para prosseguir!");
+                getchar();
+                break;
+            case 4:
+                system("clear||cls");
+                printf("*-------------------------------------------------------------------------------*\n");
+                printf("                 .......   Listando quartos para limpeza   .......              \n");
+                list_quart('L');
+                printf("\t>> Digite ENTER para prosseguir!");
+                getchar();
+                break;
+            case 5:
+                if (cont_q()==0){
+                        printf("Nao ha quartos ativas/cadastradas!");
+                }else{
+                    do {
+                        system("clear||cls");
+                        list_mais_reser();
+                        printf("- Digite o ID que deseja ver mais infor ou 0 p/voltar:\n");
+                        scanf("%d",&id);
+                        getchar();
+                        fflush(stdin);
+                        if(encont_quart(id,'I')==2){
+                            encont_quart(id,'M');
+                        }else if(id!=0){
+                            printf("Identificacao invalida!");
+                            getchar();
+                        }
+                    } while (id!=0);
+                }
+                break;
+            case 6:
+                quart_cli();
+                break;
+            }
+    } while (opc!=0);
 }
 void cad_quart(void){
     system("clear||cls");
@@ -142,27 +188,27 @@ void list_quart(char ope){
         printf("                     .......   Todos os quartos   .......                     \n");
     }
     printf("*-------------------------------------------------------------------------------*\n");
-    printf("|   Identificacao               -    Preco por Hora                             |\n");
+    printf("|  ID               - Identificacao               -    Preco por Hora           |\n");
     printf("*-------------------------------------------------------------------------------*\n");
     while(fread(quart,sizeof(Quarto), 1, fp)){
         if(ope=='T'){
             if(quart->status!=0){
-                printf("|        %-20s -      %-42.2f |   \n", quart->identificacao, quart->preco);
+                printf("|  %-7d         -   %-25s   -   %-24.2f |   \n", quart->id,quart->identificacao, quart->preco);
             }
         }
         if(ope=='D'){
             if(quart->status==1){
-                printf("|        %-20s -      %-42.2f |   \n", quart->identificacao, quart->preco);
+                printf("|  %-7d         -   %-25s   -   %-24.2f |   \n", quart->id,quart->identificacao, quart->preco);
             }
         }
         if(ope=='M'){
             if(quart->status==2){
-                printf("|        %-20s -      %-42.2f |   \n", quart->identificacao, quart->preco);
+                printf("|  %-7d         -   %-25s   -   %-24.2f |   \n", quart->id,quart->identificacao, quart->preco);
             }
         }
         if(ope=='L'){
             if(quart->status==3){
-                printf("|        %-20s -      %-42.2f |   \n", quart->identificacao, quart->preco);
+                printf("|  %-7d         -   %-25s   -   %-24.2f |   \n", quart->id,quart->identificacao, quart->preco);
             }
         }
     }
@@ -388,53 +434,6 @@ void del_quart(void){
     printf("\t>> Digite ENTER para prosseguir!");
     getchar();
 }
-void monitoramento(void){
-    int opc;
-    do
-    {
-        system("clear||cls");
-        printf("\n*-------------------------------------------------------------------------------*\n");
-        printf("*                            Monitoramento(Ainda a ser desenvolvido)            *\n");
-        printf("*-------------------------------------------------------------------------------*\n");
-        printf("|                             1. Quartos disponiveis                            |\n");
-        printf("|                             2. Quartos em manutencao                          |/\n");
-        printf("|                             3. Quartos para limpar                            |\n");
-        printf("|                             0. Voltar                                         |\n");
-        printf("*-------------------------------------------------------------------------------*\n");
-        printf("-- Sua opc: ");
-        scanf("%d",&opc);
-        getchar();
-        fflush(stdin);
-        switch (opc)
-            {
-            case 1:
-                system("clear||cls");
-                printf("*-------------------------------------------------------------------------------*\n");
-                printf("                 .......   Listando quartos os disponiveis   .......                \n");
-                list_quart('D');
-                printf("\t>> Digite ENTER para prosseguir!");
-                getchar();
-                break;
-            case 2:
-                system("clear||cls");
-                printf("*-------------------------------------------------------------------------------*\n");
-                printf("                 .......   Listando quartos em manutencao   .......              \n");
-                list_quart('M');
-                printf("\t>> Digite ENTER para prosseguir!");
-                getchar();
-                break;
-            case 3:
-                system("clear||cls");
-                printf("*-------------------------------------------------------------------------------*\n");
-                printf("                 .......   Listando quartos para limpeza   .......              \n");
-                list_quart('L');
-                printf("\t>> Digite ENTER para prosseguir!");
-                getchar();
-                break;
-            }
-    } while (opc!=0);
-    
-}
 void list_mais_reser(void){
     Quarto *list;
     list = NULL;
@@ -513,11 +512,13 @@ void del_mais_reser(Quarto **list){
     }  
 }
 void exibir_mais_reser(Quarto *aux){
+    printf("*-------------------------------------------------------------------------------*\n");
+    printf("| ID                      - Quarto                  - Quant. Reservas           |\n");
+    printf("*-------------------------------------------------------------------------------*\n");
     while (aux != NULL) {
-        printf("| %-15s - %-12.2f   -%-12d   |   \n", aux->identificacao, aux->preco,cont_quart(aux->id));
+        printf("| %-5d                      -%-25s   -%-12d         |   \n", aux->id,aux->identificacao,cont_quart(aux->id));
         aux =aux->prox;
 	}
-    getchar();
 }
 int criar_id_quar(void) {
     FILE *arquivo = fopen("reservas.dat", "rb");

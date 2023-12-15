@@ -19,7 +19,7 @@ void pesq_quart(void);
 int encont_quart(int id, char ope);
 void edit_quart(void);
 void del_quart(void);
-void monitoramento(void);
+void relatorios_quart(void);
 void list_mais_reser(void);
 void gerar_mais_reser(Quarto **list);
 int cont_quart(int quarto);
