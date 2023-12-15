@@ -561,7 +561,6 @@ void gerar_mais_rec(Reserva **list){
     del_mais_rec(&(*list));
     *list = NULL;
     fp = fopen("reservas.dat","rb");
-    time_t tem = time(NULL);
     if (fp == NULL) {
         printf("Erro na abertura do arquivo... \n");
         return;
@@ -569,13 +568,13 @@ void gerar_mais_rec(Reserva **list){
         reser = (Reserva*) malloc(sizeof(Reserva));
         
         while (fread(reser, sizeof(Reserva), 1, fp)) {
-            if ((*list == NULL) || difftime(data_form((reser->hora_in)), tem)> difftime(data_form((*list)->hora_in),tem)) {
+            if ((*list == NULL) || reser->id> (*list)->id) {
                 reser->prox = *list;
                 *list = reser;
             } else {
                 Reserva* ant = *list;
                 Reserva* at = (*list)->prox;
-                while ((at != NULL) && (difftime(data_form(ant->hora_in), tem)> difftime(data_form(at->hora_in),tem))) {
+                while ((at != NULL) && ant->id > at->id) {
                     ant = at;
                     at = at->prox;
                 }
