@@ -22,6 +22,7 @@ void menu_reservas(void){
         printf("|                             3. Check-out                                      |\n");
         printf("|                             4. Listar tudo                                    |\n");
         printf("|                             5. Reservas sem Checkout                          |\n");
+        printf("|                             6. Reservas ordenas das mais recentes             |\n");
         printf("|                             0. Voltar                                         |\n");
         printf("*-------------------------------------------------------------------------------*\n");
         printf("-- Sua opc: ");
@@ -108,6 +109,29 @@ void menu_reservas(void){
                     } while (id!=0);
                 }
                 break;
+            case 7:
+                if (reser_cont()==0){
+                        printf("Nao ha reservas ativas/cadastradas!");
+                    }else{
+                        do {
+                            system("clear||cls");
+                            printf("*-------------------------------------------------------------------------------*\n");
+                            printf("       .......   Reservas do dia   .......            \n");
+                            printf("*-------------------------------------------------------------------------------*\n");
+                            list_reser('D');
+                            printf("- Digite o ID que deseja ver mais infor ou 0 p/voltar:\n");
+                            scanf("%d",&id);
+                            getchar();
+                            fflush(stdin);
+                            if(bus_id_reser(id,'I')==1){
+                                bus_id_reser(id,'M');
+                            }else if(id!=0){
+                                printf("Identificacao invalida!");
+                                getchar();
+                            }
+                        } while (id!=0);
+                    }
+                    break;
             }
     } while (opc!=0);
     
@@ -151,7 +175,7 @@ int bus_id_reser(int id, char ope){
         printf("Não foi possivel abrir o arquivo!");
     }
     while(fread(reser,sizeof(Reserva), 1, fp)){
-        if (reser->id== id && reser->status=='A' && (reser->func_out==NULL || strcmp(reser->func_out,"")==0)) {
+        if (reser->id==id && reser->status=='A' && (reser->func_out==NULL || strcmp(reser->func_out,"")==0)) {
             if(ope=='M'){
                 most_reser(reser);
             }
@@ -181,6 +205,8 @@ void checkin(void){
             strcpy(reser->cliente,cliente);
             printf("|            - Informe o ID do quarto:");
             scanf("%d",&quarto);
+            getchar();
+            fflush(stdin);
             if(encont_quart(quarto,'I')==2){
                 FILE* fp;
                 Quarto* quart;
@@ -261,6 +287,7 @@ void list_reser(char ope){
     Reserva* reser;
     reser = (Reserva*) malloc(sizeof(Reserva));
     fp = fopen("reservas.dat", "rb");
+    int day,month,year;
     if (fp == NULL) {
         printf("Nao ha reservas cadastradas!\n");
         getchar();
@@ -278,14 +305,64 @@ void list_reser(char ope){
                 fp = fopen("clientes.dat", "rb");
                 while(fread(cli,sizeof(Cliente), 1, fp)){
                     if (strcmp(reser->cliente,cli->cpf)==0) {
-                        printf("| %-6d - %-10d        -%-15s           -%-20.2f |   \n", reser->id,reser->quarto,cli->nome,reser->ptotal);
+                        FILE* fp;
+                        Quarto* quart;
+                        quart = (Quarto*) malloc(sizeof(Quarto));
+                        fp = fopen("quartos.dat", "rb");
+                        while(fread(quart,sizeof(Quarto), 1, fp)){
+                            if (reser->quarto==quart->id) {
+                                printf("| %-6d - %-15s        -%-15s           -%-17.2f |   \n", reser->id,quart->identificacao,cli->nome,reser->ptotal);
+                            }
+                        }
                     }
                 }
             }
         }
         if(ope=='A'){
             if(reser->func_out==NULL || strcmp(reser->func_out,"")==0){
-                printf("| %-6d - %-10d        -%-15s           -%-20.2f |   \n", reser->id,reser->quarto,reser->cliente,reser->ptotal);
+                FILE* fp;
+                Cliente* cli;
+                cli = (Cliente*) malloc(sizeof(Cliente));
+                fp = fopen("clientes.dat", "rb");
+                while(fread(cli,sizeof(Cliente), 1, fp)){
+                    if (strcmp(reser->cliente,cli->cpf)==0) {
+                        FILE* fp;
+                        Quarto* quart;
+                        quart = (Quarto*) malloc(sizeof(Quarto));
+                        fp = fopen("quartos.dat", "rb");
+                        while(fread(quart,sizeof(Quarto), 1, fp)){
+                            if (reser->quarto==quart->id) {
+                                printf("| %-6d - %-15s        -%-15s           -%-17.2f |   \n", reser->id,quart->identificacao,cli->nome,reser->ptotal);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if(ope=='D'){
+            sscanf(reser->hora_in,"%d-%*d-%*d", &day);
+            sscanf(reser->hora_in,"%*d-%d", &month);
+            sscanf(reser->hora_in,"%*d-%*d-%d", &year);
+            time_t t = time(NULL);
+            struct tm tm = *localtime(&t);
+            if(day==(tm.tm_mday) && month==(tm.tm_mon+1)&&year==(tm.tm_year+1900)){
+                FILE* fp;
+                Cliente* cli;
+                cli = (Cliente*) malloc(sizeof(Cliente));
+                fp = fopen("clientes.dat", "rb");
+                while(fread(cli,sizeof(Cliente), 1, fp)){
+                    if (strcmp(reser->cliente,cli->cpf)==0) {
+                        FILE* fp;
+                        Quarto* quart;
+                        quart = (Quarto*) malloc(sizeof(Quarto));
+                        fp = fopen("quartos.dat", "rb");
+                        while(fread(quart,sizeof(Quarto), 1, fp)){
+                            if (reser->quarto==quart->id) {
+                                printf("| %-6d - %-15s        -%-15s           -%-17.2f |   \n", reser->id,quart->identificacao,cli->nome,reser->ptotal);
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -403,7 +480,7 @@ void del_reser(void){
     fflush(stdin);
     if (fp == NULL) {
         printf("Não foi possivel abrir o arquivo!");
-        exit(1);
+        return;
     }
     if(bus_id_reser(id,'I')==1){
         while(fread(reser,sizeof(Reserva), 1, fp)){
@@ -457,7 +534,6 @@ int criar_id(void) {
     } 
 } 
 time_t data_form(char *data){
-    // Estrutura para armazenar a data e a hora
     struct tm tm_result;
     int day, month, year, hour, min, sec;
     sscanf(data,"%d-%*d-%*d", &day);
@@ -521,6 +597,9 @@ void del_mais_rec(Reserva **list){
     }  
 }
 void exibir_mais_rec(Reserva *aux){
+    printf("*-------------------------------------------------------------------------------*\n");
+    printf("| ID      - Quarto               -    Cliente               - Data de checkin   |\n");
+    printf("*-------------------------------------------------------------------------------*\n");
     while (aux != NULL) {
         FILE* fp;
         Cliente* cli;
@@ -528,7 +607,15 @@ void exibir_mais_rec(Reserva *aux){
         fp = fopen("clientes.dat", "rb");
         while(fread(cli,sizeof(Cliente), 1, fp)){
             if (strcmp(aux->cliente,cli->cpf)==0) {
-                printf("| %-6d - %-10d        -%-15s           -%-20.2f |   \n", aux->id,aux->quarto,cli->nome,aux->ptotal);
+                FILE* fp;
+                Quarto* quart;
+                quart = (Quarto*) malloc(sizeof(Quarto));
+                fp = fopen("quartos.dat", "rb");
+                while(fread(quart,sizeof(Quarto), 1, fp)){
+                    if (aux->quarto==quart->id) {
+                        printf("| %-6d - %-15s     -%-15s           -%-20s |   \n", aux->id,quart->identificacao,cli->nome,aux->hora_in);
+                    }
+                }
             }
         }
         aux =aux->prox;

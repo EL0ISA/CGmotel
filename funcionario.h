@@ -24,5 +24,7 @@ void del_list_fun(Funcionario**);
 void exibir_list_fun(Funcionario*);
 void list_fun_alf(void);
 void list_fun_r(void);
-void gerar_reser_fun(Funcionario **list);
+void gerar_reser_fun(Funcionario**);
 int cont_reser_fun(char funcionario[]);
+void exibir_list_fun_r(Funcionario*);
+void relatorios_fun(void);

@@ -168,7 +168,11 @@ int verif_nasc(char* nasc){
     int tam=strlen(nasc);
     char dia[2]="",mes[2]="",ano[4]="";
     int p_barra=0,s_barra=0;
+    int cont_barra=0;
     if(tam>10){
+        return 0;
+    }
+    if(tam<6){
         return 0;
     }
     for (int i = 0; i<tam; i++){
@@ -181,8 +185,13 @@ int verif_nasc(char* nasc){
             if(!isdigit(nasc[i+1])&&!isdigit(nasc[i-1])){
                 return 0;
             }
+            cont_barra++;
         }
     }
+    if (cont_barra!=2){
+        return 0;
+    }
+    
     /*pegando dia,mes e ano separadamente*/
     for (int i = 0; nasc[i]!='/'; i++){
         concatenar(dia,nasc[i]);
